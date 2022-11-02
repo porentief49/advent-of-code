@@ -7,17 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="Inputs.Designer.cs">
+    <Compile Update="Inputs_2021_rAiner.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Inputs.resx</DependentUpon>
+      <DependentUpon>Inputs_2021_rAiner.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Inputs.resx">
+    <EmbeddedResource Update="Inputs_2021_rAiner.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Inputs.Designer.cs</LastGenOutput>
+      <LastGenOutput>Inputs_2021_rAiner.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
