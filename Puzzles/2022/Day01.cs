@@ -19,14 +19,11 @@ namespace Puzzles
                 long _calories = 0;
                 for (int i = 0; i < Input.Length; i++)
                 {
-                    if (Input[i].Length == 0)
+                    if (Input[i].Length > 0) _calories += long.Parse(Input[i]);
+                    else
                     {
                         _elfsCalories.Add(_calories);
                         _calories = 0;
-                    }
-                    else
-                    {
-                        _calories += long.Parse(Input[i]);
                     }
                 }
                 List<long> _elfsCaloriesSortedDesc = _elfsCalories.OrderByDescending(x => x).ToList();
