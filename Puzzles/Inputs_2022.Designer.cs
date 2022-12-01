@@ -22,14 +22,14 @@ namespace Puzzles {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Inputs {
+    internal class Inputs_2022 {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Inputs() {
+        internal Inputs_2022() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Puzzles {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Puzzles.Inputs", typeof(Inputs).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Puzzles.Inputs_2022", typeof(Inputs_2022).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,126 @@ namespace Puzzles {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 7532
+        ///37124
+        ///
+        ///37309
+        ///
+        ///7616
+        ///2128
+        ///2657
+        ///8061
+        ///8565
+        ///7990
+        ///5085
+        ///6046
+        ///7685
+        ///5581
+        ///
+        ///35538
+        ///10913
+        ///
+        ///5484
+        ///5560
+        ///4789
+        ///1528
+        ///4776
+        ///5603
+        ///5842
+        ///6741
+        ///4814
+        ///4680
+        ///5315
+        ///6220
+        ///1651
+        ///
+        ///10606
+        ///12380
+        ///13536
+        ///12687
+        ///1792
+        ///5937
+        ///
+        ///19015
+        ///
+        ///6641
+        ///7261
+        ///4325
+        ///6710
+        ///3169
+        ///2493
+        ///4848
+        ///4598
+        ///1364
+        ///1454
+        ///7313
+        ///2400
+        ///
+        ///34490
+        ///7705
+        ///
+        ///1272
+        ///7257
+        ///10984
+        ///6260
+        ///3371
+        ///4351
+        ///4281
+        ///
+        ///20309
+        ///12056
+        ///12129
+        ///
+        ///4107
+        ///8760
+        ///3556
+        ///1655
+        ///9898
+        ///10628
+        ///10489
+        ///
+        ///4536
+        ///2561
+        ///6731
+        ///6282
+        ///1328
+        ///3214
+        ///5641
+        ///3622
+        ///4558
+        ///1279
+        ///3208
+        ///1971
+        ///5176
+        ///
+        ///69208
+        ///
+        ///3874
+        ///3999
+        ///3763
+        ///1163
+        ///3569
+        ///1590
+        ///1522
+        ///3182
+        ///2086
+        ///2795
+        ///4653
+        ///4148
+        ///1282
+        ///1711
+        ///3177
+        ///
+        ///8860
+        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Rainer_01 {
+            get {
+                return ResourceManager.GetString("Rainer_01", resourceCulture);
             }
         }
     }

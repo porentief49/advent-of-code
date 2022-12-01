@@ -11,9 +11,9 @@ namespace Puzzles
         {
             protected override string Title { get; } = "Day 17 - Trick Shot";
 
-            public override void Init() => Init(Inputs.day17);
+            public override void Init() => Init(Inputs_2021.Rainer_17);
 
-            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource);
+            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true);
 
             public override string SolvePuzzle(bool aPart1) => aPart1 ? Part1(Input[0]) : Part2(Input[0]);
 

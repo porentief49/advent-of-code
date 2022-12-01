@@ -12,9 +12,9 @@ namespace Puzzles
         {
             protected override string Title { get; } = "Day 19 - Beacon Scanner";
 
-            public override void Init() => Init(Inputs.day19);
+            public override void Init() => Init(Inputs_2021.Rainer_19);
 
-            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource);
+            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true);
 
             private long mMaxManhattanDist = 0;
 

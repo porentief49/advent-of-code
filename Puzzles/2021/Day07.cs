@@ -9,9 +9,9 @@ namespace Puzzles
         { //@@@ for part 1, could do median, that would be the best choice
             protected override string Title { get; } = "Day 7 - The Treachery of Whales";
 
-            public override void Init() => Init(Inputs.day07);
+            public override void Init() => Init(Inputs_2021.Rainer_07);
 
-            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource);
+            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true);
 
             public override string SolvePuzzle(bool aPart1)
             {

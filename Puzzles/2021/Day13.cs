@@ -12,9 +12,9 @@ namespace Puzzles
         {
             protected override string Title { get; } = "Day 13 - Transparent Origami";
 
-            public override void Init() => Init(Inputs.day13);
+            public override void Init() => Init(Inputs_2021.Rainer_13);
 
-            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource);
+            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true);
 
             public override string SolvePuzzle(bool aPart1)
             {

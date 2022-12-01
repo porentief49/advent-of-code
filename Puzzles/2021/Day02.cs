@@ -8,9 +8,9 @@ namespace Puzzles
         {
             protected override string Title { get; } = "Day 2 - Dive!";
 
-            public override void Init() => Init(Inputs.day02);
+            public override void Init() => Init(Inputs_2021.Rainer_02);
 
-            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource);
+            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true);
 
             public override string SolvePuzzle(bool aPart1)
             {

@@ -10,9 +10,9 @@ namespace Puzzles
         { //@@@ speed up - part 2 takes 2.5 seconds!
             protected override string Title { get; } = "Day 8 - Seven Segment Search";
 
-            public override void Init() => Init(Inputs.day08);
+            public override void Init() => Init(Inputs_2021.Rainer_08);
 
-            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource);
+            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true);
 
             public override string SolvePuzzle(bool aPart1)
             {

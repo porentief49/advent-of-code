@@ -14,11 +14,11 @@ namespace Puzzles
 
             protected override string Title { get; } = "Day 4 - Giant Squid";
 
-            public override void Init() => Init(Inputs.day04);
+            public override void Init() => Init(Inputs_2021.Rainer_04);
 
             public override void Init(string aResource)
             {
-                Input = Tools.SplitLinesWithoutEmptyOnes(aResource); //removing empty lines
+                Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true); //removing empty lines
                 string[] lDraws = Input[0].Split(','); // first line
                 mDrawNumbers = new int[lDraws.Length];
                 for (int i = 0; i < lDraws.Length; i++) mDrawNumbers[i] = int.Parse(lDraws[i]);

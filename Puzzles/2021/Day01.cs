@@ -10,7 +10,7 @@ namespace Puzzles
 
             protected override string Title { get; } = "Day 1 - Sonar Sweep";
 
-            public override void Init() => Init(Inputs.day01); 
+            public override void Init() => Init(Inputs_2021.Rainer_01); 
 
             public override void Init(string aResource)
             {

@@ -6,10 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Puzzles {
-
-    public abstract class DayBase {
-
+namespace Puzzles
+{
+    public abstract class DayBase
+    {
         public bool BareOutput { get; set; } = false;
 
         public bool Verbose { get; set; } = false;
@@ -26,7 +26,8 @@ namespace Puzzles {
 
         public abstract string SolvePuzzle(bool aPart1);
 
-        public string RunBothAndReport(string aResource = "") {
+        public string RunBothAndReport(string aResource = "")
+        {
             Stopwatch lWatch = Stopwatch.StartNew();
             if (aResource.Length == 0) Init();
             else Init(aResource);
@@ -44,38 +45,47 @@ namespace Puzzles {
         protected string FormatResult(object aResult, string aLabel) => (BareOutput ? string.Empty : aLabel + ": ") + aResult.ToString();
     }
 
-    public static class Tools {
-
-        public static void FindAllPermutations(string aIn, ref List<string> lResult, string aPrefix = "") {
+    public static class Tools
+    {
+        public static void FindAllPermutations(string aIn, ref List<string> lResult, string aPrefix = "")
+        {
             // credit: https://stackoverflow.com/questions/756055/listing-all-permutations-of-a-string-integer
             if (string.IsNullOrEmpty(aIn)) lResult.Add(aPrefix);
             for (int i = 0; i < aIn.Length; i++) FindAllPermutations(aIn.Remove(i, 1), ref lResult, aPrefix + aIn[i]);
         }
 
-        public static string[] SplitLinesWithoutEmptyOnes(string aResource) => aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        public static string[] SplitLinesWithoutEmptyOnes(string aResource, bool aRemoveEmptyLines)
+        {
+            return aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.TrimEntries & (aRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
+        }
 
-        public static void Repeat(int aCount, Action aAction) {
+        public static void Repeat(int aCount, Action aAction)
+        {
             for (int i = 0; i < aCount; i++) aAction();
         }
 
         // Extensions
-        public static string SortCharacters(this string aIn) {
+        public static string SortCharacters(this string aIn)
+        {
             char[] characters = aIn.ToArray();
             Array.Sort(characters);
             return new string(characters);
         }
 
-        public static string Repeat(this string aIn, long aCount) {
+        public static string Repeat(this string aIn, long aCount)
+        {
             StringBuilder lOut = new StringBuilder();
             for (int i = 0; i < aCount; i++) lOut.Append(aIn);
             return lOut.ToString();
         }
 
-        public static void AddIfNew<T>(this List<T> aList, T aAdd) {
+        public static void AddIfNew<T>(this List<T> aList, T aAdd)
+        {
             if (!aList.Contains(aAdd)) aList.Add(aAdd);
         }
 
-        public static void AddIfNew<T>(this List<T> aList, T[] aAdd) {
+        public static void AddIfNew<T>(this List<T> aList, T[] aAdd)
+        {
             foreach (T lAdd in aAdd) if (!aList.Contains(lAdd)) aList.Add(lAdd);
         }
     }

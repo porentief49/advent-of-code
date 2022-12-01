@@ -12,9 +12,9 @@ namespace Puzzles
         {
             protected override string Title { get; } = "Day 24 - Arithmetic Logic Unit";
 
-            public override void Init() => Init(Inputs.day24);
+            public override void Init() => Init(Inputs_2021.Rainer_24);
 
-            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource);
+            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true);
 
             public override string SolvePuzzle(bool aPart1)
             {
