@@ -54,7 +54,7 @@ namespace Puzzles
             for (int i = 0; i < aIn.Length; i++) FindAllPermutations(aIn.Remove(i, 1), ref lResult, aPrefix + aIn[i]);
         }
 
-        public static string[] SplitLinesWithoutEmptyOnes(string aResource, bool aRemoveEmptyLines)
+        public static string[] SplitLines(string aResource, bool aRemoveEmptyLines)
         {
             return aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.TrimEntries & (aRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
         }

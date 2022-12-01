@@ -11,7 +11,7 @@ namespace Puzzles
 
             public override void Init() => Init(Inputs_2022.Rainer_01);
 
-            public override void Init(string Resource) => Input = Tools.SplitLinesWithoutEmptyOnes(Resource, false);
+            public override void Init(string Resource) => Input = Tools.SplitLines(Resource, false);
 
             public override string SolvePuzzle(bool Part1)
             {

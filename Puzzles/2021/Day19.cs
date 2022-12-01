@@ -14,7 +14,7 @@ namespace Puzzles
 
             public override void Init() => Init(Inputs_2021.Rainer_19);
 
-            public override void Init(string aResource) => Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true);
+            public override void Init(string aResource) => Input = Tools.SplitLines(aResource, true);
 
             private long mMaxManhattanDist = 0;
 

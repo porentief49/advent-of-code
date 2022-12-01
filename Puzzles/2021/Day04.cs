@@ -18,7 +18,7 @@ namespace Puzzles
 
             public override void Init(string aResource)
             {
-                Input = Tools.SplitLinesWithoutEmptyOnes(aResource, true); //removing empty lines
+                Input = Tools.SplitLines(aResource, true); //removing empty lines
                 string[] lDraws = Input[0].Split(','); // first line
                 mDrawNumbers = new int[lDraws.Length];
                 for (int i = 0; i < lDraws.Length; i++) mDrawNumbers[i] = int.Parse(lDraws[i]);
