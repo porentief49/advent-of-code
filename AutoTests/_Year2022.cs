@@ -18,19 +18,31 @@ namespace _Year2022
     public class _Day01
     {
         [TestMethod]
-        public void _Part1_Official() => Helpers.SolveOfficial(new Year2022.Day01(), @"2022\01_rAiner.txt", true, "69795");
+        public void _Part1_Example() => Helpers.SolveOfficial(new Year2022.Day01(), @"2022\01_Example.txt", true, "24000");
 
         [TestMethod]
-        public void _Part2_Official() => Helpers.SolveOfficial(new Year2022.Day01(), @"2022\01_rAiner.txt", false, "208437");
+        public void _Part2_Example() => Helpers.SolveOfficial(new Year2022.Day01(), @"2022\01_Example.txt", false, "45000");
+
+        [TestMethod]
+        public void _Part1_rAiner() => Helpers.SolveOfficial(new Year2022.Day01(), @"2022\01_rAiner.txt", true, "69795");
+
+        [TestMethod]
+        public void _Part2_rAiner() => Helpers.SolveOfficial(new Year2022.Day01(), @"2022\01_rAiner.txt", false, "208437");
     }
 
     [TestClass]
     public class _Day02
     {
         [TestMethod]
-        public void _Part1_Official() => Helpers.SolveOfficial(new Year2022.Day02(), @"2022\02_rAiner.txt", true, "13675");
+        public void _Part1_Example() => Helpers.SolveOfficial(new Year2022.Day02(), @"2022\02_Example.txt", true, "15");
 
         [TestMethod]
-        public void _Part2_Official() => Helpers.SolveOfficial(new Year2022.Day02(), @"2022\02_rAiner.txt", false, "14184");
+        public void _Part2_Example() => Helpers.SolveOfficial(new Year2022.Day02(), @"2022\02_Example.txt", false, "12");
+
+        [TestMethod]
+        public void _Part1_rAiner() => Helpers.SolveOfficial(new Year2022.Day02(), @"2022\02_rAiner.txt", true, "13675");
+
+        [TestMethod]
+        public void _Part2_rAiner() => Helpers.SolveOfficial(new Year2022.Day02(), @"2022\02_rAiner.txt", false, "14184");
     }
 }
