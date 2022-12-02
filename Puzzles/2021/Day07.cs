@@ -5,7 +5,7 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day07 : DayBase
+        public class Day07 : DayBase_OLD
         { //@@@ for part 1, could do median, that would be the best choice
             protected override string Title { get; } = "Day 7 - The Treachery of Whales";
 

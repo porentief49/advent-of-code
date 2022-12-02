@@ -8,14 +8,21 @@ namespace Puzzles
         {
             protected override string Title { get; } = "Day 2: Rock Paper Scissors";
 
-            public override void Init() => Init(Inputs_2022.Rainer_02);
+            public override void SetupAll()
+            {
+                InputFiles.Add(@"2022\02_Example.txt");
+                InputFiles.Add(@"2022\02_rAiner.txt");
+            }
 
-            public override void Init(string Resource) => Input = Tools.SplitLines(Resource, true);
+            public override void InitPuzzle(string InputFile)
+            {
+                InputData = ReadFile(InputFile, true);
+            }
 
             public override string SolvePuzzle(bool Part1)
             {
                 List<(char They, char Me)> Rounds = new();
-                for (int i = 0; i < Input.Length; i++) Rounds.Add((Input[i][0], Input[i][2]));
+                for (int i = 0; i < InputData?.Length; i++) Rounds.Add((InputData[i][0], InputData[i][2]));
                 int _totalScore = 0;
                 foreach (var _round in Rounds) _totalScore += Part1 ? Play1(_round) : Play2(_round);
                 return FormatResult(_totalScore, "total score");

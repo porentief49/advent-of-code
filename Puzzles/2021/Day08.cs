@@ -6,7 +6,7 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day08 : DayBase
+        public class Day08 : DayBase_OLD
         { //@@@ speed up - part 2 takes 2.5 seconds!
             protected override string Title { get; } = "Day 8 - Seven Segment Search";
 

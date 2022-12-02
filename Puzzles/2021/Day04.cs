@@ -5,7 +5,7 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day04 : DayBase
+        public class Day04 : DayBase_OLD
         {
             const int BOARD_SIZE = 5;
 
