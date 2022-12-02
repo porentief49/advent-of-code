@@ -7,7 +7,7 @@ namespace Puzzles
         public class Day01 : DayBase
         {
 
-            protected override string Title { get; } = "Day 1 - Calorie Counting";
+            protected override string Title { get; } = "Day 1: Calorie Counting";
 
             public override void Init() => Init(Inputs_2022.Rainer_01);
 

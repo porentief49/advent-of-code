@@ -56,7 +56,7 @@ namespace Puzzles
 
         public static string[] SplitLines(string aResource, bool aRemoveEmptyLines)
         {
-            return aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.TrimEntries & (aRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
+            return aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.TrimEntries | (aRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
         }
 
         public static void Repeat(int aCount, Action aAction)

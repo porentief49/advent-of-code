@@ -1,5 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Puzzles;
 
@@ -26,4 +24,13 @@ namespace _Year2022
         public void _Part2_Official() => Helpers.SolveOfficial(new Year2022.Day01(), false, "208437");
     }
 
+    [TestClass]
+    public class _Day02
+    {
+        [TestMethod]
+        public void _Part1_Official() => Helpers.SolveOfficial(new Year2022.Day02(), true, "13675");
+
+        [TestMethod]
+        public void _Part2_Official() => Helpers.SolveOfficial(new Year2022.Day02(), false, "14184");
+    }
 }
