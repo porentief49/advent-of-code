@@ -12,21 +12,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Inputs_2021.resx</DependentUpon>
     </Compile>
-    <Compile Update="Inputs_2022.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Inputs_2022.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Inputs_2021.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Inputs_2021.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Inputs_2022.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Inputs_2022.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

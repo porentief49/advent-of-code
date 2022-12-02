@@ -6,7 +6,7 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day03 : DayBase
+        public class Day03 : DayBase_OLD
         {
             protected override string Title { get; } = "Day 3 - Binary Diagnostic";
 

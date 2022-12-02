@@ -4,7 +4,7 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day01 : DayBase
+        public class Day01 : DayBase_OLD
         {
             int[] mDepths;
 

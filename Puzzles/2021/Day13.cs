@@ -8,7 +8,7 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day13 : DayBase
+        public class Day13 : DayBase_OLD
         {
             protected override string Title { get; } = "Day 13 - Transparent Origami";
 

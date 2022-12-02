@@ -14,6 +14,56 @@ namespace Puzzles
 
         public bool Verbose { get; set; } = false;
 
+        protected abstract string Title { get; }
+
+        protected string[]? InputData { get; set; }
+
+        protected List<string> InputFiles { get; } = new();
+
+        public abstract void SetupAll();
+
+        public abstract void Init(string InputFile);
+
+        public abstract string Solve(bool Part1);
+
+        public string RunAll()
+        {
+            SetupAll();
+            string _report = string.Empty;
+            string _result;
+            _report += Title + $" - RunAll on {InputFiles.Count} input files\r\n";
+            foreach (var _inputFile in InputFiles)
+            {
+                _report += $"\r\n  File: {_inputFile}\r\n";
+                Stopwatch lWatch = Stopwatch.StartNew();
+                Init(_inputFile);
+                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Initialization\r\n";
+                lWatch.Restart();
+                _result = Solve(true);
+                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 1 ==> {_result}\r\n";
+                lWatch.Restart();
+                _result = Solve(false);
+                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 2 ==> {_result}\r\n";
+            }
+            return _report;
+        }
+
+        protected string FormatResult(object Result, string Label) => (BareOutput ? string.Empty : Label + ": ") + Result.ToString();
+
+        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines)
+        {
+            const string _RelativePath = @"..\..\..\..\InputData\";
+            string _Text = File.ReadAllText(_RelativePath + FilePath).Replace("\r", string.Empty);
+            return _Text.Split('\n', StringSplitOptions.TrimEntries | (RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
+        }
+    }
+
+    public abstract class DayBase_OLD
+    {
+        public bool BareOutput { get; set; } = false;
+
+        public bool Verbose { get; set; } = false;
+
         protected string[] Input { get; set; }
 
         protected abstract string Title { get; }
@@ -56,7 +106,7 @@ namespace Puzzles
 
         public static string[] SplitLines(string aResource, bool aRemoveEmptyLines)
         {
-            return aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.TrimEntries & (aRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
+            return aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.TrimEntries | (aRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
         }
 
         public static void Repeat(int aCount, Action aAction)

@@ -8,7 +8,7 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day21 : DayBase
+        public class Day21 : DayBase_OLD
         {
             int mDeterDice = 1;
 

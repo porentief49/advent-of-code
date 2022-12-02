@@ -2,10 +2,9 @@
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            //Console.WriteLine("Hello, Lilli!");
-            Console.WriteLine( new Puzzles.Year2022.Day01().RunBothAndReport());
+            Console.WriteLine(new Puzzles.Year2022.Day01().RunAll());
         }
     }
 }

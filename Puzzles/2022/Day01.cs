@@ -7,19 +7,26 @@ namespace Puzzles
         public class Day01 : DayBase
         {
 
-            protected override string Title { get; } = "Day 1 - Calorie Counting";
+            protected override string Title { get; } = "Day 1: Calorie Counting";
 
-            public override void Init() => Init(Inputs_2022.Rainer_01);
+            public override void SetupAll()
+            {
+                InputFiles.Add(@"2022\01_Example.txt");
+                InputFiles.Add(@"2022\01_rAiner.txt");
+            }
 
-            public override void Init(string Resource) => Input = Tools.SplitLines(Resource, false);
+            public override void Init(string InputFile)
+            {
+                InputData = ReadFile(InputFile, false);
+            }
 
-            public override string SolvePuzzle(bool Part1)
+            public override string Solve(bool Part1)
             {
                 List<long> _elfsCalories = new();
                 long _calories = 0;
-                for (int i = 0; i < Input.Length; i++)
+                for (int i = 0; i < InputData?.Length; i++)
                 {
-                    if (Input[i].Length > 0) _calories += long.Parse(Input[i]);
+                    if (InputData[i].Length > 0) _calories += long.Parse(InputData[i]);
                     else
                     {
                         _elfsCalories.Add(_calories);
