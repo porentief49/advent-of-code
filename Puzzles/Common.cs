@@ -22,9 +22,9 @@ namespace Puzzles
 
         public abstract void SetupAll();
 
-        public abstract void InitPuzzle(string InputFile);
+        public abstract void Init(string InputFile);
 
-        public abstract string SolvePuzzle(bool aPart1);
+        public abstract string Solve(bool Part1);
 
         public string RunAll()
         {
@@ -36,25 +36,25 @@ namespace Puzzles
             {
                 _report += $"\r\n  File: {_inputFile}\r\n";
                 Stopwatch lWatch = Stopwatch.StartNew();
-                InitPuzzle(_inputFile);
+                Init(_inputFile);
                 _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Initialization\r\n";
                 lWatch.Restart();
-                _result = SolvePuzzle(true);
+                _result = Solve(true);
                 _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 1 ==> {_result}\r\n";
                 lWatch.Restart();
-                _result = SolvePuzzle(false);
+                _result = Solve(false);
                 _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 2 ==> {_result}\r\n";
             }
             return _report;
         }
 
-        protected string FormatResult(object aResult, string aLabel) => (BareOutput ? string.Empty : aLabel + ": ") + aResult.ToString();
+        protected string FormatResult(object Result, string Label) => (BareOutput ? string.Empty : Label + ": ") + Result.ToString();
 
-        protected string[] ReadFile(string FilePath, bool aRemoveEmptyLines)
+        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines)
         {
             const string _RelativePath = @"..\..\..\..\InputData\";
             string _Text = File.ReadAllText(_RelativePath + FilePath).Replace("\r", string.Empty);
-            return _Text.Split('\n', StringSplitOptions.TrimEntries | (aRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
+            return _Text.Split('\n', StringSplitOptions.TrimEntries | (RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
         }
     }
 

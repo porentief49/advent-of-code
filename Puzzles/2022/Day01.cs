@@ -15,12 +15,12 @@ namespace Puzzles
                 InputFiles.Add(@"2022\01_rAiner.txt");
             }
 
-            public override void InitPuzzle(string InputFile)
+            public override void Init(string InputFile)
             {
                 InputData = ReadFile(InputFile, false);
             }
 
-            public override string SolvePuzzle(bool Part1)
+            public override string Solve(bool Part1)
             {
                 List<long> _elfsCalories = new();
                 long _calories = 0;

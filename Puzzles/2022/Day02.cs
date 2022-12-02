@@ -14,12 +14,12 @@ namespace Puzzles
                 InputFiles.Add(@"2022\02_rAiner.txt");
             }
 
-            public override void InitPuzzle(string InputFile)
+            public override void Init(string InputFile)
             {
                 InputData = ReadFile(InputFile, true);
             }
 
-            public override string SolvePuzzle(bool Part1)
+            public override string Solve(bool Part1)
             {
                 List<(char They, char Me)> Rounds = new();
                 for (int i = 0; i < InputData?.Length; i++) Rounds.Add((InputData[i][0], InputData[i][2]));
