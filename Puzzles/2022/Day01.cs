@@ -15,10 +15,7 @@ namespace Puzzles
                 InputFiles.Add(@"2022\01_rAiner.txt");
             }
 
-            public override void Init(string InputFile)
-            {
-                InputData = ReadFile(InputFile, false);
-            }
+            public override void Init(string InputFile) => InputData = ReadFile(InputFile, false);
 
             public override string Solve(bool Part1)
             {
