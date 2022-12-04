@@ -45,4 +45,36 @@ namespace _Year2022
         [TestMethod]
         public void _Part2_rAiner() => Helpers.SolveOfficial(new Year2022.Day02(), @"2022\02_rAiner.txt", false, "14184");
     }
+
+    [TestClass]
+    public class _Day03
+    {
+        [TestMethod]
+        public void _Part1_Example() => Helpers.SolveOfficial(new Year2022.Day03(), @"2022\03_Example.txt", true, "157");
+
+        [TestMethod]
+        public void _Part2_Example() => Helpers.SolveOfficial(new Year2022.Day03(), @"2022\03_Example.txt", false, "70");
+
+        [TestMethod]
+        public void _Part1_rAiner() => Helpers.SolveOfficial(new Year2022.Day03(), @"2022\03_rAiner.txt", true, "7917");
+
+        [TestMethod]
+        public void _Part2_rAiner() => Helpers.SolveOfficial(new Year2022.Day03(), @"2022\03_rAiner.txt", false, "2581");
+
+    [TestClass]
+    public class _Day04
+    {
+        [TestMethod]
+        public void _Part1_Example() => Helpers.SolveOfficial(new Year2022.Day04(), @"2022\04_Example.txt", true, "2");
+
+        [TestMethod]
+        public void _Part2_Example() => Helpers.SolveOfficial(new Year2022.Day04(), @"2022\04_Example.txt", false, "4");
+
+        [TestMethod]
+        public void _Part1_rAiner() => Helpers.SolveOfficial(new Year2022.Day04(), @"2022\04_rAiner.txt", true, "576");
+
+        [TestMethod]
+        public void _Part2_rAiner() => Helpers.SolveOfficial(new Year2022.Day04(), @"2022\04_rAiner.txt", false, "905");
+    }
+    }
 }

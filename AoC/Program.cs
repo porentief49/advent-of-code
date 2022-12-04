@@ -4,7 +4,7 @@
     {
         static void Main()
         {
-            Console.WriteLine(new Puzzles.Year2022.Day04().RunAll());
+            Console.WriteLine(new Puzzles.Year2022.Day03().RunAll());
         }
     }
 }

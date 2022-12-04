@@ -25,7 +25,7 @@ namespace Puzzles
                 for (int i = 0; i < InputData?.Length; i++)
                 {
                     string[] _split = InputData[i].Split(',');
-                    Assignments.Add((new Range(_split[0]), new Range(_split[1])));
+                    Assignments.Add((new(_split[0]), new(_split[1])));
                 }
                 int _overlapCount = 0;
                 foreach (var _assignment in Assignments)
