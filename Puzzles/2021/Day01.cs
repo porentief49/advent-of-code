@@ -4,28 +4,27 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day01 : DayBase_OLD
+        public class Day01 : DayBase
         {
-            int[] mDepths;
+            int[] mDepths = new int[] { };
 
-            protected override string Title { get; } = "Day 1 - Sonar Sweep";
+            protected override string Title { get; } = "Day 1: Sonar Sweep";
 
-            public override void Init() => Init(Inputs_2021.Rainer_01); 
-
-            public override void Init(string aResource)
+            public override void SetupAll()
             {
-                Input = aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                mDepths = new int[Input.Length];
-                for (int i = 0; i < Input.Length; i++) mDepths[i] = int.Parse(Input[i]);
+                InputFiles.Add(@"2021\01_Example.txt");
+                InputFiles.Add(@"2021\01_rAiner.txt");
             }
 
-            public override string SolvePuzzle(bool aPart1)
+            public override void Init(string InputFile) => mDepths = ReadFile(InputFile, true).Select(x => int.Parse(x)).ToArray();
+
+            public override string Solve(bool Part1)
             {
-                int lPrev = mDepths[0] + (aPart1 ? 0 : (mDepths[1] + mDepths[2]));
+                int lPrev = mDepths[0] + (Part1 ? 0 : (mDepths[1] + mDepths[2]));
                 int lCountIncreases = 0;
-                for (int i = 1; i < Input.Length - (aPart1 ? 0 : 2); i++)
+                for (int i = 1; i < mDepths.Length - (Part1 ? 0 : 2); i++)
                 {
-                    int lThis = mDepths[i] + (aPart1 ? 0 : (mDepths[i + 1] + mDepths[i + 2]));
+                    int lThis = mDepths[i] + (Part1 ? 0 : (mDepths[i + 1] + mDepths[i + 2]));
                     if (lThis > lPrev) lCountIncreases++;
                     lPrev = lThis;
                 }

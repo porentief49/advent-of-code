@@ -4,22 +4,26 @@ namespace Puzzles
 {
     public partial class Year2021
     {
-        public class Day02 : DayBase_OLD
+        public class Day02 : DayBase
         {
             protected override string Title { get; } = "Day 2 - Dive!";
 
-            public override void Init() => Init(Inputs_2021.Rainer_02);
+            public override void SetupAll()
+            {
+                InputFiles.Add(@"2021\02_Example.txt");
+                InputFiles.Add(@"2021\02_rAiner.txt");
+            }
 
-            public override void Init(string aResource) => Input = Tools.SplitLines(aResource, true);
+            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
 
-            public override string SolvePuzzle(bool aPart1)
+            public override string Solve(bool aPart1)
             {
                 int lHorizontal = 0;
                 int lDepth = 0;
                 int lAim = 0;
-                for (int i = 0; i < Input.Length; i++)
+                for (int i = 0; i < InputData?.Length; i++)
                 {
-                    string[] lSplit = Input[i].ToLower().Split(' ');
+                    string[] lSplit = InputData[i].ToLower().Split(' ');
                     int lSteps = int.Parse(lSplit[1]);
                     switch (lSplit[0])
                     {
