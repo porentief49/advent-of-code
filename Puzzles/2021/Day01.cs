@@ -10,13 +10,13 @@ namespace Puzzles
 
             protected override string Title { get; } = "Day 1: Sonar Sweep";
 
-            public override void Init(string InputFile) => mDepths = ReadFile(InputFile, true).Select(x => int.Parse(x)).ToArray();
-
             public override void SetupAll()
             {
                 InputFiles.Add(@"2021\01_Example.txt");
                 InputFiles.Add(@"2021\01_rAiner.txt");
             }
+
+            public override void Init(string InputFile) => mDepths = ReadFile(InputFile, true).Select(x => int.Parse(x)).ToArray();
 
             public override string Solve(bool Part1)
             {
