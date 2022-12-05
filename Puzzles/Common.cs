@@ -54,7 +54,7 @@ namespace Puzzles
         {
             const string _RelativePath = @"..\..\..\..\InputData\";
             string _Text = File.ReadAllText(_RelativePath + FilePath).Replace("\r", string.Empty);
-            return _Text.Split('\n', StringSplitOptions.TrimEntries | (RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
+            return _Text.Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
         }
     }
 
