@@ -44,6 +44,12 @@ namespace _Year2022
 
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "208437");
+
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "70509");
+
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "208567");
     }
 
     [TestClass]
@@ -67,6 +73,12 @@ namespace _Year2022
 
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "14184");
+
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "9651");
+
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "10560");
     }
 
     [TestClass]
@@ -90,6 +102,12 @@ namespace _Year2022
 
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "2585");
+
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "7850");
+
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "2581");
     }
 
     [TestClass]
@@ -113,6 +131,12 @@ namespace _Year2022
 
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "905");
+
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "562");
+
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "924");
     }
 
     [TestClass]
@@ -136,6 +160,12 @@ namespace _Year2022
 
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "ZFSJBPRFP");
+
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "QNNTGTPFN");
+
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "GGNPJBTTR");
     }
 }
 
