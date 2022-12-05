@@ -7,7 +7,7 @@ namespace Puzzles
     {
         public class Day05 : DayBase
         {
-            protected override string Title { get; } = "Day 4: Camp Cleanup";
+            protected override string Title { get; } = "Day 5: Supply Stacks";
 
             public override void SetupAll()
             {
@@ -45,7 +45,7 @@ namespace Puzzles
                     }
                 }
 
-                // move pallets
+                // move crates
                 for (int _row = _splitterRow + 1; _row < InputData?.Length; _row++)
                 {
                     if (InputData[_row].Length > 0)
