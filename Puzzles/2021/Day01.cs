@@ -12,8 +12,8 @@ namespace Puzzles
 
             public override void SetupAll()
             {
-                InputFiles.Add(@"2021\01_Example.txt");
-                InputFiles.Add(@"2021\01_rAiner.txt");
+                AddInputFile(@"2021\01_Example.txt");
+                AddInputFile(@"2021\01_rAiner.txt");
             }
 
             public override void Init(string InputFile) => mDepths = ReadFile(InputFile, true).Select(x => int.Parse(x)).ToArray();

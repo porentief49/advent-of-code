@@ -10,6 +10,11 @@ namespace Puzzles
 {
     public abstract class DayBase
     {
+
+        const string _relativePath = @"..\..\..\..\InputData\";
+
+        private List<string> InputFiles = new();
+
         public bool BareOutput { get; set; } = false;
 
         public bool Verbose { get; set; } = false;
@@ -18,13 +23,13 @@ namespace Puzzles
 
         protected string[]? InputData { get; set; }
 
-        protected List<string> InputFiles { get; } = new();
-
-        public abstract void SetupAll();
+        protected void AddInputFile(string InputFile) => InputFiles.Add(InputFile);
 
         public abstract void Init(string InputFile);
 
         public abstract string Solve(bool Part1);
+
+        public abstract void SetupAll();
 
         public string RunAll()
         {
@@ -35,15 +40,19 @@ namespace Puzzles
             foreach (var _inputFile in InputFiles)
             {
                 _report += $"\r\n  File: {_inputFile}\r\n";
-                Stopwatch lWatch = Stopwatch.StartNew();
-                Init(_inputFile);
-                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Initialization\r\n";
-                lWatch.Restart();
-                _result = Solve(true);
-                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 1 ==> {_result}\r\n";
-                lWatch.Restart();
-                _result = Solve(false);
-                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 2 ==> {_result}\r\n";
+                if (File.Exists(_relativePath + _inputFile))
+                {
+                    Stopwatch lWatch = Stopwatch.StartNew();
+                    Init(_inputFile);
+                    _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Initialization\r\n";
+                    lWatch.Restart();
+                    _result = Solve(true);
+                    _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 1 ==> {_result}\r\n";
+                    lWatch.Restart();
+                    _result = Solve(false);
+                    _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 2 ==> {_result}\r\n";
+                }
+                else _report += $"    not found!\r\n";
             }
             return _report;
         }
@@ -52,9 +61,7 @@ namespace Puzzles
 
         protected string[] ReadFile(string FilePath, bool RemoveEmptyLines)
         {
-            const string _RelativePath = @"..\..\..\..\InputData\";
-            string _Text = File.ReadAllText(_RelativePath + FilePath).Replace("\r", string.Empty);
-            return _Text.Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+            return File.ReadAllText(_relativePath + FilePath).Replace("\r", string.Empty).Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
         }
     }
 
