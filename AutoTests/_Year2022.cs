@@ -167,5 +167,58 @@ namespace _Year2022
         [TestMethod]
         public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "GGNPJBTTR");
     }
+
+    [TestClass]
+    public class _Day06
+    {
+        [TestInitialize]
+        public void _Init()
+        {
+            Helpers.Puzzle = new Year2022.Day06();
+            Helpers.InputPrefix = @"2022\06_";
+        }
+
+        [TestMethod]
+        public void _Part1_Example1() => Helpers.RunTest("Example1", true, "7");
+
+        [TestMethod]
+        public void _Part1_Example2() => Helpers.RunTest("Example2", true, "5");
+
+        [TestMethod]
+        public void _Part1_Example3() => Helpers.RunTest("Example3", true, "6");
+
+        [TestMethod]
+        public void _Part1_Example4() => Helpers.RunTest("Example4", true, "10");
+
+        [TestMethod]
+        public void _Part1_Example5() => Helpers.RunTest("Example5", true, "11");
+
+        [TestMethod]
+        public void _Part2_Example1() => Helpers.RunTest("Example1", false, "19");
+
+        [TestMethod]
+        public void _Part2_Example2() => Helpers.RunTest("Example2", false, "23");
+
+        [TestMethod]
+        public void _Part2_Example3() => Helpers.RunTest("Example3", false, "23");
+
+        [TestMethod]
+        public void _Part2_Example4() => Helpers.RunTest("Example4", false, "29");
+
+        [TestMethod]
+        public void _Part2_Example5() => Helpers.RunTest("Example5", false, "26");
+
+        [TestMethod]
+        public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "1542");
+
+        [TestMethod]
+        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "3153");
+
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "1361");
+
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "3263");
+    }
 }
 
