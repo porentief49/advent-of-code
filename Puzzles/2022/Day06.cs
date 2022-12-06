@@ -12,13 +12,13 @@ namespace Puzzles
 
             public override void SetupAll()
             {
-                InputFiles.Add(@"2022\06_Example1.txt");
-                InputFiles.Add(@"2022\06_Example2.txt");
-                InputFiles.Add(@"2022\06_Example3.txt");
-                InputFiles.Add(@"2022\06_Example4.txt");
-                InputFiles.Add(@"2022\06_Example5.txt");
-                InputFiles.Add(@"2022\06_rAiner.txt");
-                InputFiles.Add(@"2022\06_SEGCC.txt");
+                AddInputFile(@"2022\06_Example1.txt");
+                AddInputFile(@"2022\06_Example2.txt");
+                AddInputFile(@"2022\06_Example3.txt");
+                AddInputFile(@"2022\06_Example4.txt");
+                AddInputFile(@"2022\06_Example5.txt");
+                AddInputFile(@"2022\06_rAiner.txt");
+                AddInputFile(@"2022\06_SEGCC.txt");
             }
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);

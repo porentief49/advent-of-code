@@ -10,8 +10,8 @@ namespace Puzzles
 
             public override void SetupAll()
             {
-                InputFiles.Add(@"2021\02_Example.txt");
-                InputFiles.Add(@"2021\02_rAiner.txt");
+                AddInputFile(@"2021\02_Example.txt");
+                AddInputFile(@"2021\02_rAiner.txt");
             }
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);

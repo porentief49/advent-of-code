@@ -10,6 +10,8 @@ namespace Puzzles
 {
     public abstract class DayBase
     {
+        private List<string> InputFiles = new();
+
         public bool BareOutput { get; set; } = false;
 
         public bool Verbose { get; set; } = false;
@@ -18,7 +20,7 @@ namespace Puzzles
 
         protected string[]? InputData { get; set; }
 
-        protected List<string> InputFiles { get; } = new();
+        protected void AddInputFile(string InputFile) => InputFiles.Add(@"..\..\..\..\InputData\" + InputFile);
 
         public abstract void SetupAll();
 
@@ -35,27 +37,26 @@ namespace Puzzles
             foreach (var _inputFile in InputFiles)
             {
                 _report += $"\r\n  File: {_inputFile}\r\n";
-                Stopwatch lWatch = Stopwatch.StartNew();
-                Init(_inputFile);
-                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Initialization\r\n";
-                lWatch.Restart();
-                _result = Solve(true);
-                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 1 ==> {_result}\r\n";
-                lWatch.Restart();
-                _result = Solve(false);
-                _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 2 ==> {_result}\r\n";
+                if (File.Exists(_inputFile))
+                {
+                    Stopwatch lWatch = Stopwatch.StartNew();
+                    Init(_inputFile);
+                    _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Initialization\r\n";
+                    lWatch.Restart();
+                    _result = Solve(true);
+                    _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 1 ==> {_result}\r\n";
+                    lWatch.Restart();
+                    _result = Solve(false);
+                    _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 2 ==> {_result}\r\n";
+                }
+                else _report += $"    not found!\r\n";
             }
             return _report;
         }
 
         protected string FormatResult(object Result, string Label) => (BareOutput ? string.Empty : Label + ": ") + Result.ToString();
 
-        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines)
-        {
-            const string _RelativePath = @"..\..\..\..\InputData\";
-            string _Text = File.ReadAllText(_RelativePath + FilePath).Replace("\r", string.Empty);
-            return _Text.Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
-        }
+        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines) => File.ReadAllText(FilePath).Replace("\r", string.Empty).Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
     }
 
     public abstract class DayBase_OLD
