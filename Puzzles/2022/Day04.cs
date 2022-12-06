@@ -12,6 +12,7 @@ namespace Puzzles
             {
                 InputFiles.Add(@"2022\04_Example.txt");
                 InputFiles.Add(@"2022\04_rAiner.txt");
+                InputFiles.Add(@"2022\04_SEGCC.txt");
             }
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
