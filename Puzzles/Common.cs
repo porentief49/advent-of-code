@@ -10,6 +10,9 @@ namespace Puzzles
 {
     public abstract class DayBase
     {
+
+        const string _relativePath = @"..\..\..\..\InputData\";
+
         private List<string> InputFiles = new();
 
         public bool BareOutput { get; set; } = false;
@@ -20,13 +23,13 @@ namespace Puzzles
 
         protected string[]? InputData { get; set; }
 
-        protected void AddInputFile(string InputFile) => InputFiles.Add(@"..\..\..\..\InputData\" + InputFile);
-
-        public abstract void SetupAll();
+        protected void AddInputFile(string InputFile) => InputFiles.Add(InputFile);
 
         public abstract void Init(string InputFile);
 
         public abstract string Solve(bool Part1);
+
+        public abstract void SetupAll();
 
         public string RunAll()
         {
@@ -37,7 +40,7 @@ namespace Puzzles
             foreach (var _inputFile in InputFiles)
             {
                 _report += $"\r\n  File: {_inputFile}\r\n";
-                if (File.Exists(_inputFile))
+                if (File.Exists(_relativePath + _inputFile))
                 {
                     Stopwatch lWatch = Stopwatch.StartNew();
                     Init(_inputFile);
@@ -56,7 +59,10 @@ namespace Puzzles
 
         protected string FormatResult(object Result, string Label) => (BareOutput ? string.Empty : Label + ": ") + Result.ToString();
 
-        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines) => File.ReadAllText(FilePath).Replace("\r", string.Empty).Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines)
+        {
+            return File.ReadAllText(_relativePath + FilePath).Replace("\r", string.Empty).Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+        }
     }
 
     public abstract class DayBase_OLD
