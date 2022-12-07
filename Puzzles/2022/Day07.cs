@@ -32,44 +32,9 @@ namespace Puzzles
                     string[] _split = InputData[i].Split(' ');
                     if (_split[0] == "$") // command
                     {
-                        switch (_split[1])
-                        {
-                            case "cd":
-                                switch (_split[2])
-                                {
-                                    case "/":
-                                        _curDir = _root;
-                                        break;
-                                    case "..":
-                                        _curDir = _curDir.ParentDir ?? _root;
-                                        break;
-                                    default:
-                                        {
-                                            bool lFound = false;
-                                            foreach (var _subElement in _curDir.SubElements)
-                                            {
-                                                if (_subElement.Name == _split[2])
-                                                {
-                                                    _curDir = _subElement;
-                                                    lFound = true;
-                                                    break;
-                                                }
-                                            }
-                                            if (!lFound) throw new Exception($"sub dir {_split[2]} not found");
-                                        }
-                                        break;
-                                }
-                                break;
-                            case "ls": //hmm, nothing really to do here, files&folders should be parsed automatically
-                                break;
-                            default:
-                                throw new Exception($"{_split[1]} not implemented!");
-                        }
+                        if (_split[1] == "cd") _curDir = _split[2] switch { "/" => _root, ".." => _curDir.ParentDir ?? _root, _ => _curDir.SubElements.First(x => x.Name == _split[2]) };
                     }
-                    else // listing
-                    {
-                        _curDir?.SubElements.Add(new(_split[1], _curDir, _split[0] == "dir" ? 0 : long.Parse(_split[0])));
-                    }
+                    else _curDir?.SubElements.Add(new(_split[1], _curDir, _split[0] == "dir" ? 0 : long.Parse(_split[0]))); // listing
                 }
                 _root.CalcAllSizes(_dirSizes, Verbose);
                 if (Part1) return FormatResult(_dirSizes.Where(x => x <= 100000).Sum(), "total folder sizes");

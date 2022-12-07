@@ -16,7 +16,7 @@ namespace Puzzles
                 AddInputFile(@"2022\05_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, false);//.Select(x=>x.Trim()).ToArray();
+            public override void Init(string InputFile) => InputData = ReadFile(InputFile, false);
 
             public override string Solve(bool Part1)
             {
@@ -24,15 +24,6 @@ namespace Puzzles
                 int _stackCount = 0;
 
                 //prepare stuff
-                //for (int i = 0; i < InputData?.Length; i++)
-                //{
-                //    if (InputData[i].Length == 0)
-                //    {
-                //        _splitterRow = i;
-                //        _stackCount = InputData[i - 1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).Max();
-                //        break;
-                //    }
-                //}
                 _splitterRow = Array.IndexOf(InputData, string.Empty);
                 _stackCount = InputData[_splitterRow - 1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).Max();
 
