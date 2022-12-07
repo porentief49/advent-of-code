@@ -8,6 +8,10 @@ namespace Puzzles
     {
         public class Day07 : DayBase
         {
+            const long _folderSizeLimit = 100000;
+            const long _totalFileSystemSize = 70000000;
+            const long _updateSize = 30000000;
+
             protected override string Title { get; } = "Day 7: No Space Left On Device";
 
             public override void SetupAll()
@@ -21,93 +25,57 @@ namespace Puzzles
 
             public override string Solve(bool Part1)
             {
-                const long _totalFileSystemSize = 70000000;
-                const long _updateSize = 30000000;
-                FileSystemElement _fileSystem = new("/", null, 0);
+                FileSystemElement _fileSystem = new("/", true, null, -1);
                 FileSystemElement _root = _fileSystem;
-                FileSystemElement _curDir = _root;
-                List<long> _dirSizes = new();
+                FileSystemElement _curFolder = _root;
                 for (int i = 0; i < InputData?.Length; i++)
                 {
                     string[] _split = InputData[i].Split(' ');
-                    if (_split[0] == "$") // command
-                    {
-                        switch (_split[1])
-                        {
-                            case "cd":
-                                switch (_split[2])
-                                {
-                                    case "/":
-                                        _curDir = _root;
-                                        break;
-                                    case "..":
-                                        _curDir = _curDir.ParentDir ?? _root;
-                                        break;
-                                    default:
-                                        {
-                                            bool lFound = false;
-                                            foreach (var _subElement in _curDir.SubElements)
-                                            {
-                                                if (_subElement.Name == _split[2])
-                                                {
-                                                    _curDir = _subElement;
-                                                    lFound = true;
-                                                    break;
-                                                }
-                                            }
-                                            if (!lFound) throw new Exception($"sub dir {_split[2]} not found");
-                                        }
-                                        break;
-                                }
-                                break;
-                            case "ls": //hmm, nothing really to do here, files&folders should be parsed automatically
-                                break;
-                            default:
-                                throw new Exception($"{_split[1]} not implemented!");
-                        }
-                    }
-                    else // listing
-                    {
-                        _curDir?.SubElements.Add(new(_split[1], _curDir, _split[0] == "dir" ? 0 : long.Parse(_split[0])));
-                    }
+                    if (_split[0] != "$") _curFolder?.SubElements.Add(new(_split[1], _split[0] == "dir", _curFolder, _split[0] == "dir" ? -1 : long.Parse(_split[0]))); // listing
+                    else if (_split[1] == "cd") _curFolder = _split[2] switch { "/" => _root, ".." => _curFolder.Parent ?? _root, _ => _curFolder.SubElements.First(x => x.Name == _split[2]) }; // command // ls doesn't really have any effect
                 }
-                _root.CalcAllSizes(_dirSizes, Verbose);
-                if (Part1) return FormatResult(_dirSizes.Where(x => x <= 100000).Sum(), "total folder sizes");
-                long _spaceLeft = _totalFileSystemSize - _root.CalcSize();
-                long _freeUp = _updateSize - _spaceLeft;
-                if (Verbose) Console.WriteLine($"current space left: {_spaceLeft}, need to free up {_freeUp}");
-                long _justEnough = _dirSizes.OrderBy(x => x).First(x => x >= _freeUp);
-                return FormatResult(_justEnough, "folder size");
+                List<long> _folderSizes = new();
+                _root.CalcFolderSizes();
+                _root.CalcFolderSizeList(_folderSizes);
+                if(Verbose) _root.List();
+                if (Part1) return FormatResult(_folderSizes.Where(x => x <= _folderSizeLimit).Sum(), "total folder sizes");
+                return FormatResult(_folderSizes.OrderBy(x => x).First(x => x >= _updateSize - (_totalFileSystemSize - _root.CalcFolderSizes())), "folder size");
             }
 
             public class FileSystemElement
             {
-                public List<FileSystemElement> SubElements = new();
-                public string Name;
-                public long Size;
-                public FileSystemElement? ParentDir;
+                public List<FileSystemElement> SubElements { get; } = new();
 
-                public FileSystemElement(string Name, FileSystemElement? ParentDir, long Size)
+                public string Name { get; private set; }
+                public bool IsFolder { get; private set; }
+                public long Size { get; private set; }
+                public FileSystemElement? Parent { get; private set; }
+
+                public FileSystemElement(string Name, bool IsFolder, FileSystemElement? Parent, long Size)
                 {
                     this.Name = Name;
-                    this.ParentDir = ParentDir;
+                    this.IsFolder = IsFolder;
+                    this.Parent = Parent;
                     this.Size = Size;
                 }
 
-                public void CalcAllSizes(List<long> DirSizes, bool Verbose, int Level = 0)
+                public long CalcFolderSizes()
                 {
-                    StringBuilder _sb = new("  ".Repeat(Level) + " - " + Name + (Size == 0 ? " (dir)" : $" (file, size={Size})"));
-                    if (Size == 0)
-                    {
-                        long _size = CalcSize();
-                        DirSizes.Add(_size);
-                        _sb.Append($" -------------> {_size} {(_size <= 100000 ? " (qualifies for Part 1)" : string.Empty)}");
-                    }
-                    if (Verbose) Console.WriteLine(_sb.ToString());
-                    SubElements.ForEach(x => x.CalcAllSizes(DirSizes, Verbose, Level + 1));
+                    if (IsFolder && Size == -1) Size = SubElements.Where(x => !x.IsFolder).Select(x => x.Size).Sum() + SubElements.Where(x => x.IsFolder).Select(x => x.CalcFolderSizes()).Sum();
+                    return Size;
                 }
 
-                public long CalcSize() => Size > 0 ? Size : SubElements.Where(x => x.Size > 0).Select(x => x.Size).Sum() + SubElements.Where(x => x.Size == 0).Select(x => x.CalcSize()).Sum();
+                public void CalcFolderSizeList(List<long> DirSizes)
+                {
+                    if (IsFolder) DirSizes.Add(Size);
+                    SubElements.ForEach(x => x.CalcFolderSizeList(DirSizes));
+                }
+
+                public void List(int Level = 0)
+                {
+                    Console.WriteLine($"{"  ".Repeat(Level)} - " + $"{Name} ({(IsFolder ? "dir" : "file")}, size={Size}){(IsFolder && Size <= _folderSizeLimit ? " -------------> qualifies for Part 1" : string.Empty)}");
+                    SubElements.ForEach(x => x.List(Level + 1));
+                }
             }
         }
     }
