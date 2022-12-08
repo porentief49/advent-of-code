@@ -13,8 +13,8 @@ namespace Puzzles
             public override void SetupAll()
             {
                 AddInputFile(@"2022\08_Example.txt");
-                AddInputFile(@"2022\08_rAiner.txt");
-                AddInputFile(@"2022\08_SEGCC.txt");
+                //AddInputFile(@"2022\08_rAiner.txt");
+                //AddInputFile(@"2022\08_SEGCC.txt");
             }
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
@@ -35,10 +35,11 @@ namespace Puzzles
                 //parse all
                 for (int y = 0; y < _ySize; y++)
                 {
-                    //_highest = -1;
                     for (int x = 0; x < _xSize; x++)
                     {
                         _heights[x, y] = int.Parse(InputData[y][x].ToString());
+                        _visible[x, y] = false;
+                        _scenicScores[x, y] = 0;
                     }
                 }
 
@@ -51,28 +52,49 @@ namespace Puzzles
                         for (int x = 0; x < _xSize; x++)
                         {
                             // go left
+
                             int _left = 0;
-                            while (x - _left > 0 && _heights[x, y] > _heights[x - _left - 1, y]) _left++;
-
-                            // go right
                             int _right = 0;
-                            while (x + _right < _xSize - 1 && _heights[x, y] > _heights[x + _right + 1, y]) _right++;
-
-                            // go up
                             int _up = 0;
-                            while (y - _up > 0 && _heights[x, y] > _heights[x, y - _up - 1]) _up++;
-
-                            // go down
                             int _down = 0;
+
+                            while (x - _left > 0 && _heights[x, y] > _heights[x - _left - 1, y]) _left++;
+                            while (x + _right < _xSize - 1 && _heights[x, y] > _heights[x + _right + 1, y]) _right++;
+                            while (y - _up > 0 && _heights[x, y] > _heights[x, y - _up - 1]) _up++;
                             while (y + _down < _ySize - 1 && _heights[x, y] > _heights[x, y + _down + 1]) _down++;
 
-                            _visible[x, y] = (_left == x || _right == _xSize - x - 1 || _up == y || _down == _ySize - y - 1);
+                            if (_left == x) _visible[x, y] = true;
+                            if (_right == _xSize - x - 1) _visible[x, y] = true;
+                            if (_up == y) _visible[x, y] = true;
+                            if (_down == _ySize - y - 1) _visible[x, y] = true;
+
                         }
                     }
+                }
+                else
+                {
 
-                    //PrintIntGrid(_heights, 3);
-                    //PrintBoolGrid(_visible);
+                    //check free area
+                    for (int y = 0; y < _ySize; y++)
+                    {
+                        for (int x = 0; x < _xSize; x++)
+                        {
+                            int _left = 0;
+                            int _right = 0;
+                            int _up = 0;
+                            int _down = 0;
+                            if (x > 0) do _left++; while (x - _left > 0 && _heights[x, y] > _heights[x - _left, y]);
+                            if (x < _xSize - 1) do _right++; while (x + _right < _xSize - 1 && _heights[x, y] > _heights[x + _right, y]);
+                            if (y > 0) do _up++; while (y - _up > 0 && _heights[x, y] > _heights[x, y - _up]);
+                            if (y < _ySize - 1) do _down++; while (y + _down < _ySize - 1 && _heights[x, y] > _heights[x, y + _down]);
 
+                            _scenicScores[x, y] = _left * _right * _up * _down;
+                        }
+                    }
+                }
+
+                if (Part1)
+                {
                     //count visibility
                     int _visibleX = 0;
                     for (int y = 0; y < _ySize; y++)
@@ -82,143 +104,29 @@ namespace Puzzles
                             if (_visible[x, y]) _visibleX++;
                         }
                     }
+
                     return FormatResult(_visibleX, "visible trees");
-
-
-
-                    ////from left
-                    //for (int y = 0; y < _ySize; y++)
-                    //{
-                    //    _highest = -1;
-                    //    for (int x = 0; x < _xSize; x++)
-                    //    {
-                    //        if (_heights[x, y] > _highest)
-                    //        {
-                    //            _visibleFromLeft[x, y] = true;
-                    //            _highest = _heights[x, y];
-                    //        }
-                    //    }
-                    //}
-                    ////PrintGrid(_visibleFromLeft);
-
-                    ////from right
-                    //for (int y = 0; y < _ySize; y++)
-                    //{
-                    //    _highest = -1;
-                    //    for (int x = _xSize - 1; x >= 0; x--)
-                    //    {
-                    //        if (_heights[x, y] > _highest)
-                    //        {
-                    //            _visibleFromRight[x, y] = true;
-                    //            _highest = _heights[x, y];
-                    //        }
-                    //    }
-                    //}
-                    ////PrintGrid(_visibleFromRight);
-
-                    ////from top
-                    //for (int x = 0; x < _xSize; x++)
-                    //{
-                    //    _highest = -1;
-                    //    for (int y = 0; y < _ySize; y++)
-                    //    {
-                    //        if (_heights[x, y] > _highest)
-                    //        {
-                    //            _visibleFromTop[x, y] = true;
-                    //            _highest = _heights[x, y];
-                    //        }
-                    //    }
-                    //}
-                    ////PrintGrid(_visibleFromTop);
-
-                    ////from bottom
-                    //for (int x = 0; x < _xSize; x++)
-                    //{
-                    //    _highest = -1;
-                    //    for (int y = _ySize - 1; y >= 0; y--)
-                    //    {
-                    //        if (_heights[x, y] > _highest)
-                    //        {
-                    //            _visibleFromBottom[x, y] = true;
-                    //            _highest = _heights[x, y];
-                    //        }
-                    //    }
-                    //}
-                    ////PrintGrid(_visibleFromBottom);
-
-                    //// calc all
-                    //int _visibleTrees = 0;
-                    //for (int y = 0; y < _ySize; y++)
-                    //{
-                    //    for (int x = 0; x < _xSize; x++)
-                    //    {
-                    //        if (_visibleFromLeft[x, y] || _visibleFromRight[x, y] || _visibleFromTop[x, y] || _visibleFromBottom[x, y]) _visibleTrees++;
-                    //    }
-                    //}
-                    //return FormatResult(_visibleTrees, "visible trees");
                 }
                 else
                 {
-                    //calc scenic scores
-                    for (int y = 0; y < _ySize; y++)
-                    {
-                        for (int x = 0; x < _xSize; x++)
-                        {
-                            if (x == 2 && y == 2)
-                            {
-                                Console.Write("x");
-                            }
 
-                            int _toRight = _xSize - x - 1;
-                            for (int i = x + 1; i < _xSize; i++)
-                            {
-                                if (_heights[i, y] >= _heights[x, y])
-                                {
-                                    _toRight = i - x;
-                                    break;
-                                }
-                            }
+                    //check free area
+                    //for (int y = 0; y < _ySize; y++)
+                    //{
+                    //    for (int x = 0; x < _xSize; x++)
+                    //    {
+                    //        int _left = 0;
+                    //        int _right = 0;
+                    //        int _up = 0;
+                    //        int _down = 0;
+                    //        if (x > 0) do _left++; while (x - _left > 0 && _heights[x, y] > _heights[x - _left, y]);
+                    //        if (x < _xSize - 1) do _right++; while (x + _right < _xSize - 1 && _heights[x, y] > _heights[x + _right, y]);
+                    //        if (y > 0) do _up++; while (y - _up > 0 && _heights[x, y] > _heights[x, y - _up]);
+                    //        if (y < _ySize - 1) do _down++; while (y + _down < _ySize - 1 && _heights[x, y] > _heights[x, y + _down]);
 
-                            int _toLeft = x;
-                            for (int i = x - 1; i >= 0; i--)
-                            {
-                                if (_heights[i, y] >= _heights[x, y])
-                                {
-                                    _toLeft = x - i;
-                                    break;
-                                }
-                            }
-
-                            int _toBottom = _ySize - y - 1;
-                            for (int i = y + 1; i < _ySize; i++)
-                            {
-                                if (_heights[x, i] >= _heights[x, y])
-                                {
-                                    _toBottom = i - y;
-                                    break;
-                                }
-                            }
-
-                            int _toTop = y;
-                            for (int i = y - 1; i >= 0; i--)
-                            {
-                                if (_heights[x, i] >= _heights[x, y])
-                                {
-                                    _toTop = y - i;
-                                    break;
-                                }
-                            }
-
-                            //while (x - _toLeft > 0 && _heights[x - _toLeft - 1, y] < _heights[x, y]) _toLeft++;
-                            //int _toRight = 0;
-                            //while (x + _toRight < _xSize - 1 && _heights[x + _toRight + 1, y] < _heights[x, y]) _toRight++;
-                            //int _toTop = 0;
-                            //while (y - _toTop > 0 && _heights[x, y - _toTop - 1] < _heights[x, y]) _toTop++;
-                            //int _toBottom = 0;
-                            //while (y + _toBottom < _ySize - 1 && _heights[x , y+ _toBottom + 1] < _heights[x, y]) _toBottom++;
-                            _scenicScores[x, y] = _toLeft * _toRight * _toTop * _toBottom;
-                        }
-                    }
+                    //        _scenicScores[x, y] = _left * _right * _up * _down;
+                    //    }
+                    //}
 
                     //PrintIntGrid(_heights, 3);
                     //PrintIntGrid(_scenicScores, 3);
