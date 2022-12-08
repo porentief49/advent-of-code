@@ -243,11 +243,40 @@ namespace _Year2022
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "12390492");
 
-        //[TestMethod]
-        //public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "QNNTGTPFN");
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "1908462");
 
-        //[TestMethod]
-        //public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "GGNPJBTTR");
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "3979145");
+    }
+
+    [TestClass]
+    public class _Day08
+    {
+        [TestInitialize]
+        public void _Init()
+        {
+            Helpers.Puzzle = new Year2022.Day08();
+            Helpers.InputPrefix = @"2022\08_";
+        }
+
+        [TestMethod]
+        public void _Part1_Example() => Helpers.RunTest("Example", true, "21");
+
+        [TestMethod]
+        public void _Part2_Example() => Helpers.RunTest("Example", false, "8");
+
+        [TestMethod]
+        public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "1695");
+
+        [TestMethod]
+        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "287040");
+
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "1669");
+
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "331344");
     }
 }
 
