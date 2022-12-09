@@ -8,6 +8,8 @@ namespace Puzzles
     {
         public class Day08 : DayBase
         {
+            private int[][] _treeHeights;
+
             protected override string Title { get; } = "Day 8: Treetop Tree House";
 
             public override void SetupAll()
@@ -17,25 +19,23 @@ namespace Puzzles
                 AddInputFile(@"2022\08_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile)
+            {
+                InputData = ReadFile(InputFile, true);
+                _treeHeights = InputData.Select(y => y.Select(l => int.Parse(l.ToString())).ToArray()).ToArray();
+            }
 
             public override string Solve(bool Part1)
             {
                 int _xSize = InputData[0].Length;
                 int _ySize = InputData.Length;
-                int[][] _treeHeights = new int[_ySize][];
                 bool[][] _visibleTrees = new bool[_ySize][];
                 int[][] _scenicScores = new int[_ySize][];
                 for (int i = 0; i < _ySize; i++)
                 {
-                    _treeHeights[i] = new int[_xSize];
                     _visibleTrees[i] = new bool[_xSize];
                     _scenicScores[i] = new int[_xSize];
                 }
-
-                //parse all
-                _treeHeights = InputData.Select(y => y.Select(l => int.Parse(l.ToString())).ToArray()).ToArray();
-                if (Part1 && Verbose) Console.WriteLine(DumpGrid(_treeHeights, 1));
 
                 //calc visibilities / free areas
                 for (int y = 0; y < _ySize; y++)
@@ -66,9 +66,10 @@ namespace Puzzles
                     }
                 }
 
-                //find solution
+                //determine solution
                 if (Part1)
                 {
+                    if (Verbose) Console.WriteLine(DumpGrid(_treeHeights, 1));
                     if (Verbose) Console.WriteLine(DumpGrid(_visibleTrees));
                     return FormatResult(_visibleTrees.Select(y => y.Count(x => x == true)).Sum(), "visible trees");
                 }

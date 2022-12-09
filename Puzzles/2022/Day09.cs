@@ -10,6 +10,8 @@ namespace Puzzles
     {
         public class Day09 : DayBase
         {
+            private List<(char dir, int steps)> _movements = new();
+
             protected override string Title { get; } = "Day 9: Rope Bridge";
 
             public override void SetupAll()
@@ -20,30 +22,32 @@ namespace Puzzles
                 AddInputFile(@"2022\09_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile)
+            {
+                InputData = ReadFile(InputFile, true);
+                _movements = InputData.Select(x => (x[0], int.Parse(x.Split(' ')[1]))).ToList();
+            }
 
             public override string Solve(bool Part1)
             {
                 int _knotCount = Part1 ? 2 : 10;
                 var _Trails = new List<List<(int x, int y)>>();
                 List<(int x, int y)> _current = new();
-                List<(char dir, int steps)> _movements = new();
                 for (int i = 0; i < _knotCount; i++)
                 {
                     _current.Add((0, 0));
                     _Trails.Add(new List<(int x, int y)> { (0, 0) });
                 }
-                _movements = InputData.Select(x => (x[0], int.Parse(x.Split(' ')[1]))).ToList();
-                int _count = 0;
+
+                // move rope
                 foreach (var _move in _movements)
                 {
-                    _count++;
                     (int x, int y) _delta;
                     for (int i = 0; i < _move.steps; i++)
                     {
                         // move head
                         _delta = _move.dir switch { 'R' => (1, 0), 'L' => (-1, 0), 'U' => (0, -1), _ => (0, 1) }; // _ must be 'D'
-                        _current[0] = (_current[0].x+_delta.x, _current[0].y+_delta.y);
+                        _current[0] = (_current[0].x + _delta.x, _current[0].y + _delta.y);
                         _Trails[0].Add(_current[0]);
 
                         // move tail(s)
@@ -59,6 +63,8 @@ namespace Puzzles
                         }
                     }
                 }
+
+                //determine solutions
                 if (Verbose) Console.WriteLine(DumpTrail(_Trails[_knotCount - 1], 'T'));
                 return (FormatResult(_Trails[_knotCount - 1].Distinct().Count(), "visited positions"));
             }
