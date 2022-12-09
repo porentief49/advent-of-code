@@ -307,11 +307,11 @@ namespace _Year2022
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "2593");
 
-        //[TestMethod]
-        //public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "1669");
+        [TestMethod]
+        public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "6642");
 
-        //[TestMethod]
-        //public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "331344");
+        [TestMethod]
+        public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "2765");
     }
 }
 

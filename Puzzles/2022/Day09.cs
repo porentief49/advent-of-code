@@ -17,6 +17,7 @@ namespace Puzzles
                 AddInputFile(@"2022\09_Example1.txt");
                 AddInputFile(@"2022\09_Example2.txt");
                 AddInputFile(@"2022\09_rAiner.txt");
+                AddInputFile(@"2022\09_SEGCC.txt");
             }
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
@@ -66,35 +67,23 @@ namespace Puzzles
                         // move tail(s)
                         for (int ii = 1; ii < _knotCount; ii++)
                         {
-                            if (false) //old model
-                            {
-                                (int x, int y) _distance = (_current[ii - 1].x - _current[ii].x, _current[ii - 1].y - _current[ii].y);
-                                if (_distance.x > 1) _current[ii] = (_current[ii].x + 1, _current[ii - 1].y);
-                                if (_distance.x < -1) _current[ii] = (_current[ii].x - 1, _current[ii - 1].y);
-                                if (_distance.y > 1) _current[ii] = (_current[ii - 1].x, _current[ii].y + 1);
-                                if (_distance.y < -1) _current[ii] = (_current[ii - 1].x, _current[ii].y - 1);
-                            }
-                            else // new model
-                            {
-                                int _dx = _current[ii - 1].x - _current[ii].x;
-                                int _dy = _current[ii - 1].y - _current[ii].y;
-                                if (_dx > 1)
-                                {
-                                    _current[ii] = (_current[ii].x + 1, _dy == 0 ? _current[ii].y : _current[ii].y + Math.Sign(_dy));
-                                }
-                                else if (_dx < -1)
-                                {
-                                    _current[ii] = (_current[ii].x - 1, _dy == 0 ? _current[ii].y : _current[ii].y + Math.Sign(_dy));
-                                }
-                                else if (_dy > 1)
-                                {
-                                    _current[ii] = (_dx == 0 ? _current[ii].x : _current[ii].x + Math.Sign(_dx), _current[ii].y + 1);
-                                }
-                                else if (_dy < -1)
-                                {
-                                    _current[ii] = (_dx == 0 ? _current[ii].x : _current[ii].x + Math.Sign(_dx), _current[ii].y - 1);
-                                }
-                            }
+                            //if (false) //old model
+                            //{
+                            //    (int x, int y) _distance = (_current[ii - 1].x - _current[ii].x, _current[ii - 1].y - _current[ii].y);
+                            //    if (_distance.x > 1) _current[ii] = (_current[ii].x + 1, _current[ii - 1].y);
+                            //    if (_distance.x < -1) _current[ii] = (_current[ii].x - 1, _current[ii - 1].y);
+                            //    if (_distance.y > 1) _current[ii] = (_current[ii - 1].x, _current[ii].y + 1);
+                            //    if (_distance.y < -1) _current[ii] = (_current[ii - 1].x, _current[ii].y - 1);
+                            //}
+                            //else // new model
+                            //{
+                            int _dx = _current[ii - 1].x - _current[ii].x;
+                            int _dy = _current[ii - 1].y - _current[ii].y;
+                            if (_dx > 1) _current[ii] = (_current[ii].x + 1, _current[ii].y + Math.Sign(_dy));
+                            else if (_dx < -1) _current[ii] = (_current[ii].x - 1, _current[ii].y + Math.Sign(_dy));
+                            else if (_dy > 1) _current[ii] = (_current[ii].x + Math.Sign(_dx), _current[ii].y + 1);
+                            else if (_dy < -1) _current[ii] = (_current[ii].x + Math.Sign(_dx), _current[ii].y - 1);
+                            //}
                             _Trails[ii].Add(_current[ii]);
                             if (Verbose) Console.WriteLine(DumpCurrentState(_Trails, $"{_move.dir} {_move.steps}, in step {i}, after substep {ii}"));
                         }
