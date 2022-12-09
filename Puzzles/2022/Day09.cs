@@ -28,62 +28,32 @@ namespace Puzzles
                 var _Trails = new List<List<(int x, int y)>>();
                 List<(int x, int y)> _current = new();
                 List<(char dir, int steps)> _movements = new();
-
-
                 for (int i = 0; i < _knotCount; i++)
                 {
                     _current.Add((0, 0));
                     _Trails.Add(new List<(int x, int y)> { (0, 0) });
                 }
-
-
                 _movements = InputData.Select(x => (x[0], int.Parse(x.Split(' ')[1]))).ToList();
-
                 int _count = 0;
                 foreach (var _move in _movements)
                 {
                     _count++;
+                    (int x, int y) _delta;
                     for (int i = 0; i < _move.steps; i++)
                     {
                         // move head
-                        switch (_move.dir)
-                        {
-                            case 'R': // x +
-                                _current[0] = (_current[0].x + 1, _current[0].y);
-                                break;
-                            case 'L': // x -
-                                _current[0] = (_current[0].x - 1, _current[0].y);
-                                break;
-                            case 'U': // y -
-                                _current[0] = (_current[0].x, _current[0].y - 1);
-                                break;
-                            default: // must be 'D' // y +
-                                _current[0] = (_current[0].x, _current[0].y + 1);
-                                break;
-                        }
+                        _delta = _move.dir switch { 'R' => (1, 0), 'L' => (-1, 0), 'U' => (0, -1), _ => (0, 1) }; // _ must be 'D'
+                        _current[0] = (_current[0].x+_delta.x, _current[0].y+_delta.y);
                         _Trails[0].Add(_current[0]);
-
 
                         // move tail(s)
                         for (int ii = 1; ii < _knotCount; ii++)
                         {
-                            //if (false) //old model
-                            //{
-                            //    (int x, int y) _distance = (_current[ii - 1].x - _current[ii].x, _current[ii - 1].y - _current[ii].y);
-                            //    if (_distance.x > 1) _current[ii] = (_current[ii].x + 1, _current[ii - 1].y);
-                            //    if (_distance.x < -1) _current[ii] = (_current[ii].x - 1, _current[ii - 1].y);
-                            //    if (_distance.y > 1) _current[ii] = (_current[ii - 1].x, _current[ii].y + 1);
-                            //    if (_distance.y < -1) _current[ii] = (_current[ii - 1].x, _current[ii].y - 1);
-                            //}
-                            //else // new model
-                            //{
-                            int _dx = _current[ii - 1].x - _current[ii].x;
-                            int _dy = _current[ii - 1].y - _current[ii].y;
-                            if (_dx > 1) _current[ii] = (_current[ii].x + 1, _current[ii].y + Math.Sign(_dy));
-                            else if (_dx < -1) _current[ii] = (_current[ii].x - 1, _current[ii].y + Math.Sign(_dy));
-                            else if (_dy > 1) _current[ii] = (_current[ii].x + Math.Sign(_dx), _current[ii].y + 1);
-                            else if (_dy < -1) _current[ii] = (_current[ii].x + Math.Sign(_dx), _current[ii].y - 1);
-                            //}
+                            _delta = (_current[ii - 1].x - _current[ii].x, _current[ii - 1].y - _current[ii].y);
+                            if (_delta.x > 1) _current[ii] = (_current[ii].x + 1, _current[ii].y + Math.Sign(_delta.y));
+                            else if (_delta.x < -1) _current[ii] = (_current[ii].x - 1, _current[ii].y + Math.Sign(_delta.y));
+                            else if (_delta.y > 1) _current[ii] = (_current[ii].x + Math.Sign(_delta.x), _current[ii].y + 1);
+                            else if (_delta.y < -1) _current[ii] = (_current[ii].x + Math.Sign(_delta.x), _current[ii].y - 1);
                             _Trails[ii].Add(_current[ii]);
                             if (Verbose) Console.WriteLine(DumpCurrentState(_Trails, $"{_move.dir} {_move.steps}, in step {i}, after substep {ii}"));
                         }
