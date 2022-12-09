@@ -75,16 +75,10 @@ namespace Puzzles
                 int _xMax = Trail.Select(l => l.x).Max();
                 int _yMin = Trail.Select(l => l.y).Min();
                 int _yMax = Trail.Select(l => l.y).Max();
-                char[][] _grid = new char[_yMax - _yMin + 1][];
-                for (int i = 0; i < _grid.Length; i++)
-                {
-                    char[] _line = new char[_xMax - _xMin + 1];
-                    for (int ii = 0; ii < _line.Length; ii++) _line[ii] = '.';
-                    _grid[i] = _line;
-                }
+                char[][] _grid = InitJaggedArray(_yMax - _yMin + 1, _xMax - _xMin + 1, '.');
                 Trail.ForEach(l => _grid[l.y - _yMin][l.x - _xMin] = Label);
                 _grid[0 - _yMin][0 - _xMin] = 's';
-                return String.Join(Environment.NewLine, _grid.Select(x => string.Concat(x))) + Environment.NewLine;
+                return string.Join(Environment.NewLine, _grid.Select(x => string.Concat(x))) + Environment.NewLine;
             }
 
             private string DumpCurrentState(List<List<(int x, int y)>> Trails, string Label)
@@ -93,21 +87,15 @@ namespace Puzzles
                 int _xMax = Trails.Select(l => l.Select(ll => ll.x).Max()).Max();
                 int _yMin = Trails.Select(l => l.Select(ll => ll.y).Min()).Min();
                 int _yMax = Trails.Select(l => l.Select(ll => ll.y).Max()).Max();
-                char[][] _grid = new char[_yMax - _yMin + 1][];
+                char[][] _grid = InitJaggedArray(_yMax - _yMin + 1, _xMax - _xMin + 1, '.');
                 StringBuilder _sb = new();
-                for (int i = 0; i < _grid.Length; i++)
-                {
-                    char[] _line = new char[_xMax - _xMin + 1];
-                    for (int ii = 0; ii < _line.Length; ii++) _line[ii] = '.';
-                    _grid[i] = _line;
-                }
                 for (int i = 0; i < Trails.Count; i++)
                 {
                     _grid[Trails[i].Last().y - _yMin][Trails[i].Last().x - _xMin] = i.ToString()[0];
                     _sb.Append($"{i}-({Trails[i].Last().x}|{Trails[i].Last().y}) ");
                 }
                 _grid[0 - _yMin][0 - _xMin] = 's';
-                return $"== {Label} ==\r\n\r\n" + String.Join(Environment.NewLine, _grid.Select(x => string.Concat(x))) + $"\r\n{_sb}\r\n";
+                return $"== {Label} ==\r\n\r\n{string.Join(Environment.NewLine, _grid.Select(x => string.Concat(x)))}\r\n{_sb}\r\n";
             }
         }
     }

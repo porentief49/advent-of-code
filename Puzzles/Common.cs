@@ -63,6 +63,18 @@ namespace Puzzles
         {
             return File.ReadAllText(_relativePath + FilePath).Replace("\r", string.Empty).Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
         }
+
+        protected static T[][] InitJaggedArray<T>(int Dim1, int Dim2, T InitValue)
+        {
+            T[][] _grid = new T[Dim1][];
+            for (int i = 0; i < Dim1; i++)
+            {
+                T[] _line = new T[Dim2];
+                for (int ii = 0; ii < Dim2; ii++) _line[ii] = InitValue;
+                _grid[i] = _line;
+            }
+            return _grid;
+        }
     }
 
     public abstract class DayBase_OLD
