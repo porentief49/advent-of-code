@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Puzzles
@@ -39,65 +40,62 @@ namespace Puzzles
                 // Part 1
                 if (Part1)
                 {
-                    int _index = 20;
+                    const int _startIndex = 20;
+                    const int _IndexInc = 40;
+                    int _index = _startIndex;
                     int _signalStrength = 0;
                     if (Verbose) for (int i = 1; i < _xRegValues.Count; i++) Console.WriteLine($"during cycle {i} xreg is {_xRegValues[i]}");
                     while (_index < _xRegValues.Count)
                     {
                         _signalStrength += _xRegValues[_index] * _index;
-                        _index += 40;
+                        _index += _IndexInc;
                     }
                     return FormatResult(_signalStrength, "signal strength");
                 }
 
                 //Part 2
-                //string[] _out = new string[6];
-                //for (int i = 1; i < _xRegValues.Count; i++)
-                bool[,] _crt = new bool[40, 6];
-                for (int i = 1; i < 241; i++)
+                const int _crtWidth = 40;
+                const int _crtHeight = 6;
+                const int _charCount = 8;
+                //bool[][] _crt = InitJaggedArray(_crtWidth, _crtHeight, false);
+                bool[][] _crt = InitJaggedArray(_crtHeight, _crtWidth, false);
+                for (int i = 1; i < _xRegValues.Count; i++)
                 {
-                    int _horiz = (i - 1) % 40;
-                    int _vert = (int)Math.Floor((i - 1) / 40.0);
-                    //_out[_vert] += (_horiz >= _xRegValues[i] - 1 && _horiz <= _xRegValues[i] + 1) ? "#" : ".";
-                    _crt[_horiz, _vert] = (_horiz >= _xRegValues[i] - 1 && _horiz <= _xRegValues[i] + 1);
+                    if (i - 1 < _crtHeight* _crtWidth)
+                    {
+                        int _horiz = (i - 1) % 40;
+                        int _vert = (int)Math.Floor((i - 1) / (double)_crtWidth);
+                        _crt[_vert][_horiz] = (_horiz >= _xRegValues[i] - 1 && _horiz <= _xRegValues[i] + 1);
+                    }
                 }
-                //foreach (var _line in _out) Console.WriteLine(_line);
-                if(Verbose) PrintPaper(_crt);
+                if (!Verbose) PrintGrid(_crt);
                 string _output = string.Empty;
-                for (int i = 0; i < 8; i++)
-                {
-                    _output += GetLetter(_crt, i * 5);
-                }
+                for (int i = 0; i < _charCount; i++) _output += GetLetter(_crt, i * 5);
                 return FormatResult(_output, "CRT output");
             }
 
-            void PrintPaper(bool[,] aPaper)
+            void PrintGrid(bool[][] aPaper)
             {
-                var lSb = new StringBuilder();
-                for (int lY = 0; lY < aPaper.GetLength(1); lY++)
-                {
-                    for (int lX = 0; lX < aPaper.GetLength(0); lX++)
-                    {
-                        lSb.Append(aPaper[lX, lY] ? '#' : '.');
-                    }
-                    lSb.Append(Environment.NewLine);
-                }
-                Console.WriteLine(lSb.ToString());
+                //var lSb = new StringBuilder();
+                //for (int lY = 0; lY < aPaper.Length; lY++)
+                //{
+                //    for (int lX = 0; lX < aPaper[0].Length; lX++)
+                //    {
+                //        lSb.Append(aPaper[lY][lX] ? '#' : '.');
+                //    }
+                //    lSb.Append(Environment.NewLine);
+                //}
+                //Console.WriteLine(lSb.ToString());
+                //Console.WriteLine(aPaper.Select(y => string.Join(Environment.NewLine, string.Concat( y.Select(x => x ? '#' : '.')))));
+                Console.WriteLine(string.Join("\r\n", aPaper.Select(y => string.Concat(y.Select(x => x ? '#' : '.')))) + "\r\n");
             }
 
 
-            string GetLetter(bool[,] aPaper, int aCol) // from 2021/13
+            string GetLetter(bool[][] aPaper, int aCol) // from 2021/13
             {
                 const int LETTER_WIDTH = 5;
                 const int LETTER_HEIGHT = 6;
                 const string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                //string[] LETTER_PIXELS = {
-                //        ".##..###...##.......####.####..##..#..#..###...##.#..#.#...............##..###.......###...###......#..#................#...#.####.",
-                //        "#..#.#..#.#..#......#....#....#..#.#..#...#.....#.#.#..#..............#..#.#..#......#..#.#.........#..#................#...#....#.",
-                //        "#..#.###..#.........###..###..#....####...#.....#.##...#..............#..#.#..#......#..#.#.........#..#.................#.#....#..",
-                //        "####.#..#.#.........#....#....#.##.#..#...#.....#.#.#..#..............#..#.###.......###...##.......#..#..................#....#...",
-                //        "#..#.#..#.#..#......#....#....#..#.#..#...#..#..#.#.#..#..............#..#.#.........#.#.....#......#..#..................#...#....",
-                //        "#..#.###...##.......####.#.....###.#..#..###..##..#..#.####............##..#.........#..#.###........##...................#...####." };
                 string[] LETTER_PIXELS = {
                         ".##..###...##.......####.####..##..#..#..###...##.#..#.#...............##..###.......###...###......#..#.....................####.",
                         "#..#.#..#.#..#......#....#....#..#.#..#...#.....#.#.#..#..............#..#.#..#......#..#.#.........#..#........................#.",
@@ -113,7 +111,7 @@ namespace Puzzles
                         for (int lRow = 0; lRow < LETTER_HEIGHT; lRow++)
                         {
                             bool lThisPixel = LETTER_PIXELS[lRow][lCol + i * LETTER_WIDTH] == '#';
-                            if (aPaper[aCol + lCol, lRow] == lThisPixel) lMatchPixels++;
+                            if (aPaper[lRow][aCol + lCol] == lThisPixel) lMatchPixels++;
                         }
                     }
                     if (lMatchPixels == LETTER_WIDTH * LETTER_HEIGHT) return ALPHABET[i].ToString();
