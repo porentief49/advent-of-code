@@ -69,17 +69,13 @@ namespace Puzzles
                 //determine solution
                 if (Part1)
                 {
-                    if (Verbose) Console.WriteLine(DumpGrid(_treeHeights, 1));
-                    if (Verbose) Console.WriteLine(DumpGrid(_visibleTrees));
+                    if (Verbose) PrintGrid(_treeHeights, 1);
+                    if (Verbose) PrintGrid(_visibleTrees);
                     return FormatResult(_visibleTrees.Select(y => y.Count(x => x == true)).Sum(), "visible trees");
                 }
-                if (Verbose) Console.WriteLine(DumpGrid(_scenicScores, 3));
+                if (Verbose) PrintGrid(_scenicScores, 3);
                 return FormatResult(_scenicScores.Select(y => y.Max()).Max(), "best scenic score");
             }
-
-            string DumpGrid(bool[][] Grid) => string.Join("\r\n", Grid.Select(y => string.Concat(y.Select(x => x ? 'x' : '.')))) + "\r\n";
-
-            string DumpGrid(int[][] Grid, int digits) => string.Join("\r\n", Grid.Select(y => string.Join(' ', y.Select(x => x.ToString() + " ".Repeat(digits).Substring(0, digits)).ToArray()))) + "\r\n";
         }
     }
 }

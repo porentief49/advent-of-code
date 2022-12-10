@@ -57,7 +57,6 @@ namespace Puzzles
                 const int _crtWidth = 40;
                 const int _crtHeight = 6;
                 const int _charCount = 8;
-                //bool[][] _crt = InitJaggedArray(_crtWidth, _crtHeight, false);
                 bool[][] _crt = InitJaggedArray(_crtHeight, _crtWidth, false);
                 for (int i = 1; i < _xRegValues.Count; i++)
                 {
@@ -74,28 +73,11 @@ namespace Puzzles
                 return FormatResult(_output, "CRT output");
             }
 
-            void PrintGrid(bool[][] aPaper)
+            string GetLetter(bool[][] Grid, int Column) // from 2021/13
             {
-                //var lSb = new StringBuilder();
-                //for (int lY = 0; lY < aPaper.Length; lY++)
-                //{
-                //    for (int lX = 0; lX < aPaper[0].Length; lX++)
-                //    {
-                //        lSb.Append(aPaper[lY][lX] ? '#' : '.');
-                //    }
-                //    lSb.Append(Environment.NewLine);
-                //}
-                //Console.WriteLine(lSb.ToString());
-                //Console.WriteLine(aPaper.Select(y => string.Join(Environment.NewLine, string.Concat( y.Select(x => x ? '#' : '.')))));
-                Console.WriteLine(string.Join("\r\n", aPaper.Select(y => string.Concat(y.Select(x => x ? '#' : '.')))) + "\r\n");
-            }
-
-
-            string GetLetter(bool[][] aPaper, int aCol) // from 2021/13
-            {
-                const int LETTER_WIDTH = 5;
-                const int LETTER_HEIGHT = 6;
-                const string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                const int _letterHeight = 5;
+                const int _letterWidth = 6;
+                const string _alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 string[] LETTER_PIXELS = {
                         ".##..###...##.......####.####..##..#..#..###...##.#..#.#...............##..###.......###...###......#..#.....................####.",
                         "#..#.#..#.#..#......#....#....#..#.#..#...#.....#.#.#..#..............#..#.#..#......#..#.#.........#..#........................#.",
@@ -103,22 +85,21 @@ namespace Puzzles
                         "####.#..#.#.........#....#....#.##.#..#...#.....#.#.#..#..............#..#.###.......###...##.......#..#......................#...",
                         "#..#.#..#.#..#......#....#....#..#.#..#...#..#..#.#.#..#..............#..#.#.........#.#.....#......#..#.....................#....",
                         "#..#.###...##.......####.#.....###.#..#..###..##..#..#.####............##..#.........#..#.###........##......................####." };
-                for (int i = 0; i < ALPHABET.Length; i++)
+                for (int i = 0; i < _alphabet.Length; i++)
                 {
                     int lMatchPixels = 0;
-                    for (int lCol = 0; lCol < LETTER_WIDTH; lCol++)
+                    for (int lCol = 0; lCol < _letterHeight; lCol++)
                     {
-                        for (int lRow = 0; lRow < LETTER_HEIGHT; lRow++)
+                        for (int lRow = 0; lRow < _letterWidth; lRow++)
                         {
-                            bool lThisPixel = LETTER_PIXELS[lRow][lCol + i * LETTER_WIDTH] == '#';
-                            if (aPaper[lRow][aCol + lCol] == lThisPixel) lMatchPixels++;
+                            bool lThisPixel = LETTER_PIXELS[lRow][lCol + i * _letterHeight] == '#';
+                            if (Grid[lRow][Column + lCol] == lThisPixel) lMatchPixels++;
                         }
                     }
-                    if (lMatchPixels == LETTER_WIDTH * LETTER_HEIGHT) return ALPHABET[i].ToString();
+                    if (lMatchPixels == _letterHeight * _letterWidth) return _alphabet[i].ToString();
                 }
                 return " ";
             }
-
         }
     }
 }
