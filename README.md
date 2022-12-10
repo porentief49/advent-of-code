@@ -13,7 +13,7 @@
 | Day 7: No Space Left On Device |  |  | ** |
 | Day 8: Treetop Tree House |  |  | ** |
 | Day 9: Rope Bridge |  |  | ++ |
-| Day 10: |  |  |  |
+| Day 10: Cathode-Ray Tube |  |  | ++ |
 | Day 11: |  |  |  |
 | Day 12: |  |  |  |
 | Day 13: |  |  |  |

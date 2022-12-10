@@ -59,17 +59,17 @@ namespace Puzzles
                             else if (_delta.y > 1) _current[ii] = (_current[ii].x + Math.Sign(_delta.x), _current[ii].y + 1);
                             else if (_delta.y < -1) _current[ii] = (_current[ii].x + Math.Sign(_delta.x), _current[ii].y - 1);
                             _Trails[ii].Add(_current[ii]);
-                            if (Verbose) Console.WriteLine(DumpCurrentState(_Trails, $"{_move.dir} {_move.steps}, in step {i}, after substep {ii}"));
+                            if (Verbose) PrintCurrentState(_Trails, $"{_move.dir} {_move.steps}, in step {i}, after substep {ii}");
                         }
                     }
                 }
 
                 //determine solutions
-                if (Verbose) Console.WriteLine(DumpTrail(_Trails[_knotCount - 1], 'T'));
+                if (Verbose) PrintTrail(_Trails[_knotCount - 1], 'T');
                 return (FormatResult(_Trails[_knotCount - 1].Distinct().Count(), "visited positions"));
             }
 
-            private string DumpTrail(List<(int x, int y)> Trail, char Label)
+            private void PrintTrail(List<(int x, int y)> Trail, char Label)
             {
                 int _xMin = Trail.Select(l => l.x).Min();
                 int _xMax = Trail.Select(l => l.x).Max();
@@ -78,10 +78,10 @@ namespace Puzzles
                 char[][] _grid = InitJaggedArray(_yMax - _yMin + 1, _xMax - _xMin + 1, '.');
                 Trail.ForEach(l => _grid[l.y - _yMin][l.x - _xMin] = Label);
                 _grid[0 - _yMin][0 - _xMin] = 's';
-                return string.Join(Environment.NewLine, _grid.Select(x => string.Concat(x))) + Environment.NewLine;
+                Console.WriteLine(string.Join(Environment.NewLine, _grid.Select(x => string.Concat(x))) + Environment.NewLine);
             }
 
-            private string DumpCurrentState(List<List<(int x, int y)>> Trails, string Label)
+            private void PrintCurrentState(List<List<(int x, int y)>> Trails, string Label)
             {
                 int _xMin = Trails.Select(l => l.Select(ll => ll.x).Min()).Min();
                 int _xMax = Trails.Select(l => l.Select(ll => ll.x).Max()).Max();
@@ -95,7 +95,7 @@ namespace Puzzles
                     _sb.Append($"{i}-({Trails[i].Last().x}|{Trails[i].Last().y}) ");
                 }
                 _grid[0 - _yMin][0 - _xMin] = 's';
-                return $"== {Label} ==\r\n\r\n{string.Join(Environment.NewLine, _grid.Select(x => string.Concat(x)))}\r\n{_sb}\r\n";
+                Console.WriteLine($"== {Label} ==\r\n\r\n{string.Join(Environment.NewLine, _grid.Select(x => string.Concat(x)))}\r\n{_sb}\r\n");
             }
         }
     }
