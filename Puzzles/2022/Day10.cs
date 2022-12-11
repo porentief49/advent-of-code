@@ -23,6 +23,7 @@ namespace Puzzles
 
             public override string Solve(bool Part1)
             {
+                // work the instructions
                 int _xReg = 1;
                 List<int> _xRegValues = new() { _xReg, _xReg }; // to get the index right
                 for (int i = 0; i < InputData.Length; i++)
