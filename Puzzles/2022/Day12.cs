@@ -33,15 +33,14 @@ namespace Puzzles
                 {
                     if (InputData[y].Contains('S'))
                     {
-                        start = new Node(y, InputData[y].IndexOf('S'));
+                        start = new Node(y, InputData[y].IndexOf('S'), 0); //ugly hardcoded height
                         InputData[y] = InputData[y].Replace('S', 'a');
                     }
                     if (InputData[y].Contains('E'))
                     {
-                        end = new Node(y, InputData[y].IndexOf('E'));
+                        end = new Node(y, InputData[y].IndexOf('E'), 25); // ugly hardcoded height
                         InputData[y] = InputData[y].Replace('E', 'z');
                     }
-
                 }
                 map = InputData.Select(x => x.Select(x => (int)x - 97).ToArray()).ToArray();
             }
@@ -51,7 +50,7 @@ namespace Puzzles
                 int bestBestDistance = int.MaxValue;
                 for (int yyy = (Part1 ? start.Y : 0); yyy < (Part1 ? start.Y + 1 : height); yyy++)
                 {
-                    for (int xxx = (Part1 ? start.X : 0); xxx < (Part1 ? start.X+1 : width); xxx++)
+                    for (int xxx = (Part1 ? start.X : 0); xxx < (Part1 ? start.X + 1 : width); xxx++)
                     {
                         if (map[yyy][xxx] == 0)
                         {
@@ -92,10 +91,10 @@ namespace Puzzles
                                     {
                                         int newX;
                                         int newY;
-                                        if (x < width - 1 && map[y][x + 1] - map[y][x] <= 1 && !visited[y][x + 1])
+                                        newY = y;
+                                        newX = x + 1;
+                                        if (newX < width && map[newY][newX] - map[y][x] <= 1 && !visited[newY][newX])
                                         {
-                                            newY = y;
-                                            newX = x + 1;
                                             if (listed[newY][newX])
                                             {
                                                 Node update = backlog.Where(x => (x.X == newX) && (x.Y == newY)).First();
@@ -107,7 +106,7 @@ namespace Puzzles
                                             }
                                             else
                                             {
-                                                Node next = new(newY, newX);
+                                                Node next = new(newY, newX, map[newY][newX]);
                                                 next.Predecessor = node;
                                                 next.Distance = node.Distance + 1;
                                                 next.Height = map[newY][newX];
@@ -115,10 +114,10 @@ namespace Puzzles
                                                 listed[newY][newX] = true;
                                             }
                                         }
-                                        if (x > 0 && map[y][x - 1] - map[y][x] <= 1 && !visited[y][x - 1])
-                                        {
                                             newY = y;
                                             newX = x - 1;
+                                        if (newX >= 0 && map[newY][newX] - map[y][x] <= 1 && !visited[newY][newX])
+                                        {
                                             if (listed[newY][newX])
                                             {
                                                 Node update = backlog.Where(x => (x.X == newX) && (x.Y == newY)).First();
@@ -130,7 +129,7 @@ namespace Puzzles
                                             }
                                             else
                                             {
-                                                Node next = new(newY, newX);
+                                                Node next = new(newY, newX, map[newY][newX]);
                                                 next.Predecessor = node;
                                                 next.Distance = node.Distance + 1;
                                                 next.Height = map[newY][newX];
@@ -138,10 +137,10 @@ namespace Puzzles
                                                 listed[newY][newX] = true;
                                             }
                                         }
-                                        if (y < height - 1 && map[y + 1][x] - map[y][x] <= 1 && !visited[y + 1][x])
-                                        {
                                             newY = y + 1;
                                             newX = x;
+                                        if (newY < height  && map[newY][newX] - map[y][x] <= 1 && !visited[newY][newX])
+                                        {
                                             if (listed[newY][newX])
                                             {
                                                 Node update = backlog.Where(x => (x.X == newX) && (x.Y == newY)).First();
@@ -153,7 +152,7 @@ namespace Puzzles
                                             }
                                             else
                                             {
-                                                Node next = new(newY, newX);
+                                                Node next = new(newY, newX, map[newY][newX]);
                                                 next.Predecessor = node;
                                                 next.Distance = node.Distance + 1;
                                                 next.Height = map[newY][newX];
@@ -161,10 +160,10 @@ namespace Puzzles
                                                 listed[newY][newX] = true;
                                             }
                                         }
-                                        if (y > 0 && map[y - 1][x] - map[y][x] <= 1 && !visited[y - 1][x])
-                                        {
                                             newY = y - 1;
                                             newX = x;
+                                        if (newY >= 0 && map[newY][newX] - map[y][x] <= 1 && !visited[newY][newX])
+                                        {
                                             if (listed[newY][newX])
                                             {
                                                 Node update = backlog.Where(x => (x.X == newX) && (x.Y == newY)).First();
@@ -176,7 +175,7 @@ namespace Puzzles
                                             }
                                             else
                                             {
-                                                Node next = new(newY, newX);
+                                                Node next = new(newY, newX, map[newY][newX]);
                                                 next.Predecessor = node;
                                                 next.Distance = node.Distance + 1;
                                                 next.Height = map[newY][newX];
@@ -204,25 +203,22 @@ namespace Puzzles
 
                 return FormatResult(bestBestDistance, "best distance");
             }
-
-            public void PrintVisited(bool[][] Visited)
-            {
-                foreach (var line in Visited) Console.WriteLine(line.Select(x => x ? 'x' : ' ').ToArray());
-            }
         }
         public class Node
         {
             public int X;
             public int Y;
             public int Distance = int.MaxValue;
-            //public bool Visited = false;
+            public bool Visited = false;
+            public bool Listes = false;
             public Node? Predecessor;
             public int Height;
 
-            public Node(int Y, int X)
+            public Node(int Y, int X, int Height)
             {
                 this.X = X;
                 this.Y = Y;
+                this.Height = Height;
             }
         }
     }
