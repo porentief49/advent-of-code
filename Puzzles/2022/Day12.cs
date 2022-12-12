@@ -10,12 +10,11 @@ namespace Puzzles
     {
         public class Day12 : DayBase
         {
-            private Node[][] map;
-            private List<Node> backlog = new List<Node>();
-            private (int y, int x) start1;
-            private (int y, int x) end;
-            private int dimX;
-            private int dimY;
+            private Node[][] _map;
+            private List<Node> _backlog = new List<Node>();
+            private (int y, int x) _start1;
+            private (int y, int x) _end;
+            private (int y, int x) _dim;
 
             protected override string Title { get; } = "Day 12: Hill Climbing Algorithm";
 
@@ -26,26 +25,25 @@ namespace Puzzles
                 AddInputFile(@"2022\12_SEGCC.txt");
             }
 
-            public override void Init(string InputFile)
+            public override void Init(string file)
             {
-                InputData = ReadFile(InputFile, true);
-                dimY = InputData.Length;
-                dimX = InputData[0].Length;
-                map = new Node[dimY][];
-                for (int y = 0; y < dimY; y++)
+                InputData = ReadFile(file, true);
+                _dim = (InputData.Length, InputData[0].Length);
+                _map = new Node[_dim.y][];
+                for (int y = 0; y < _dim.y; y++)
                 {
-                    Node[] line = new Node[dimX];
-                    for (int x = 0; x < dimX; x++)
+                    Node[] line = new Node[_dim.x];
+                    for (int x = 0; x < _dim.x; x++)
                     {
                         int height;
                         switch (InputData[y][x])
                         {
                             case 'S':
-                                start1 = (y, x);
+                                _start1 = (y, x);
                                 height = 0;
                                 break;
                             case 'E':
-                                end = (y, x);
+                                _end = (y, x);
                                 height = 25;
                                 break;
                             default:
@@ -54,50 +52,46 @@ namespace Puzzles
                         }
                         line[x] = new(y, x, height);
                     }
-                    map[y] = line;
+                    _map[y] = line;
                 }
             }
 
-            public override string Solve(bool Part1)
+            public override string Solve(bool part1)
             {
                 int bestBestDistance = int.MaxValue;
                 List<Node> startLocations = new();
-                if (Part1) startLocations.Add(map[start1.y][start1.x]);
-                else for (int y = 0; y < dimY; y++) for (int x = 0; x < dimX; x++) if (map[y][x].Height == 0) startLocations.Add(map[y][x]);
+                if (part1) startLocations.Add(_map[_start1.y][_start1.x]);
+                else for (int y = 0; y < _dim.y; y++) for (int x = 0; x < _dim.x; x++) if (_map[y][x].Height == 0) startLocations.Add(_map[y][x]);
                 foreach (Node startNode in startLocations)
                 {
                     bool targetReached = false;
                     bool stuck = false;
                     int bestDistance = 0;
-                    int thisY = startNode.Y;
-                    int thisX = startNode.X;
-                    for (int yy = 0; yy < dimY; yy++) for (int xx = 0; xx < dimX; xx++) map[yy][xx].Clear();
-                    backlog.Clear();
-                    Node node = startNode;
-                    node.Distance = 0;
-                    node.Listed = true;
-                    backlog.Add(node);
+                    for (int yy = 0; yy < _dim.y; yy++) for (int xx = 0; xx < _dim.x; xx++) _map[yy][xx].Clear();
+                    _backlog.Clear();
+                    Node thisNode = startNode;
+                    thisNode.Distance = 0;
+                    thisNode.Listed = true;
+                    _backlog.Add(thisNode);
                     do
                     {
-                        if (backlog.Count > 0)
+                        if (_backlog.Count > 0)
                         {
-                            int minDistance = backlog.Select(x => x.Distance).Min(); // much faster if done separately
-                            var possibleNodes = backlog.Where(x => x.Distance == minDistance);
+                            int minDistance = _backlog.Select(x => x.Distance).Min(); // much faster if done separately
+                            var possibleNodes = _backlog.Where(x => x.Distance == minDistance);
                             int bestHeight = possibleNodes.Select(x => x.Height).Max();
-                            node = possibleNodes.Where(x => x.Height == bestHeight).First(); // any is good
-                            backlog.Remove(node);
-                            thisX = node.X;
-                            thisY = node.Y;
-                            if (Verbose) Console.WriteLine($"x {thisX} - y {thisY} - count {backlog.Count}");
-                            node.Visited = true;
-                            targetReached = (thisX == end.x && thisY == end.y);
-                            if (targetReached) bestDistance = node.Distance;
+                            thisNode = possibleNodes.Where(x => x.Height == bestHeight).First(); // any is good
+                            _backlog.Remove(thisNode);
+                            if (Verbose) Console.WriteLine($"x {thisNode.X} - y {thisNode.Y} - backlog count {_backlog.Count}");
+                            thisNode.Visited = true;
+                            targetReached = (thisNode.X == _end.x && thisNode.Y == _end.y);
+                            if (targetReached) bestDistance = thisNode.Distance;
                             else
                             {
-                                ProcessNeighbors(node, backlog, thisY, thisX + 1);
-                                ProcessNeighbors(node, backlog, thisY, thisX - 1);
-                                ProcessNeighbors(node, backlog, thisY + 1, thisX);
-                                ProcessNeighbors(node, backlog, thisY - 1, thisX);
+                                ProcessNeighbors(thisNode, _backlog, thisNode.Y, thisNode.X + 1);
+                                ProcessNeighbors(thisNode, _backlog, thisNode.Y, thisNode.X - 1);
+                                ProcessNeighbors(thisNode, _backlog, thisNode.Y + 1, thisNode.X);
+                                ProcessNeighbors(thisNode, _backlog, thisNode.Y - 1, thisNode.X);
                             }
                         }
                         else stuck = true;
@@ -108,24 +102,22 @@ namespace Puzzles
                 return FormatResult(bestBestDistance, "best distance");
             }
 
-            private void ProcessNeighbors(Node Current, List<Node> Backlog, int NewY, int NewX)
+            private void ProcessNeighbors(Node current, List<Node> backlog, int newY, int newX)
             {
-                Node newNode;
-                if (NewX >= 0 && NewX < dimX && NewY >= 0 && NewY < dimY)
+                if (newX >= 0 && newX < _dim.x && newY >= 0 && newY < _dim.y)
                 {
-                    newNode = map[NewY][NewX];
-                    if (newNode.Height - Current.Height <= 1 && !newNode.Visited)
+                    Node newNode = _map[newY][newX];
+                    if (newNode.Height - current.Height <= 1 && !newNode.Visited)
                     {
-                        newNode.Distance = Current.Distance + 1;
-                        newNode.Predecessor = Current;
+                        newNode.Distance = current.Distance + 1;
+                        newNode.Predecessor = current;
                         if (!newNode.Listed)
                         {
                             newNode.Listed = true;
-                            Backlog.Add(newNode);
+                            backlog.Add(newNode);
                         }
                     }
                 }
-
             }
         }
 
