@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using static Puzzles.Year2022;
 
 namespace Puzzles
 {
@@ -10,6 +11,7 @@ namespace Puzzles
         public class Day12 : DayBase
         {
             private int[][] mapOld;
+            private Node[][] map;
             private Node startOld;
             private Node endOld;
             private int width;
@@ -51,7 +53,7 @@ namespace Puzzles
                 if (!Part1) return "";
 
                 int bestBestDistance = int.MaxValue;
-                Node[][] map = new Node[height][];
+                map = new Node[height][];
                 for (int y = 0; y < height; y++)
                 {
                     Node[] line = new Node[width];
@@ -66,22 +68,13 @@ namespace Puzzles
                 {
                     for (int xxx = (Part1 ? startOld.X : 0); xxx < (Part1 ? startOld.X + 1 : width); xxx++)
                     {
-                        //if (mapOld[yyy][xxx] == 0)
                         if (map[yyy][xxx].Height == 0)
                         {
-                            //if (!Part1) return "";
-                            //bool[][] visited = InitJaggedArray(height, width, false);
-                            //bool[][] listed = InitJaggedArray(height, width, false);
                             List<Node> backlog = new List<Node>();
                             bool targetReached = false;
                             bool stuck = false;
-                            //startOld.Height = mapOld[startOld.Y][startOld.X];
-                            //startOld.Distance = 0;
-                            //listed[startOld.Y][startOld.X] = true;
-                            //backlog.Add(startOld);
                             int bestDistance = 0;
                             int i = 0;
-
                             startOld.X = xxx;
                             startOld.Y = yyy;
                             int x = xxx;
@@ -90,7 +83,6 @@ namespace Puzzles
                             thisNode.Distance = 0;
                             thisNode.Listed = true;
                             backlog.Add(thisNode);
-
                             do
                             {
                                 i++;
@@ -104,148 +96,89 @@ namespace Puzzles
                                     x = node.X;
                                     y = node.Y;
                                     Console.WriteLine($"x {x} - y {y} - loop {i} - count {backlog.Count}");
-                                    //PrintVisited(visited);
-                                    //Console.WriteLine("");
-                                    //visited[y][x] = true;
-
                                     node.Visited = true;
-
                                     targetReached = (x == endOld.X && y == endOld.Y);
                                     if (!targetReached)
                                     {
-                                        int newX;
-                                        int newY;
-                                        newY = y;
-                                        newX = x + 1;
-                                        Node newNode;
-                                        if (newX < width)
-                                        {
-                                            newNode = map[newY][newX];
-                                            if (newNode.Height - node.Height <= 1 && !newNode.Visited)
-                                            {
-                                                newNode.Distance = node.Distance + 1;
-                                                newNode.Predecessor = node;
-                                                if (!newNode.Listed)
-                                                {
-                                                    newNode.Listed = true;
-                                                    backlog.Add(newNode);
-                                                }
-                                            }
-                                        }
-                                        newY = y;
-                                        newX = x - 1;
-                                        if (newX >= 0)
-                                        {
-                                            newNode = map[newY][newX];
-                                            if (newNode.Height - node.Height <= 1 && !newNode.Visited)
-                                            {
-                                                newNode.Distance = node.Distance + 1;
-                                                newNode.Predecessor = node;
-                                                if (!newNode.Listed)
-                                                {
-                                                    newNode.Listed = true;
-                                                    backlog.Add(newNode);
-                                                }
-                                            }
-                                        }
-                                        //if (newX >= 0 && mapOld[newY][newX] - mapOld[y][x] <= 1 && !visited[newY][newX])
+                                        //int newX;
+                                        //int newY;
+                                        //newY = y;
+                                        //newX = x + 1;
+                                        //Node newNode;
+                                        //if (newX < width)
                                         //{
-                                        //    if (listed[newY][newX])
+                                        //    newNode = map[newY][newX];
+                                        //    if (newNode.Height - node.Height <= 1 && !newNode.Visited)
                                         //    {
-                                        //        Node update = backlog.Where(x => (x.X == newX) && (x.Y == newY)).First();
-                                        //        if (update.Distance > node.Distance + 1)
+                                        //        newNode.Distance = node.Distance + 1;
+                                        //        newNode.Predecessor = node;
+                                        //        if (!newNode.Listed)
                                         //        {
-                                        //            update.Distance = node.Distance + 1;
-                                        //            update.Predecessor = node;
+                                        //            newNode.Listed = true;
+                                        //            backlog.Add(newNode);
                                         //        }
                                         //    }
-                                        //    else
-                                        //    {
-                                        //        Node next = new(newY, newX, mapOld[newY][newX]);
-                                        //        next.Predecessor = node;
-                                        //        next.Distance = node.Distance + 1;
-                                        //        next.Listed = true;
-                                        //        next.Height = mapOld[newY][newX];
-                                        //        backlog.Add(next);
-                                        //        listed[newY][newX] = true;
-                                        //    }
                                         //}
-                                        newY = y + 1;
-                                        newX = x;
-                                        if (newY < height)
-                                        {
-                                            newNode = map[newY][newX];
-                                            if (newNode.Height - node.Height <= 1 && !newNode.Visited)
-                                            {
-                                                newNode.Distance = node.Distance + 1;
-                                                newNode.Predecessor = node;
-                                                if (!newNode.Listed)
-                                                {
-                                                    newNode.Listed = true;
-                                                    backlog.Add(newNode);
-                                                }
-                                            }
-                                        }
-                                        //if (newY < height && mapOld[newY][newX] - mapOld[y][x] <= 1 && !visited[newY][newX])
+
+                                        ProcessNeighbors(node, backlog, y, x + 1);
+
+                                        //newY = y;
+                                        //newX = x - 1;
+                                        //if (newX >= 0)
                                         //{
-                                        //    if (listed[newY][newX])
+                                        //    newNode = map[newY][newX];
+                                        //    if (newNode.Height - node.Height <= 1 && !newNode.Visited)
                                         //    {
-                                        //        Node update = backlog.Where(x => (x.X == newX) && (x.Y == newY)).First();
-                                        //        if (update.Distance > node.Distance + 1)
+                                        //        newNode.Distance = node.Distance + 1;
+                                        //        newNode.Predecessor = node;
+                                        //        if (!newNode.Listed)
                                         //        {
-                                        //            update.Distance = node.Distance + 1;
-                                        //            update.Predecessor = node;
+                                        //            newNode.Listed = true;
+                                        //            backlog.Add(newNode);
                                         //        }
                                         //    }
-                                        //    else
-                                        //    {
-                                        //        Node next = new(newY, newX, mapOld[newY][newX]);
-                                        //        next.Predecessor = node;
-                                        //        next.Distance = node.Distance + 1;
-                                        //        next.Listed = true;
-                                        //        next.Height = mapOld[newY][newX];
-                                        //        backlog.Add(next);
-                                        //        listed[newY][newX] = true;
-                                        //    }
                                         //}
-                                        newY = y - 1;
-                                        newX = x;
-                                        if (newY >= 0)
-                                        {
-                                            newNode = map[newY][newX];
-                                            if (newNode.Height - node.Height <= 1 && !newNode.Visited)
-                                            {
-                                                newNode.Distance = node.Distance + 1;
-                                                newNode.Predecessor = node;
-                                                if (!newNode.Listed)
-                                                {
-                                                    newNode.Listed = true;
-                                                    backlog.Add(newNode);
-                                                }
-                                            }
-                                        }
-                                        //if (newY >= 0 && mapOld[newY][newX] - mapOld[y][x] <= 1 && !visited[newY][newX])
+
+                                        ProcessNeighbors(node, backlog, y, x - 1);
+
+                                        //newY = y + 1;
+                                        //newX = x;
+                                        //if (newY < height)
                                         //{
-                                        //    if (listed[newY][newX])
+                                        //    newNode = map[newY][newX];
+                                        //    if (newNode.Height - node.Height <= 1 && !newNode.Visited)
                                         //    {
-                                        //        Node update = backlog.Where(x => (x.X == newX) && (x.Y == newY)).First();
-                                        //        if (update.Distance > node.Distance + 1)
+                                        //        newNode.Distance = node.Distance + 1;
+                                        //        newNode.Predecessor = node;
+                                        //        if (!newNode.Listed)
                                         //        {
-                                        //            update.Distance = node.Distance + 1;
-                                        //            update.Predecessor = node;
+                                        //            newNode.Listed = true;
+                                        //            backlog.Add(newNode);
                                         //        }
                                         //    }
-                                        //    else
+                                        //}
+
+                                        ProcessNeighbors(node, backlog, y + 1, x);
+
+                                        //newY = y - 1;
+                                        //newX = x;
+                                        //if (newY >= 0)
+                                        //{
+                                        //    newNode = map[newY][newX];
+                                        //    if (newNode.Height - node.Height <= 1 && !newNode.Visited)
                                         //    {
-                                        //        Node next = new(newY, newX, mapOld[newY][newX]);
-                                        //        next.Predecessor = node;
-                                        //        next.Distance = node.Distance + 1;
-                                        //        next.Listed = true;
-                                        //        next.Height = mapOld[newY][newX];
-                                        //        backlog.Add(next);
-                                        //        listed[newY][newX] = true;
+                                        //        newNode.Distance = node.Distance + 1;
+                                        //        newNode.Predecessor = node;
+                                        //        if (!newNode.Listed)
+                                        //        {
+                                        //            newNode.Listed = true;
+                                        //            backlog.Add(newNode);
+                                        //        }
                                         //    }
                                         //}
+
+                                        ProcessNeighbors(node, backlog, y - 1, x);
+
                                     }
                                     else bestDistance = node.Distance;
                                 }
@@ -265,6 +198,30 @@ namespace Puzzles
                 }
 
                 return FormatResult(bestBestDistance, "best distance");
+            }
+
+            private void ProcessNeighbors(Node Current, List<Node> Backlog, int NewY, int NewX)
+            {
+                //int newX;
+                //int newY;
+                //newY = y;
+                //newX = x + 1;
+                Node newNode;
+                if (NewX >= 0 && NewX < width && NewY >= 0 && NewY < height)
+                {
+                    newNode = map[NewY][NewX];
+                    if (newNode.Height - Current.Height <= 1 && !newNode.Visited)
+                    {
+                        newNode.Distance = Current.Distance + 1;
+                        newNode.Predecessor = Current;
+                        if (!newNode.Listed)
+                        {
+                            newNode.Listed = true;
+                            Backlog.Add(newNode);
+                        }
+                    }
+                }
+
             }
         }
         public class Node
