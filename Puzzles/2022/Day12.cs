@@ -10,12 +10,12 @@ namespace Puzzles
     {
         public class Day12 : DayBase
         {
-            private int[][] mapOld;
             private Node[][] map;
-            private Node startOld;
-            private Node endOld;
-            private int width;
-            private int height;
+            private List<Node> backlog = new List<Node>();
+            private (int y, int x) start1;
+            private (int y, int x) end;
+            private int dimX;
+            private int dimY;
 
             protected override string Title { get; } = "Day 12: Hill Climbing Algorithm";
 
@@ -29,87 +29,81 @@ namespace Puzzles
             public override void Init(string InputFile)
             {
                 InputData = ReadFile(InputFile, true);
-                height = InputData.Length;
-                width = InputData[0].Length;
-                for (int y = 0; y < height; y++)
+                dimY = InputData.Length;
+                dimX = InputData[0].Length;
+                map = new Node[dimY][];
+                for (int y = 0; y < dimY; y++)
                 {
-                    if (InputData[y].Contains('S'))
+                    Node[] line = new Node[dimX];
+                    for (int x = 0; x < dimX; x++)
                     {
-                        startOld = new Node(y, InputData[y].IndexOf('S'), 0); //ugly hardcoded height
-                        InputData[y] = InputData[y].Replace('S', 'a');
+                        int height;
+                        switch (InputData[y][x])
+                        {
+                            case 'S':
+                                start1 = (y, x);
+                                height = 0;
+                                break;
+                            case 'E':
+                                end = (y, x);
+                                height = 25;
+                                break;
+                            default:
+                                height = InputData[y][x] - 97;
+                                break;
+                        }
+                        line[x] = new(y, x, height);
                     }
-                    if (InputData[y].Contains('E'))
-                    {
-                        endOld = new Node(y, InputData[y].IndexOf('E'), 25); // ugly hardcoded height
-                        InputData[y] = InputData[y].Replace('E', 'z');
-                    }
+                    map[y] = line;
                 }
-                mapOld = InputData.Select(x => x.Select(x => x - 97).ToArray()).ToArray();
             }
 
             public override string Solve(bool Part1)
             {
                 int bestBestDistance = int.MaxValue;
-                for (int yyy = (Part1 ? startOld.Y : 0); yyy < (Part1 ? startOld.Y + 1 : height); yyy++)
+                List<Node> startLocations = new();
+                if (Part1) startLocations.Add(map[start1.y][start1.x]);
+                else for (int y = 0; y < dimY; y++) for (int x = 0; x < dimX; x++) if (map[y][x].Height == 0) startLocations.Add(map[y][x]);
+                foreach (Node startNode in startLocations)
                 {
-                    for (int xxx = (Part1 ? startOld.X : 0); xxx < (Part1 ? startOld.X + 1 : width); xxx++)
+                    bool targetReached = false;
+                    bool stuck = false;
+                    int bestDistance = 0;
+                    int thisY = startNode.Y;
+                    int thisX = startNode.X;
+                    for (int yy = 0; yy < dimY; yy++) for (int xx = 0; xx < dimX; xx++) map[yy][xx].Clear();
+                    backlog.Clear();
+                    Node node = startNode;
+                    node.Distance = 0;
+                    node.Listed = true;
+                    backlog.Add(node);
+                    do
                     {
-                        // init
-                        map = new Node[height][];
-                        for (int y = 0; y < height; y++)
+                        if (backlog.Count > 0)
                         {
-                            Node[] line = new Node[width];
-                            for (int x = 0; x < width; x++)
+                            int minDistance = backlog.Select(x => x.Distance).Min(); // much faster if done separately
+                            var possibleNodes = backlog.Where(x => x.Distance == minDistance);
+                            int bestHeight = possibleNodes.Select(x => x.Height).Max();
+                            node = possibleNodes.Where(x => x.Height == bestHeight).First(); // any is good
+                            backlog.Remove(node);
+                            thisX = node.X;
+                            thisY = node.Y;
+                            if (Verbose) Console.WriteLine($"x {thisX} - y {thisY} - count {backlog.Count}");
+                            node.Visited = true;
+                            targetReached = (thisX == end.x && thisY == end.y);
+                            if (targetReached) bestDistance = node.Distance;
+                            else
                             {
-                                line[x] = new(y, x, (int)InputData[y][x] - 97);
+                                ProcessNeighbors(node, backlog, thisY, thisX + 1);
+                                ProcessNeighbors(node, backlog, thisY, thisX - 1);
+                                ProcessNeighbors(node, backlog, thisY + 1, thisX);
+                                ProcessNeighbors(node, backlog, thisY - 1, thisX);
                             }
-                            map[y] = line;
                         }
-
-                        // dijkstra
-                        if (map[yyy][xxx].Height == 0)
-                        {
-                            List<Node> backlog = new List<Node>();
-                            bool targetReached = false;
-                            bool stuck = false;
-                            int bestDistance = 0;
-                            startOld.X = xxx;
-                            startOld.Y = yyy;
-                            int x = xxx;
-                            int y = yyy;
-                            Node thisNode = map[y][x];
-                            thisNode.Distance = 0;
-                            thisNode.Listed = true;
-                            backlog.Add(thisNode);
-                            do
-                            {
-                                if (backlog.Count > 0)
-                                {
-                                    int minDist = backlog.Select(x => x.Distance).Min();
-                                    var minDistNodes = backlog.Where(x => x.Distance == minDist);
-                                    int bestHeight = minDistNodes.Select(x => x.Height).Max();
-                                    Node node = minDistNodes.Where(x => x.Height == bestHeight).First();
-                                    backlog.Remove(node);
-                                    x = node.X;
-                                    y = node.Y;
-                                    if (Verbose) Console.WriteLine($"x {x} - y {y} - count {backlog.Count}");
-                                    node.Visited = true;
-                                    targetReached = (x == endOld.X && y == endOld.Y);
-                                    if (!targetReached)
-                                    {
-                                        ProcessNeighbors(node, backlog, y, x + 1);
-                                        ProcessNeighbors(node, backlog, y, x - 1);
-                                        ProcessNeighbors(node, backlog, y + 1, x);
-                                        ProcessNeighbors(node, backlog, y - 1, x);
-                                    }
-                                    else bestDistance = node.Distance;
-                                }
-                                else stuck = true;
-                            } while (!targetReached && !stuck);
-                            if (!stuck && bestDistance < bestBestDistance) bestBestDistance = bestDistance;
-                            if (Verbose) Console.WriteLine($"x {xxx} - y {yyy} - {bestDistance}");
-                        }
-                    }
+                        else stuck = true;
+                    } while (!targetReached && !stuck);
+                    if (!stuck && bestDistance < bestBestDistance) bestBestDistance = bestDistance;
+                    if (Verbose) Console.WriteLine($"x {startNode.X} - y {startNode.Y} - {bestDistance}");
                 }
                 return FormatResult(bestBestDistance, "best distance");
             }
@@ -117,7 +111,7 @@ namespace Puzzles
             private void ProcessNeighbors(Node Current, List<Node> Backlog, int NewY, int NewX)
             {
                 Node newNode;
-                if (NewX >= 0 && NewX < width && NewY >= 0 && NewY < height)
+                if (NewX >= 0 && NewX < dimX && NewY >= 0 && NewY < dimY)
                 {
                     newNode = map[NewY][NewX];
                     if (newNode.Height - Current.Height <= 1 && !newNode.Visited)
@@ -134,14 +128,15 @@ namespace Puzzles
 
             }
         }
+
         public class Node
         {
-            public int X; // make readonly
-            public int Y; // make readonly
-            public int Height; // make readonly
-            public int Distance = int.MaxValue;
-            public bool Visited = false;
-            public bool Listed = false;
+            public readonly int X;
+            public readonly int Y; 
+            public readonly int Height; 
+            public int Distance;
+            public bool Visited;
+            public bool Listed;
             public Node? Predecessor;
 
             public Node(int Y, int X, int Height)
@@ -149,6 +144,15 @@ namespace Puzzles
                 this.X = X;
                 this.Y = Y;
                 this.Height = Height;
+                Clear();
+            }
+
+            public void Clear()
+            {
+                Distance = int.MaxValue;
+                Visited = false;
+                Listed = false;
+                Predecessor = null;
             }
         }
     }
