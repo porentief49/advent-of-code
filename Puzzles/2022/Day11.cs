@@ -32,7 +32,7 @@ namespace Puzzles
 
             public override string Solve(bool Part1)
             {
-                long leastCommon = 2 * 3 * 5 * 7 * 11 * 13 * 17 * 19 * 23; // uncool - algorithm is buried in input data
+                long leastCommon = monkeys.Select(x => x.DivisibleBy).Aggregate((x, y) => x * y);
                 int rounds = Part1 ? 20 : 10000;
                 for (int i = 0; i < rounds; i++)
                 {
