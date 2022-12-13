@@ -28,9 +28,9 @@ namespace Puzzles
                 _packets = InputData.Select(x => ParseIt(x.Replace("[", ",[,").Replace("]", ",],").Split(',', StringSplitOptions.RemoveEmptyEntries))).ToList();
             }
 
-            private Packet ParseIt(string[] input)
+            private Packet ParseIt(string[] input, bool marker = false)
             {
-                Packet entry = new(null);
+                Packet entry = new(null, marker);
                 Packet current = entry;
                 if (input[0] != "[") throw new Exception("packet value needs to start with '['");
                 for (int i = 1; i < input.Length; i++)
@@ -73,12 +73,12 @@ namespace Puzzles
                         if (Verbose) Console.WriteLine($"Pair {i + 1} -> {result}");
                         if (result == 1) rightOrders.Add(i + 1);
                     }
-                    return FormatResult(rightOrders.Aggregate((x, y) => x + y), "not yet implemented");
+                    return FormatResult(rightOrders.Aggregate((x, y) => x + y), "right order index product");
                 }
-                _packets.Add(ParseIt(new string[] { "[", "[", "2", "]", "]" }));
-                _packets.Last().marker = true;
-                _packets.Add(ParseIt(new string[] { "[", "[", "6", "]", "]" }));
-                _packets.Last().marker = true;
+                _packets.Add(ParseIt(new string[] { "[", "[", "2", "]", "]" },true));
+                //_packets.Last().marker = true;
+                _packets.Add(ParseIt(new string[] { "[", "[", "6", "]", "]" },true));
+                //_packets.Last().marker = true;
                 bool sorted;
                 Packet temp;
                 int iteration = 0;
@@ -101,7 +101,7 @@ namespace Puzzles
 
                 int retval = 1;
                 for (int i = 0; i < _packets.Count; i++) if (_packets[i].marker) retval *= (i + 1);
-                return FormatResult(retval, "xxx");
+                return FormatResult(retval, "marker index product");
             }
 
             private int Compare(Packet left, Packet right, int level = 0)
@@ -175,11 +175,12 @@ namespace Puzzles
                 public Packet parent;
                 public List<Packet> list = new();
                 public int integer = -1;
-                public bool marker = false;
+                public bool marker;
 
-                public Packet(Packet parent)
+                public Packet(Packet parent, bool marker = false)
                 {
                     this.parent = parent;
+                    this.marker = marker;
                 }
 
                 public string Export()
