@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Microsoft.VisualBasic;
 
 namespace Puzzles
 {
@@ -18,7 +19,7 @@ namespace Puzzles
             {
                 AddInputFile(@"2022\13_Example.txt");
                 AddInputFile(@"2022\13_rAiner.txt");
-                //AddInputFile(@"2022\13_SEGCC.txt");
+                AddInputFile(@"2022\13_SEGCC.txt");
             }
 
             public override void Init(string InputFile)
@@ -78,18 +79,56 @@ namespace Puzzles
 
             public override string Solve(bool part1)
             {
-                if (!part1) return "";
-                List<int> rightOders = new();
+                if (part1)
+                {
+                    List<int> rightOders = new();
 
+                    for (int i = 0; i < _pairs.Count; i++)
+                    {
+                        int result = Compare(_pairs[i].left, _pairs[i].right);
+                        if (Verbose) Console.WriteLine($"Pair {i + 1} -> {result}");
+                        if (result == 1) rightOders.Add(i + 1);
+                    }
+
+                    return FormatResult(rightOders.Aggregate((x, y) => x + y), "not yet implemented");
+                }
+                Packet[] _packets = new Packet[_pairs.Count * 2 + 2];
                 for (int i = 0; i < _pairs.Count; i++)
                 {
-                    int result = Compare(_pairs[i].left, _pairs[i].right);
-                    Console.WriteLine($"Pair {i + 1} -> {result}");
-                    if (result == 1) rightOders.Add(i + 1);
+                    _packets[i * 2] = _pairs[i].left;
+                    _packets[i * 2 + 1] = _pairs[i].right;
                 }
+                _packets[_pairs.Count*2] = ParseIt(new string[] { "[", "[", "2", "]", "]" });
+                _packets[_pairs.Count * 2].marker = true;
+                _packets[_pairs.Count *2+ 1] = ParseIt(new string[] { "[", "[", "6", "]", "]" });
+                _packets[_pairs.Count * 2 + 1].marker = true;
+                bool sorted;
+                Packet temp;
+                int iteration = 0;
+                do
+                {
+                    //Console.WriteLine($"quick sort iteration {iteration++}");
+                    sorted = true;// assume best
+                    for (int i = 0; i < _packets.Length - 1; i++)
+                    {
+                        //Console.WriteLine($"packet indes {i}");
+                        if (Compare(_packets[i], _packets[i + 1]) < 0)
+                        {
+                            temp = _packets[i];
+                            _packets[i] = _packets[i + 1];
+                            _packets[i + 1] = temp;
+                            sorted = false;
+                        }
+                    }
+                } while (!sorted);
 
-                // 6277 is too high
-                return FormatResult(rightOders.Aggregate((x, y) => x + y), "not yet implemented");
+                int retval = 1;
+                for (int i = 0; i < _packets.Length; i++)
+                {
+                    //Console.WriteLine($"{i+1}: {(_packets[i].marker?"XXX":"   ")} {_packets[i].Export()}");
+                    if (_packets[i].marker) retval *= (i + 1);
+                }
+                return FormatResult(retval, "xxx");
             }
 
             private int Compare(Packet left, Packet right, int level = 0)
@@ -146,6 +185,7 @@ namespace Puzzles
                 public Packet parent;
                 public List<Packet> list = new();
                 public int integer = -1;
+                public bool marker = false;
 
                 public Packet(Packet parent)
                 {
