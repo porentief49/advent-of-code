@@ -18,55 +18,14 @@ namespace Puzzles
             public override void SetupAll()
             {
                 AddInputFile(@"2022\13_Example.txt");
-                //AddInputFile(@"2022\13_rAiner.txt");
-                //AddInputFile(@"2022\13_SEGCC.txt");
+                AddInputFile(@"2022\13_rAiner.txt");
+                AddInputFile(@"2022\13_SEGCC.txt");
             }
 
-            public override void Init(string InputFile)
-            {
-                //Verbose = true;
-                InputData = ReadFile(InputFile, true);
-                _packets = InputData.Select(x => ParseIt(x)).ToList();
-            }
-
-            //private Packet ParseIt(string input, bool marker = false)
-            private Packet ParseIt(string input, bool marker = false)
-            {
-                string[] split = input.Replace("[", ",[,").Replace("]", ",],").Split(',', StringSplitOptions.RemoveEmptyEntries);
-                Packet entry = new(null, marker);
-                Packet current = entry;
-                if (split[0] != "[") throw new Exception("packet value needs to start with '['");
-                for (int i = 1; i < split.Length; i++)
-                {
-                    switch (split[i]) // could be done more concise
-                    {
-                        case "[":
-                            {
-                                Packet addOne = new(current);
-                                current.list.Add(addOne);
-                                current = addOne;
-                                break;
-                            }
-
-                        case "]":
-                            current = current.parent;
-                            break;
-                        default:
-                            {
-                                Packet addInt = new(current);
-                                addInt.integer = int.Parse(split[i]);
-                                current.list.Add(addInt);
-                                break;
-                            }
-                    }
-                }
-                return entry;
-            }
+            public override void Init(string InputFile) => _packets = ReadFile(InputFile, true).Select(x => Packet.Parse(x)).ToList();
 
             public override string Solve(bool part1)
             {
-                //Verbose = true;
-                //if (!part1) return "";
                 if (part1)
                 {
                     List<int> rightOrders = new();
@@ -74,19 +33,15 @@ namespace Puzzles
                     {
                         int result = _packets[i * 2].CompareTo(_packets[i * 2 + 1]);
                         if (Verbose) Console.WriteLine($"Pair {i + 1} -> {result}");
-                        if (result == 1) rightOrders.Add(i + 1);
+                        if (result == -1) rightOrders.Add(i + 1);
                     }
                     return FormatResult(rightOrders.Aggregate((x, y) => x + y), "right order index product");
                 }
-                _packets.Add(ParseIt("[[2]]", true));
-                _packets.Add(ParseIt("[[6]]", true));
+                _packets.AddRange((new string[] { "[[2]]", "[[6]]" }).Select(x => Packet.Parse(x, true)));
                 _packets.Sort();
-                _packets.Reverse();
-
-
-                int retval = 1;
-                for (int i = 0; i < _packets.Count; i++) if (_packets[i].marker) retval *= (i + 1);
-                return FormatResult(retval, "marker index product");
+                int product = 1;
+                for (int i = 0; i < _packets.Count; i++) if (_packets[i].marker) product *= (i + 1);
+                return FormatResult(product, "marker index product");
             }
 
             private class Packet : IComparable<Packet>
@@ -102,41 +57,66 @@ namespace Puzzles
                     this.marker = marker;
                 }
 
+                public static Packet Parse(string input, bool marker = false)
+                {
+                    string[] split = input.Replace("[", ",[,").Replace("]", ",],").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    Packet entry = new(null, marker);
+                    Packet current = entry;
+                    if (split[0] != "[") throw new Exception("packet value needs to start with '['");
+                    for (int i = 1; i < split.Length; i++)
+                    {
+                        if (split[i]=="]") current = current.parent;
+                        else
+                        {
+                            Packet addOne = new(current);
+                            if (split[i] == "[")
+                            {
+                                current.list.Add(addOne);
+                                current = addOne;
+                            }
+                            else
+                            {
+                                addOne.integer = int.Parse(split[i]);
+                                current.list.Add(addOne);
+                            }
+                        }
+                    }
+                    return entry;
+                }
+
                 public int CompareTo(Packet? other)
                 {
-                    Packet left = this; //####################################
-                    Packet right = other; //####################################
-                    if ((left.integer > -1) && (right.integer > -1)) // both integers
+                    if ((this.integer > -1) && (other.integer > -1)) // both integers
                     {
-                        if (left.integer < right.integer) return 1; // 1 means right sequence
-                        if (left.integer > right.integer)return -1; // -1 means wrong sequence
+                        if (this.integer < other.integer) return -1; // -1 means right sequence
+                        if (this.integer > other.integer)return 1; // 1 means wrong sequence
                     }
-                    else if ((left.integer == -1) && (right.integer == -1)) // both lists
+                    else if ((this.integer == -1) && (other.integer == -1)) // both lists
                     {
-                        for (int i = 0; i < Math.Max(left.list.Count, right.list.Count); i++)
+                        for (int i = 0; i < Math.Max(this.list.Count, other.list.Count); i++)
                         {
-                            if ((i < left.list.Count) && (i < right.list.Count))
+                            if ((i < this.list.Count) && (i < other.list.Count))
                             {
-                                int result = left.list[i].CompareTo(right.list[i]); //####################################
+                                int result = this.list[i].CompareTo(other.list[i]); 
                                 if (result != 0) return result;
                             }
                             else
                             {
-                                if (left.list.Count < right.list.Count) return 1;
-                                else return -1;
+                                if (this.list.Count < other.list.Count) return -1;
+                                else return 1;
                             }
                         }
                         return 0; // 0 means no decision (yet), can't happen at the outermost call
                     }
                     else // mixed types
                     {
-                        bool which = left.integer > -1;
-                        Packet toReplace = which ? left : right;
+                        bool which = this.integer > -1;
+                        Packet toReplace = which ? this : other;
                         Packet replacement = new(toReplace);
                         replacement.integer = toReplace.integer;
                         toReplace.list.Add(replacement);
                         toReplace.integer = -1;
-                        return left.CompareTo(right); //####################################
+                        return this.CompareTo(other); 
                     }
                     return 0;
                 }
