@@ -11,38 +11,21 @@ namespace Puzzles
     {
         public class Day13 : DayBase
         {
-            private List<(Packet left, Packet right)> _pairs;
-
+            List<Packet> _packets;
             protected override string Title { get; } = "Day 13: Distress Signal";
 
             public override void SetupAll()
             {
                 AddInputFile(@"2022\13_Example.txt");
-                AddInputFile(@"2022\13_rAiner.txt");
-                AddInputFile(@"2022\13_SEGCC.txt");
+                //AddInputFile(@"2022\13_rAiner.txt");
+                //AddInputFile(@"2022\13_SEGCC.txt");
             }
 
             public override void Init(string InputFile)
             {
-                const int pairSize = 2;
+                //Verbose = true;
                 InputData = ReadFile(InputFile, true);
-                _pairs = new();
-                for (int i = 0; i < InputData.Length / (pairSize); i++)
-                {
-                    string[] left = InputData[i * pairSize].Replace("[", ",[,").Replace("]", ",],").Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    string[] right = InputData[i * pairSize + 1].Replace("[", ",[,").Replace("]", ",],").Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    //Console.WriteLine(string.Join(" ", left));
-                    //Console.WriteLine(string.Join(" ", right));
-                    //Console.WriteLine("");
-                    _pairs.Add((ParseIt(left), ParseIt(right)));
-                }
-                //Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                //foreach (var packet in _pairs)
-                //{
-                //    Console.WriteLine(packet.left.Export());
-                //    Console.WriteLine(packet.right.Export());
-                //    Console.WriteLine("");
-                //}
+                _packets = InputData.Select(x => ParseIt(x.Replace("[", ",[,").Replace("]", ",],").Split(',', StringSplitOptions.RemoveEmptyEntries))).ToList();
             }
 
             private Packet ParseIt(string[] input)
@@ -79,39 +62,33 @@ namespace Puzzles
 
             public override string Solve(bool part1)
             {
+                //if (!part1) return "";
                 if (part1)
                 {
-                    List<int> rightOders = new();
+                    List<int> rightOrders = new();
 
-                    for (int i = 0; i < _pairs.Count; i++)
+                    for (int i = 0; i < _packets.Count / 2; i++)
                     {
-                        int result = Compare(_pairs[i].left, _pairs[i].right);
+                        int result = Compare(_packets[i * 2], _packets[i * 2 + 1]);
                         if (Verbose) Console.WriteLine($"Pair {i + 1} -> {result}");
-                        if (result == 1) rightOders.Add(i + 1);
+                        if (result == 1) rightOrders.Add(i + 1);
                     }
-
-                    return FormatResult(rightOders.Aggregate((x, y) => x + y), "not yet implemented");
+                    return FormatResult(rightOrders.Aggregate((x, y) => x + y), "not yet implemented");
                 }
-                Packet[] _packets = new Packet[_pairs.Count * 2 + 2];
-                for (int i = 0; i < _pairs.Count; i++)
-                {
-                    _packets[i * 2] = _pairs[i].left;
-                    _packets[i * 2 + 1] = _pairs[i].right;
-                }
-                _packets[_pairs.Count*2] = ParseIt(new string[] { "[", "[", "2", "]", "]" });
-                _packets[_pairs.Count * 2].marker = true;
-                _packets[_pairs.Count *2+ 1] = ParseIt(new string[] { "[", "[", "6", "]", "]" });
-                _packets[_pairs.Count * 2 + 1].marker = true;
+                _packets.Add(ParseIt(new string[] { "[", "[", "2", "]", "]" }));
+                _packets.Last().marker = true;
+                _packets.Add(ParseIt(new string[] { "[", "[", "6", "]", "]" }));
+                _packets.Last().marker = true;
                 bool sorted;
                 Packet temp;
                 int iteration = 0;
                 do
                 {
-                    //Console.WriteLine($"quick sort iteration {iteration++}");
+                    if (Verbose) Console.WriteLine($"quick sort iteration {iteration++}");
                     sorted = true;// assume best
-                    for (int i = 0; i < _packets.Length - 1; i++)
+                    for (int i = 0; i < _packets.Count - 1; i++)
                     {
-                        //Console.WriteLine($"packet indes {i}");
+                        if (Verbose) Console.WriteLine($"packet index {i}");
                         if (Compare(_packets[i], _packets[i + 1]) < 0)
                         {
                             temp = _packets[i];
@@ -123,11 +100,7 @@ namespace Puzzles
                 } while (!sorted);
 
                 int retval = 1;
-                for (int i = 0; i < _packets.Length; i++)
-                {
-                    //Console.WriteLine($"{i+1}: {(_packets[i].marker?"XXX":"   ")} {_packets[i].Export()}");
-                    if (_packets[i].marker) retval *= (i + 1);
-                }
+                for (int i = 0; i < _packets.Count; i++) if (_packets[i].marker) retval *= (i + 1);
                 return FormatResult(retval, "xxx");
             }
 
@@ -136,8 +109,16 @@ namespace Puzzles
                 if (Verbose) Console.WriteLine("  ".Repeat(level) + $"- Compare {left.Export()}vs {right.Export()}");
                 if ((left.integer > -1) && (right.integer > -1))
                 {
-                    if (left.integer < right.integer) return 1;
-                    if (left.integer > right.integer) return -1;
+                    if (left.integer < right.integer)
+                    {
+                        if (Verbose) Console.WriteLine("  ".Repeat(level + 1) + "- Left side is smaller, so inputs are in the right order\r\n");
+                        return 1;
+                    }
+                    if (left.integer > right.integer)
+                    {
+                        if (Verbose) Console.WriteLine("  ".Repeat(level + 1) + "- Right side is smaller, so inputs are not in the right order\r\n");
+                        return -1;
+                    }
                 }
                 else if ((left.integer == -1) && (right.integer == -1))
                 {
@@ -150,7 +131,16 @@ namespace Puzzles
                         }
                         else
                         {
-                            return (left.list.Count < right.list.Count ? 1 : -1);
+                            if (left.list.Count < right.list.Count)
+                            {
+                                if (Verbose) Console.WriteLine("  ".Repeat(level + 1) + "- Left side ran out of items, so inputs are in the right order\r\n");
+                                return 1;
+                            }
+                            else
+                            {
+                                if (Verbose) Console.WriteLine("  ".Repeat(level + 1) + "- Right side ran out of items, so inputs are not in the right order\r\n");
+                                return -1;
+                            }
                         }
                     }
                     return 0;
