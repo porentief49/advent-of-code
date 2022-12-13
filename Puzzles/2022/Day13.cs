@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Net.Sockets;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.VisualBasic;
 
@@ -28,19 +29,18 @@ namespace Puzzles
             {
                 if (part1)
                 {
-                    List<int> rightOrders = new();
+                    int rightOrders = 0;
                     for (int i = 0; i < _packets.Count / 2; i++)
                     {
                         int result = _packets[i * 2].CompareTo(_packets[i * 2 + 1]);
                         if (Verbose) Console.WriteLine($"Pair {i + 1} -> {result}");
-                        if (result == -1) rightOrders.Add(i + 1);
+                        if (result == -1) rightOrders+=(i + 1);
                     }
-                    return FormatResult(rightOrders.Aggregate((x, y) => x + y), "right order index product");
+                    return FormatResult(rightOrders, "right order index sum");
                 }
                 _packets.AddRange((new string[] { "[[2]]", "[[6]]" }).Select(x => Packet.Parse(x, true)));
                 _packets.Sort();
-                int product = 1;
-                for (int i = 0; i < _packets.Count; i++) if (_packets[i].marker) product *= (i + 1);
+                int product = Enumerable.Range(0, _packets.Count).Where(x => _packets[x].marker).Aggregate((x, y) => (x+1) * (y+1));
                 return FormatResult(product, "marker index product");
             }
 
