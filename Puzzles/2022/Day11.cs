@@ -22,6 +22,7 @@ namespace Puzzles
                 AddInputFile(@"2022\11_Example.txt");
                 AddInputFile(@"2022\11_rAiner.txt");
                 AddInputFile(@"2022\11_SEGCC.txt");
+                AddInputFile(@"2022\11_Jens.txt");
             }
 
             public override void Init(string InputFile)
