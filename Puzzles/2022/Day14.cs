@@ -10,6 +10,7 @@ namespace Puzzles
         {
             private const int _xStart = 500;
             private const int _yStart = 0;
+            private bool _part1 = false;
 
             private List<List<(int y, int x)>> _rocks = new();
             private char[][] _cave;
@@ -23,17 +24,13 @@ namespace Puzzles
             public override void SetupAll()
             {
                 AddInputFile(@"2022\14_Example.txt");
-                //AddInputFile(@"2022\14_rAiner.txt");
-                //AddInputFile(@"2022\14_SEGCC.txt");
+                AddInputFile(@"2022\14_rAiner.txt");
+                AddInputFile(@"2022\14_SEGCC.txt");
             }
 
             public override void Init(string InputFile)
             {
                 InputData = ReadFile(InputFile, true);
-                //_rocks = InputData.Select(x=>x)
-                //List<(int x, int y)> row = InputData[0].Split(" -> ").Select(x => x.Split(',').Select((x, y) => (x, y).ToTuple())).ToList();
-                //(int x, int y) row = InputData[0].Split(',').Select((xx, yy) => (int.Parse(xx), int.Parse(yy)));
-                //(int x, int y) row = InputData[0].Split(" -> ").Select(x => x.Split(',').Select((string x, string y) => (int.Parse(x), int.Parse(y)).ToTuple()));
                 foreach (var item in InputData)
                 {
                     List<(int x, int y)> coords = new();
@@ -50,27 +47,24 @@ namespace Puzzles
                     }
                     _rocks.Add(coords);
                 }
-                //}
-                //_yMin = _rocks.Select(c => c.Select(c => c.x).Min()).Min();
-                //_yMax = _rocks.Select(c => c.Select(c => c.x).Max()).Max();
             }
 
             public override string Solve(bool Part1)
             {
-                //if (!Part1) return "";
-                BuildCave(InputData, Part1);
+                _part1 = Part1;
+                BuildCave();
                 if (Verbose) PrintGrid(_cave);
                 int count = 0;
-                while (DropSand(Part1))
+                while (DropSand())
                 {
                     count++;
                     if (Verbose) PrintGrid(_cave);
                 }
-
                 return FormatResult(count, "sand units");
             }
 
             private void SetCave(int y, int x, char what) => _cave[y - _yMin][x - _xMin] = what;
+
             private char GetCave(int y, int x, bool part1)
             {
                 if (!part1 && y == _yMax) return '#'; // part2 has an infinite base at the bottom
@@ -78,14 +72,10 @@ namespace Puzzles
                 return _cave[y - _yMin][x - _xMin];
             }
 
-            public void BuildCave(string[] InputData, bool part1)
+            public void BuildCave()
             {
                 // build field
-                //_yMin = Math.Min(InputData.Select(x => x.Split(" -> ").Select(x => int.Parse(x.Split(',')[1])).Min()).Min(), _yStart);
-                //_yMax = Math.Max(InputData.Select(x => x.Split(" -> ").Select(x => int.Parse(x.Split(',')[1])).Max()).Max(), _yStart);
-                //_xMin = Math.Min(InputData.Select(x => x.Split(" -> ").Select(x => int.Parse(x.Split(',')[0])).Min()).Min(), _xStart);
-                //_xMax = Math.Max(InputData.Select(x => x.Split(" -> ").Select(x => int.Parse(x.Split(',')[0])).Max()).Max(), _xStart);
-                if (!part1)
+                if (!_part1)
                 {
                     _yMax += 2;
                     int height = _yMax - _yMin;
@@ -95,16 +85,8 @@ namespace Puzzles
                 _cave = InitJaggedArray(_yMax - _yMin + 1, _xMax - _xMin + 1, '.');
 
                 // add rocks
-                //for (int i = 0; i < InputData.Count(); i++)
-                //for (int i = 0; i < _rocks.Count(); i++)
                 foreach (var rock in _rocks)
                 {
-                    //List<(int y, int x)> rocks = new();
-                    //foreach (var coord in InputData[i].Split(" -> "))
-                    //{
-                    //    string[] coordsplit = coord.Split(',');
-                    //    rocks.Add((int.Parse(coordsplit[1]), int.Parse(coordsplit[0])));
-                    //}
                     for (int ii = 1; ii < rock.Count; ii++)
                     {
                         int yInc = Math.Sign(rock[ii].y - rock[ii - 1].y);
@@ -122,21 +104,21 @@ namespace Puzzles
                 }
             }
 
-            public bool DropSand(bool part1)
+            public bool DropSand()
             {
                 int x = _xStart;
                 int y = _yStart;
                 bool done = false;
-                if (GetCave(y, x, part1) != '.') return false;
+                if (GetCave(y, x, _part1) != '.') return false;
                 do
                 {
-                    if (GetCave(y + 1, x, part1) == '.') y++; // fall straight down
-                    else if (GetCave(y + 1, x - 1, part1) == '.') // slide to the left
+                    if (GetCave(y + 1, x, _part1) == '.') y++; // fall straight down
+                    else if (GetCave(y + 1, x - 1, _part1) == '.') // slide to the left
                     {
                         y++;
                         x--;
                     }
-                    else if (GetCave(y + 1, x + 1, part1) == '.') // slide to the right
+                    else if (GetCave(y + 1, x + 1, _part1) == '.') // slide to the right
                     {
                         y++;
                         x++;
