@@ -14,7 +14,7 @@ namespace Puzzles
             public override void SetupAll()
             {
                 AddInputFile(@"2022\14_Example.txt");
-                //AddInputFile(@"2022\14_rAiner.txt");
+                AddInputFile(@"2022\14_rAiner.txt");
                 //AddInputFile(@"2022\14_SEGCC.txt");
             }
 
@@ -22,14 +22,14 @@ namespace Puzzles
 
             public override string Solve(bool Part1)
             {
-                if (!Part1) return "";
+                if (Part1) return "";
                 Cave.Build(InputData, Part1);
                 Cave.Print();
                 int count = 0;
                 while (Cave.DropSand(Part1))
                 {
                     count++;
-                    Cave.Print();
+                    //Cave.Print();
                 }
 
                 return FormatResult(count, "sand units");
@@ -45,11 +45,12 @@ namespace Puzzles
                 public static int _yMax;
                 public static int _xMin;
                 public static int _xMax;
-                public static int _yFloor;
+                //public static int _yFloor;
 
                 private static void SetCave(int y, int x, char what) => _cave[y - _yMin][x - _xMin] = what;
-                private static char GetCave(int y, int x)
+                private static char GetCave(int y, int x, bool part1)
                 {
+                    if (!part1 && y == _yMax) return '#';
                     if (y < _yMin || y > _yMax || x < _xMin || x > _xMax) return '.'; // to avoid error when trying to peek outside the grid
                     return _cave[y - _yMin][x - _xMin];
                 }
@@ -61,7 +62,13 @@ namespace Puzzles
                     _yMax = Math.Max(InputData.Select(x => x.Split(" -> ").Select(x => int.Parse(x.Split(',')[1])).Max()).Max(), _yStart);
                     _xMin = Math.Min(InputData.Select(x => x.Split(" -> ").Select(x => int.Parse(x.Split(',')[0])).Min()).Min(), _xStart);
                     _xMax = Math.Max(InputData.Select(x => x.Split(" -> ").Select(x => int.Parse(x.Split(',')[0])).Max()).Max(), _xStart);
-                    _yFloor = _yMax + 2;
+                    //_yFloor = _yMax + 2;
+                    if (!part1)
+                    {
+                        _yMax += 2;
+                        _xMin -= 500;
+                        _xMax += 500;
+                    }
                     //_cave = InitJaggedArray(part1 ? _yMax : _yFloor - _yMin + 1, _xMax - _xMin + 1, '.');
                     _cave = InitJaggedArray(_yMax - _yMin + 1, _xMax - _xMin + 1, '.');
                     //if (!part1) _yMax = _yFloor;
@@ -97,16 +104,17 @@ namespace Puzzles
                     int x = _xStart;
                     int y = _yStart;
                     bool done = false;
+                    if (GetCave(y, x, part1) != '.') return false;
                     do
                     {
-                        //if (!part1 && GetCave(y, x) != '.') done = true;
-                        if (GetCave(y + 1, x) == '.') y++;
-                        else if (GetCave(y + 1, x - 1) == '.')
+                        //if (!part1 && GetCave(y, x - 1) != '.') return false;
+                        if (GetCave(y + 1, x, part1) == '.') y++;
+                        else if (GetCave(y + 1, x - 1, part1) == '.')
                         {
                             y++;
                             x--;
                         }
-                        else if (GetCave(y + 1, x + 1) == '.')
+                        else if (GetCave(y + 1, x + 1, part1) == '.')
                         {
                             y++;
                             x++;
@@ -114,7 +122,7 @@ namespace Puzzles
                         else
                         {
                             SetCave(y, x, 'o');
-                            if (part1) done = true;
+                            done = true;
                         }
                         if (y == _yMax) return false;
                     } while (!done);
