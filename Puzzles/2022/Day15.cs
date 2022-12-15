@@ -75,12 +75,15 @@ namespace Puzzles
                 //List<(int y, int x)> _possibleLocations;
                 long xx = 0;
                 long yy = 0;
+                long xxfound = 0;
+                long yyfound = 0;
                 for (int thisSensor = 0; thisSensor < _sensors.Count; thisSensor++)
                 {
+                    bool good = true;
                     Console.WriteLine($"this sensor: {thisSensor}");
                     for (long i = 0; i <= _sensors[thisSensor].ManhattanDist; i++)
                     {
-                        bool good = true; // be optimistic
+                        good = true; // be optimistic
 
                         //move from rightmost to left up
                         xx = _sensors[thisSensor].xSensor + (_sensors[thisSensor].ManhattanDist + 1 - i);
@@ -103,7 +106,13 @@ namespace Puzzles
                                 }
                             }
                         }
-                        if (good) Console.WriteLine($"found one at x {xx}, y {yy}");
+                        if (good)
+                        {
+                            Console.WriteLine($"found one at x {xx}, y {yy}");
+                            xxfound = xx;
+                            yyfound = yy;
+                            break;
+                        }
 
                         //move from toptmost to left down
                         xx = _sensors[thisSensor].xSensor - i;
@@ -126,7 +135,13 @@ namespace Puzzles
                                 }
                             }
                         }
-                        if (good) Console.WriteLine($"found one at x {xx}, y {yy}");
+                        if (good)
+                        {
+                            Console.WriteLine($"found one at x {xx}, y {yy}");
+                            xxfound = xx;
+                            yyfound = yy;
+                            break;
+                        }
 
                         //move from leftmost to right down
                         xx = _sensors[thisSensor].xSensor - (_sensors[thisSensor].ManhattanDist + 1 - i);
@@ -149,7 +164,13 @@ namespace Puzzles
                                 }
                             }
                         }
-                        if (good) Console.WriteLine($"found one at x {xx}, y {yy}");
+                        if (good)
+                        {
+                            Console.WriteLine($"found one at x {xx}, y {yy}");
+                            xxfound = xx;
+                            yyfound = yy;
+                            break;
+                        }
 
                         //move from bottommost to right up
                         xx = _sensors[thisSensor].xSensor + i;
@@ -172,13 +193,21 @@ namespace Puzzles
                                 }
                             }
                         }
-                        if (good) Console.WriteLine($"found one at x {xx}, y {yy}");
+                        if (good)
+                        {
+                            Console.WriteLine($"found one at x {xx}, y {yy}");
+                            xxfound = xx;
+                            yyfound = yy;
+                            break;
+                        }
                     }
+                    if (good) break;
                 }
 
                 //found one at x 2572895, y 2906626
                 // 10291582906626 is right
-                return "";
+                //return FormatResult($"{xxfound * 4} {yyfound}", $"tuning frequency");
+                return FormatResult($"{xx * 4000000 + yy}", $"tuning frequency");
             }
 
             private class Sensor
