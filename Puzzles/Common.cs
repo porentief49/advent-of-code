@@ -77,6 +77,7 @@ namespace Puzzles
         }
 
         protected static void PrintGrid(bool[][] Grid) => Console.WriteLine(string.Join("\r\n", Grid.Select(y => string.Concat(y.Select(x => x ? '#' : '.')))) + "\r\n");
+        protected static void PrintGrid(char[][] Grid) => Console.WriteLine(string.Join("\r\n", Grid.Select(y => new string(y))) + "\r\n");
 
         protected static void PrintGrid(int[][] Grid, int digits) => Console.WriteLine(string.Join("\r\n", Grid.Select(y => string.Join(' ', y.Select(x => x.ToString() + " ".Repeat(digits).Substring(0, digits)).ToArray()))) + "\r\n");
     }
