@@ -10,21 +10,30 @@ namespace Puzzles
         public class Day15 : DayBase
         {
             private List<Sensor> _sensors;
+            private bool _isExample = false;
 
             protected override string Title { get; } = "Day 15: Beacon Exclusion Zone:";
 
             public override void SetupAll()
             {
-                //AddInputFile(@"2022\15_Example.txt");
+                AddInputFile(@"2022\15_Example.txt");
                 AddInputFile(@"2022\15_rAiner.txt");
                 //AddInputFile(@"2022\15_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile)
+            {
+                InputData = ReadFile(InputFile, true);
+                _isExample = InputFile.Contains("Example");
+            }
 
             public override string Solve(bool Part1)
             {
-                if (Part1) return "";
+                long part1searchRow = _isExample ? 10 : 2000000;
+                long part1searchRange = _isExample ? 50 : 20000000;
+                long maxDim = _isExample ? 20 : 4000000;
+
+                //if (!Part1) return "";
                 _sensors = new();
                 foreach (var line in InputData)
                 {
@@ -35,16 +44,16 @@ namespace Puzzles
                 {
                     //PrintGrid(_map);
                     //int row = 10; //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    int row = 2000000;
-                    int noBeaconLocations = 0;
+                    //long row = 2000000;
+                    long noBeaconLocations = 0;
                     //for (int i = -10; i < 50; i++)//EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    for (int i = -20000000; i < 20000000; i++) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    for (long i = -part1searchRange; i < part1searchRange; i++) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     {
                         //check for beacons
                         bool foundBeacon = false;
                         foreach (var sensor in _sensors)
                         {
-                            if (sensor.yBeacon == row && sensor.xBeacon == i)
+                            if (sensor.yBeacon == part1searchRow && sensor.xBeacon == i)
                             {
                                 foundBeacon = true;
                                 break;
@@ -56,7 +65,7 @@ namespace Puzzles
                         {
                             foreach (var sensor in _sensors)
                             {
-                                if (sensor.CalcManhattanDist(sensor.ySensor, sensor.xSensor, row, i) <= sensor.ManhattanDist)
+                                if (sensor.CalcManhattanDist(sensor.ySensor, sensor.xSensor, part1searchRow, i) <= sensor.ManhattanDist)
                                 {
                                     noBeaconLocations++;
                                     break;
@@ -64,7 +73,7 @@ namespace Puzzles
                             }
                         }
                     }
-                    return FormatResult(noBeaconLocations, $"no beacons in row {row}");
+                    return FormatResult(noBeaconLocations, $"no beacons in row {part1searchRow}");
                     //1000000: 1529240
                     //3000000: 3529239
                     //10000000: 5403290
@@ -75,8 +84,6 @@ namespace Puzzles
                 //List<(int y, int x)> _possibleLocations;
                 long xx = 0;
                 long yy = 0;
-                long xxfound = 0;
-                long yyfound = 0;
                 for (int thisSensor = 0; thisSensor < _sensors.Count; thisSensor++)
                 {
                     bool good = true;
@@ -94,7 +101,7 @@ namespace Puzzles
                             {
                                 //Console.WriteLine($"  other sensor {thisSensor}");
                                 //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                if (xx < 0 || xx > 4000000 || yy < 0 || yy > 4000000)
+                                if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
                                 {
                                     good = false;
                                     break;
@@ -109,8 +116,8 @@ namespace Puzzles
                         if (good)
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
-                            xxfound = xx;
-                            yyfound = yy;
+                            //xxfound = xx;
+                            //yyfound = yy;
                             break;
                         }
 
@@ -123,7 +130,7 @@ namespace Puzzles
                             {
                                 //Console.WriteLine($"  other sensor {thisSensor}");
                                 //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                if (xx < 0 || xx > 4000000 || yy < 0 || yy > 4000000)
+                                if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
                                 {
                                     good = false;
                                     break;
@@ -138,8 +145,8 @@ namespace Puzzles
                         if (good)
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
-                            xxfound = xx;
-                            yyfound = yy;
+                            //xxfound = xx;
+                            //yyfound = yy;
                             break;
                         }
 
@@ -152,7 +159,7 @@ namespace Puzzles
                             {
                                 //Console.WriteLine($"  other sensor {thisSensor}");
                                 //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                if (xx < 0 || xx > 4000000 || yy < 0 || yy > 4000000)
+                                if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
                                 {
                                     good = false;
                                     break;
@@ -167,8 +174,8 @@ namespace Puzzles
                         if (good)
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
-                            xxfound = xx;
-                            yyfound = yy;
+                            //xxfound = xx;
+                            //yyfound = yy;
                             break;
                         }
 
@@ -181,7 +188,7 @@ namespace Puzzles
                             {
                                 //Console.WriteLine($"  other sensor {thisSensor}");
                                 //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                if (xx < 0 || xx > 4000000 || yy < 0 || yy > 4000000)
+                                if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
                                 {
                                     good = false;
                                     break;
@@ -196,17 +203,13 @@ namespace Puzzles
                         if (good)
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
-                            xxfound = xx;
-                            yyfound = yy;
+                            //xxfound = xx;
+                            //yyfound = yy;
                             break;
                         }
                     }
                     if (good) break;
                 }
-
-                //found one at x 2572895, y 2906626
-                // 10291582906626 is right
-                //return FormatResult($"{xxfound * 4} {yyfound}", $"tuning frequency");
                 return FormatResult($"{xx * 4000000 + yy}", $"tuning frequency");
             }
 
