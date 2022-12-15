@@ -11,6 +11,7 @@ namespace Puzzles
         {
             private List<Sensor> _sensors;
             private bool _isExample = false;
+            long _maxDim;
 
             protected override string Title { get; } = "Day 15: Beacon Exclusion Zone:";
 
@@ -31,7 +32,7 @@ namespace Puzzles
             {
                 long part1searchRow = _isExample ? 10 : 2000000;
                 long part1searchRange = _isExample ? 50 : 20000000;
-                long maxDim = _isExample ? 20 : 4000000;
+                _maxDim = _isExample ? 20 : 4000000;
 
                 _sensors = new();
                 foreach (var line in InputData)
@@ -61,9 +62,9 @@ namespace Puzzles
                             foreach (var sensor in _sensors)
                             {
                                 //if (sensor.CalcManhattanDist_OLD(sensor.ySensor, sensor.xSensor, part1searchRow, i) <= sensor.ManhattanDist)
-                                    if (sensor.CalcManhattanDist(part1searchRow, i) <= sensor.ManhattanDist)
-                                    {
-                                        noBeaconLocations++;
+                                if (sensor.CalcManhattanDist(part1searchRow, i) <= sensor.ManhattanDist)
+                                {
+                                    noBeaconLocations++;
                                     break;
                                 }
                             }
@@ -75,117 +76,62 @@ namespace Puzzles
                 //Part2: sensor must sit on an edge of a diamond shape
                 long xx = 0;
                 long yy = 0;
-                for (int thisSensor = 0; thisSensor < _sensors.Count; thisSensor++)
+                bool good = false;
+                for (int i = 0; i < _sensors.Count; i++)
                 {
-                    bool good = true;
-                    Console.WriteLine($"this sensor: {thisSensor}");
-                    for (long i = 0; i <= _sensors[thisSensor].ManhattanDist; i++)
+                    Console.WriteLine($"this sensor: {i}");
+                    for (long ii = 0; ii <= _sensors[i].ManhattanDist; ii++)
                     {
-                        good = true; // be optimistic
-
                         //move from rightmost to left up
-                        xx = _sensors[thisSensor].xSensor + (_sensors[thisSensor].ManhattanDist + 1 - i);
-                        yy = _sensors[thisSensor].ySensor - i;
-                        for (int otherSensor = 0; otherSensor < _sensors.Count; otherSensor++)
-                        {
-                            if (thisSensor != otherSensor)
-                            {
-                                if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
-                                {
-                                    good = false;
-                                    break;
-                                }
-                                if (_sensors[otherSensor].CalcManhattanDist(yy, xx) <= _sensors[otherSensor].ManhattanDist)
-                                {
-                                    good = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (good)
+                        xx = _sensors[i].xSensor + (_sensors[i].ManhattanDist + 1 - ii);
+                        yy = _sensors[i].ySensor - ii;
+                        if (CheckOutsideRange(yy, xx))
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
+                            good = true;
                             break;
                         }
 
                         //move from toptmost to left down
-                        xx = _sensors[thisSensor].xSensor - i;
-                        yy = _sensors[thisSensor].ySensor - (_sensors[thisSensor].ManhattanDist + 1 - i);
-                        for (int otherSensor = 0; otherSensor < _sensors.Count; otherSensor++)
-                        {
-                            if (thisSensor != otherSensor)
-                            {
-                                if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
-                                {
-                                    good = false;
-                                    break;
-                                }
-                                if (_sensors[otherSensor].CalcManhattanDist(yy, xx) <= _sensors[otherSensor].ManhattanDist)
-                                {
-                                    good = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (good)
+                        xx = _sensors[i].xSensor - ii;
+                        yy = _sensors[i].ySensor - (_sensors[i].ManhattanDist + 1 - ii);
+                        if (CheckOutsideRange(yy, xx))
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
+                            good = true;
                             break;
                         }
 
                         //move from leftmost to right down
-                        xx = _sensors[thisSensor].xSensor - (_sensors[thisSensor].ManhattanDist + 1 - i);
-                        yy = _sensors[thisSensor].ySensor + i;
-                        for (int otherSensor = 0; otherSensor < _sensors.Count; otherSensor++)
-                        {
-                            if (thisSensor != otherSensor)
-                            {
-                                if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
-                                {
-                                    good = false;
-                                    break;
-                                }
-                                if (_sensors[otherSensor].CalcManhattanDist(yy, xx) <= _sensors[otherSensor].ManhattanDist)
-                                {
-                                    good = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (good)
+                        xx = _sensors[i].xSensor - (_sensors[i].ManhattanDist + 1 - ii);
+                        yy = _sensors[i].ySensor + ii;
+                        if (CheckOutsideRange(yy, xx))
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
+                            good = true;
                             break;
                         }
 
                         //move from bottommost to right up
-                        xx = _sensors[thisSensor].xSensor + i;
-                        yy = _sensors[thisSensor].ySensor + (_sensors[thisSensor].ManhattanDist + 1 - i);
-                        for (int otherSensor = 0; otherSensor < _sensors.Count; otherSensor++)
-                        {
-                            if (thisSensor != otherSensor)
-                            {
-                                if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
-                                {
-                                    good = false;
-                                    break;
-                                }
-                                if (_sensors[otherSensor].CalcManhattanDist(yy, xx) <= _sensors[otherSensor].ManhattanDist)
-                                {
-                                    good = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (good)
+                        xx = _sensors[i].xSensor + ii;
+                        yy = _sensors[i].ySensor + (_sensors[i].ManhattanDist + 1 - ii);
+                        if (CheckOutsideRange(yy, xx))
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
+                            good = true;
                             break;
                         }
                     }
                     if (good) break;
                 }
                 return FormatResult($"{xx * 4000000 + yy}", $"tuning frequency");
+            }
+
+            private bool CheckOutsideRange(long y, long x)
+            {
+                if (x < 0 || x > _maxDim || y < 0 || y > _maxDim) return false;
+                for (int i = 0; i < _sensors.Count; i++) if (_sensors[i].CalcManhattanDist(y, x) <= _sensors[i].ManhattanDist) return false;
+                return true;
             }
 
             private class Sensor
