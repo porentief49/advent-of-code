@@ -15,8 +15,8 @@ namespace Puzzles
 
             public override void SetupAll()
             {
-                AddInputFile(@"2022\15_Example.txt");
-                //AddInputFile(@"2022\15_rAiner.txt");
+                //AddInputFile(@"2022\15_Example.txt");
+                AddInputFile(@"2022\15_rAiner.txt");
                 //AddInputFile(@"2022\15_SEGCC.txt");
             }
 
@@ -24,7 +24,7 @@ namespace Puzzles
 
             public override string Solve(bool Part1)
             {
-                //if (!Part1) return "";
+                if (Part1) return "";
                 _sensors = new();
                 foreach (var line in InputData)
                 {
@@ -34,11 +34,11 @@ namespace Puzzles
                 if (Part1)
                 {
                     //PrintGrid(_map);
-                    int row = 10;
-                    //int row = 2000000;
+                    //int row = 10; //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    int row = 2000000;
                     int noBeaconLocations = 0;
-                    for (int i = -10; i < 50; i++)
-                    //for (int i = -20000000; i < 20000000; i++)
+                    //for (int i = -10; i < 50; i++)//EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    for (int i = -20000000; i < 20000000; i++) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     {
                         //check for beacons
                         bool foundBeacon = false;
@@ -77,7 +77,7 @@ namespace Puzzles
                 long yy = 0;
                 for (int thisSensor = 0; thisSensor < _sensors.Count; thisSensor++)
                 {
-                    //Console.WriteLine($"this sensor: {thisSensor}");
+                    Console.WriteLine($"this sensor: {thisSensor}");
                     for (long i = 0; i <= _sensors[thisSensor].ManhattanDist; i++)
                     {
                         bool good = true; // be optimistic
@@ -90,7 +90,8 @@ namespace Puzzles
                             if (thisSensor != otherSensor)
                             {
                                 //Console.WriteLine($"  other sensor {thisSensor}");
-                                if (xx < 0 || xx > 20 || yy < 0 || yy > 40)
+                                //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                if (xx < 0 || xx > 4000000 || yy < 0 || yy > 4000000)
                                 {
                                     good = false;
                                     break;
@@ -112,7 +113,8 @@ namespace Puzzles
                             if (thisSensor != otherSensor)
                             {
                                 //Console.WriteLine($"  other sensor {thisSensor}");
-                                if (xx < 0 || xx > 20 || yy < 0 || yy > 40)
+                                //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                if (xx < 0 || xx > 4000000 || yy < 0 || yy > 4000000)
                                 {
                                     good = false;
                                     break;
@@ -134,7 +136,8 @@ namespace Puzzles
                             if (thisSensor != otherSensor)
                             {
                                 //Console.WriteLine($"  other sensor {thisSensor}");
-                                if (xx < 0 || xx > 20 || yy < 0 || yy > 40)
+                                //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                if (xx < 0 || xx > 4000000 || yy < 0 || yy > 4000000)
                                 {
                                     good = false;
                                     break;
@@ -156,7 +159,8 @@ namespace Puzzles
                             if (thisSensor != otherSensor)
                             {
                                 //Console.WriteLine($"  other sensor {thisSensor}");
-                                if (xx < 0 || xx > 20 || yy < 0 || yy > 40)
+                                //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                if (xx < 0 || xx > 4000000 || yy < 0 || yy > 4000000)
                                 {
                                     good = false;
                                     break;
