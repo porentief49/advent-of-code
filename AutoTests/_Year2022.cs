@@ -473,8 +473,8 @@ namespace _Year2022
         [TestMethod] public void _Part2_Example() => Helpers.RunTest("Example", false, "56000011");
         [TestMethod] public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "5403290");
         [TestMethod] public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "10291582906626");
-        //[TestMethod] public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "1061");
-        //[TestMethod] public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "25055");
+        [TestMethod] public void _Part1_SEGCC() => Helpers.RunTest("SEGCC", true, "5335787");
+        [TestMethod] public void _Part2_SEGCC() => Helpers.RunTest("SEGCC", false, "13673971349056");
     }
 }
 

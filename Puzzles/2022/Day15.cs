@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml.Schema;
 
 namespace Puzzles
 {
@@ -13,13 +14,13 @@ namespace Puzzles
             private bool _isExample = false;
             long _maxDim;
 
-            protected override string Title { get; } = "Day 15: Beacon Exclusion Zone:";
+            protected override string Title { get; } = "Day 15: Beacon Exclusion Zone";
 
             public override void SetupAll()
             {
                 AddInputFile(@"2022\15_Example.txt");
                 AddInputFile(@"2022\15_rAiner.txt");
-                //AddInputFile(@"2022\15_SEGCC.txt");
+                AddInputFile(@"2022\15_SEGCC.txt");
             }
 
             public override void Init(string InputFile)
@@ -30,8 +31,6 @@ namespace Puzzles
 
             public override string Solve(bool Part1)
             {
-                long part1searchRow = _isExample ? 10 : 2000000;
-                long part1searchRange = _isExample ? 50 : 20000000;
                 _maxDim = _isExample ? 20 : 4000000;
 
                 _sensors = new();
@@ -42,118 +41,65 @@ namespace Puzzles
                 }
                 if (Part1)
                 {
+                    long y = _isExample ? 10 : 2000000;
                     long noBeaconLocations = 0;
-                    for (long i = -part1searchRange; i < part1searchRange; i++) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    {
-                        //check for beacons
-                        bool foundBeacon = false;
-                        foreach (var sensor in _sensors)
-                        {
-                            if (sensor.yBeacon == part1searchRow && sensor.xBeacon == i)
-                            {
-                                foundBeacon = true;
-                                break;
-                            }
-                        }
-
-                        //now check if within manhattan dist of any
-                        if (!foundBeacon)
-                        {
-                            foreach (var sensor in _sensors)
-                            {
-                                //if (sensor.CalcManhattanDist_OLD(sensor.ySensor, sensor.xSensor, part1searchRow, i) <= sensor.ManhattanDist)
-                                if (sensor.CalcManhattanDist(part1searchRow, i) <= sensor.ManhattanDist)
-                                {
-                                    noBeaconLocations++;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    return FormatResult(noBeaconLocations, $"no beacons in row {part1searchRow}");
+                    for (long x = Sensor.xMin; x <= Sensor.xMax; x++) if (!_sensors.Any(c => c.xBeacon == x && c.yBeacon == y)) if (!CheckOutsideRange(y, x, false)) noBeaconLocations++;
+                    return FormatResult(noBeaconLocations, $"no beacons in row {y}");
                 }
-
-                //Part2: sensor must sit on an edge of a diamond shape
-                long xx = 0;
-                long yy = 0;
-                bool good = false;
-                for (int i = 0; i < _sensors.Count; i++)
-                {
-                    Console.WriteLine($"this sensor: {i}");
-                    for (long ii = 0; ii <= _sensors[i].ManhattanDist; ii++)
-                    {
-                        //move from rightmost to left up
-                        xx = _sensors[i].xSensor + (_sensors[i].ManhattanDist + 1 - ii);
-                        yy = _sensors[i].ySensor - ii;
-                        if (CheckOutsideRange(yy, xx))
-                        {
-                            Console.WriteLine($"found one at x {xx}, y {yy}");
-                            good = true;
-                            break;
-                        }
-
-                        //move from toptmost to left down
-                        xx = _sensors[i].xSensor - ii;
-                        yy = _sensors[i].ySensor - (_sensors[i].ManhattanDist + 1 - ii);
-                        if (CheckOutsideRange(yy, xx))
-                        {
-                            Console.WriteLine($"found one at x {xx}, y {yy}");
-                            good = true;
-                            break;
-                        }
-
-                        //move from leftmost to right down
-                        xx = _sensors[i].xSensor - (_sensors[i].ManhattanDist + 1 - ii);
-                        yy = _sensors[i].ySensor + ii;
-                        if (CheckOutsideRange(yy, xx))
-                        {
-                            Console.WriteLine($"found one at x {xx}, y {yy}");
-                            good = true;
-                            break;
-                        }
-
-                        //move from bottommost to right up
-                        xx = _sensors[i].xSensor + ii;
-                        yy = _sensors[i].ySensor + (_sensors[i].ManhattanDist + 1 - ii);
-                        if (CheckOutsideRange(yy, xx))
-                        {
-                            Console.WriteLine($"found one at x {xx}, y {yy}");
-                            good = true;
-                            break;
-                        }
-                    }
-                    if (good) break;
-                }
+                (long yy, long xx) = FindBeaconSpot();
                 return FormatResult($"{xx * 4000000 + yy}", $"tuning frequency");
             }
 
-            private bool CheckOutsideRange(long y, long x)
+            private (long y, long x) FindBeaconSpot()
             {
-                if (x < 0 || x > _maxDim || y < 0 || y > _maxDim) return false;
+                long y;
+                long x;
+                for (int i = 0; i < _sensors.Count; i++)
+                {
+                    for (long ii = 0; ii <= _sensors[i].ManhattanDist; ii++)
+                    {
+                        (x, y) = (_sensors[i].x + (_sensors[i].ManhattanDist + 1 - ii), _sensors[i].y - ii);//move from rightmost to left up
+                        if (CheckOutsideRange(y, x, true)) return (y, x);
+                        (x, y) = (_sensors[i].x - ii, _sensors[i].y - (_sensors[i].ManhattanDist + 1 - ii));//move from toptmost to left down
+                        if (CheckOutsideRange(y, x, true)) return (y, x);
+                        (x, y) = (_sensors[i].x - (_sensors[i].ManhattanDist + 1 - ii), _sensors[i].y + ii);//move from leftmost to right down
+                        if (CheckOutsideRange(y, x, true)) return (y, x);
+                        (x, y) = (_sensors[i].x + ii, _sensors[i].y + (_sensors[i].ManhattanDist + 1 - ii));//move from bottommost to right up
+                        if (CheckOutsideRange(y, x, true)) return (y, x);
+                    }
+                }
+                return (-1, -1); // no beacon spot found
+            }
+
+            private bool CheckOutsideRange(long y, long x, bool testRange)
+            {
+                if (testRange) if (x < 0 || x > _maxDim || y < 0 || y > _maxDim) return false;
                 for (int i = 0; i < _sensors.Count; i++) if (_sensors[i].CalcManhattanDist(y, x) <= _sensors[i].ManhattanDist) return false;
                 return true;
             }
 
             private class Sensor
             {
-                public long ySensor;
-                public long xSensor;
+                public static long xMin = long.MaxValue;
+                public static long xMax = long.MinValue;
+                public long y;
+                public long x;
                 public long yBeacon;
                 public long xBeacon;
                 public long ManhattanDist;
 
-                public Sensor(long ySensor, long xSensor, long yBeacon, long xBeacon)
+                public Sensor(long y, long x, long yBeacon, long xBeacon)
                 {
-                    this.ySensor = ySensor;
-                    this.xSensor = xSensor;
+                    this.y = y;
+                    this.x = x;
                     this.yBeacon = yBeacon;
                     this.xBeacon = xBeacon;
-                    //this.ManhattanDist = CalcManhattanDist_OLD(ySensor, xSensor, yBeacon, xBeacon);
                     ManhattanDist = CalcManhattanDist(yBeacon, xBeacon);
+                    xMin = Math.Min(xMin, x - ManhattanDist);
+                    xMax = Math.Max(xMax, x + ManhattanDist);
                 }
 
-                //public long CalcManhattanDist_OLD(long ySensor, long xSensor, long yBeacon, long xBeacon) => Math.Abs(yBeacon - ySensor) + Math.Abs(xBeacon - xSensor);
-                public long CalcManhattanDist(long y, long x) => Math.Abs(y - ySensor) + Math.Abs(x - xSensor);
+                public long CalcManhattanDist(long y, long x) => Math.Abs(y - this.y) + Math.Abs(x - this.x);
             }
         }
     }
