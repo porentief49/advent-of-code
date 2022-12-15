@@ -33,7 +33,6 @@ namespace Puzzles
                 long part1searchRange = _isExample ? 50 : 20000000;
                 long maxDim = _isExample ? 20 : 4000000;
 
-                //if (!Part1) return "";
                 _sensors = new();
                 foreach (var line in InputData)
                 {
@@ -42,11 +41,7 @@ namespace Puzzles
                 }
                 if (Part1)
                 {
-                    //PrintGrid(_map);
-                    //int row = 10; //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    //long row = 2000000;
                     long noBeaconLocations = 0;
-                    //for (int i = -10; i < 50; i++)//EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     for (long i = -part1searchRange; i < part1searchRange; i++) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     {
                         //check for beacons
@@ -65,23 +60,19 @@ namespace Puzzles
                         {
                             foreach (var sensor in _sensors)
                             {
-                                if (sensor.CalcManhattanDist(sensor.ySensor, sensor.xSensor, part1searchRow, i) <= sensor.ManhattanDist)
-                                {
-                                    noBeaconLocations++;
+                                //if (sensor.CalcManhattanDist_OLD(sensor.ySensor, sensor.xSensor, part1searchRow, i) <= sensor.ManhattanDist)
+                                    if (sensor.CalcManhattanDist(part1searchRow, i) <= sensor.ManhattanDist)
+                                    {
+                                        noBeaconLocations++;
                                     break;
                                 }
                             }
                         }
                     }
                     return FormatResult(noBeaconLocations, $"no beacons in row {part1searchRow}");
-                    //1000000: 1529240
-                    //3000000: 3529239
-                    //10000000: 5403290
-                    //20000000: 5403290
                 }
 
                 //Part2: sensor must sit on an edge of a diamond shape
-                //List<(int y, int x)> _possibleLocations;
                 long xx = 0;
                 long yy = 0;
                 for (int thisSensor = 0; thisSensor < _sensors.Count; thisSensor++)
@@ -99,14 +90,12 @@ namespace Puzzles
                         {
                             if (thisSensor != otherSensor)
                             {
-                                //Console.WriteLine($"  other sensor {thisSensor}");
-                                //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                 if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
                                 {
                                     good = false;
                                     break;
                                 }
-                                if (_sensors[otherSensor].CalcManhattanDist(_sensors[otherSensor].ySensor, _sensors[otherSensor].xSensor, yy, xx) <= _sensors[otherSensor].ManhattanDist)
+                                if (_sensors[otherSensor].CalcManhattanDist(yy, xx) <= _sensors[otherSensor].ManhattanDist)
                                 {
                                     good = false;
                                     break;
@@ -116,8 +105,6 @@ namespace Puzzles
                         if (good)
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
-                            //xxfound = xx;
-                            //yyfound = yy;
                             break;
                         }
 
@@ -128,14 +115,12 @@ namespace Puzzles
                         {
                             if (thisSensor != otherSensor)
                             {
-                                //Console.WriteLine($"  other sensor {thisSensor}");
-                                //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                 if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
                                 {
                                     good = false;
                                     break;
                                 }
-                                if (_sensors[otherSensor].CalcManhattanDist(_sensors[otherSensor].ySensor, _sensors[otherSensor].xSensor, yy, xx) <= _sensors[otherSensor].ManhattanDist)
+                                if (_sensors[otherSensor].CalcManhattanDist(yy, xx) <= _sensors[otherSensor].ManhattanDist)
                                 {
                                     good = false;
                                     break;
@@ -145,8 +130,6 @@ namespace Puzzles
                         if (good)
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
-                            //xxfound = xx;
-                            //yyfound = yy;
                             break;
                         }
 
@@ -157,14 +140,12 @@ namespace Puzzles
                         {
                             if (thisSensor != otherSensor)
                             {
-                                //Console.WriteLine($"  other sensor {thisSensor}");
-                                //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                 if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
                                 {
                                     good = false;
                                     break;
                                 }
-                                if (_sensors[otherSensor].CalcManhattanDist(_sensors[otherSensor].ySensor, _sensors[otherSensor].xSensor, yy, xx) <= _sensors[otherSensor].ManhattanDist)
+                                if (_sensors[otherSensor].CalcManhattanDist(yy, xx) <= _sensors[otherSensor].ManhattanDist)
                                 {
                                     good = false;
                                     break;
@@ -174,8 +155,6 @@ namespace Puzzles
                         if (good)
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
-                            //xxfound = xx;
-                            //yyfound = yy;
                             break;
                         }
 
@@ -186,14 +165,12 @@ namespace Puzzles
                         {
                             if (thisSensor != otherSensor)
                             {
-                                //Console.WriteLine($"  other sensor {thisSensor}");
-                                //if (xx < 0 || xx > 20 || yy < 0 || yy > 40) //EXAMPLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                 if (xx < 0 || xx > maxDim || yy < 0 || yy > maxDim)
                                 {
                                     good = false;
                                     break;
                                 }
-                                if (_sensors[otherSensor].CalcManhattanDist(_sensors[otherSensor].ySensor, _sensors[otherSensor].xSensor, yy, xx) <= _sensors[otherSensor].ManhattanDist)
+                                if (_sensors[otherSensor].CalcManhattanDist(yy, xx) <= _sensors[otherSensor].ManhattanDist)
                                 {
                                     good = false;
                                     break;
@@ -203,8 +180,6 @@ namespace Puzzles
                         if (good)
                         {
                             Console.WriteLine($"found one at x {xx}, y {yy}");
-                            //xxfound = xx;
-                            //yyfound = yy;
                             break;
                         }
                     }
@@ -227,10 +202,12 @@ namespace Puzzles
                     this.xSensor = xSensor;
                     this.yBeacon = yBeacon;
                     this.xBeacon = xBeacon;
-                    this.ManhattanDist = CalcManhattanDist(ySensor, xSensor, yBeacon, xBeacon);
+                    //this.ManhattanDist = CalcManhattanDist_OLD(ySensor, xSensor, yBeacon, xBeacon);
+                    ManhattanDist = CalcManhattanDist(yBeacon, xBeacon);
                 }
 
-                public long CalcManhattanDist(long ySensor, long xSensor, long yBeacon, long xBeacon) => Math.Abs(yBeacon - ySensor) + Math.Abs(xBeacon - xSensor);
+                //public long CalcManhattanDist_OLD(long ySensor, long xSensor, long yBeacon, long xBeacon) => Math.Abs(yBeacon - ySensor) + Math.Abs(xBeacon - xSensor);
+                public long CalcManhattanDist(long y, long x) => Math.Abs(y - ySensor) + Math.Abs(x - xSensor);
             }
         }
     }
