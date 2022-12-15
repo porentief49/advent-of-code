@@ -23,17 +23,18 @@ namespace Puzzles
                 AddInputFile(@"2022\11_rAiner.txt");
                 AddInputFile(@"2022\11_SEGCC.txt");
                 AddInputFile(@"2022\11_Jens.txt");
+                AddInputFile(@"2022\11_Jannis.txt");
             }
 
             public override void Init(string InputFile)
             {
                 InputData = ReadFile(InputFile, true);
-                monkeys = new();
-                for (int i = 0; i < InputData.Length / 6; i++) monkeys.Add(new Monkey(InputData.Skip(i * 6).Take(6).ToArray()));
             }
 
             public override string Solve(bool Part1)
             {
+                monkeys = new();
+                for (int i = 0; i < InputData.Length / 6; i++) monkeys.Add(new Monkey(InputData.Skip(i * 6).Take(6).ToArray()));
                 long leastCommon = monkeys.Select(x => x.DivisibleBy).Aggregate((x, y) => x * y);
                 int rounds = Part1 ? 20 : 10000;
                 for (int i = 0; i < rounds; i++)
