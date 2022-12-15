@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Puzzles
@@ -8,7 +9,10 @@ namespace Puzzles
     {
         public class Day15 : DayBase
         {
-            protected override string Title { get; } = "Day 15:";
+            private List<Sensor> _sensors;
+            private List<(int y, int x)> _possibleLocations;
+
+            protected override string Title { get; } = "Day 15: Beacon Exclusion Zone:";
 
             public override void SetupAll()
             {
@@ -21,7 +25,69 @@ namespace Puzzles
 
             public override string Solve(bool Part1)
             {
-                return FormatResult(0, "not yet implemented");
+                if (!Part1) return "";
+                _sensors = new();
+                foreach (var line in InputData)
+                {
+                    string[] split = line.Replace('=', ' ').Replace(':', ' ').Replace(',', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    _sensors.Add(new(long.Parse(split[5]), long.Parse(split[3]), long.Parse(split[13]), long.Parse(split[11])));
+                }
+                //PrintGrid(_map);
+                int row = 10;
+                //int row = 2000000;
+                int noBeaconLocations = 0;
+                for (int i = -10; i < 50; i++)
+                    //for (int i = -20000000; i < 20000000; i++)
+                    {
+                        //check for beacons
+                        bool foundBeacon = false;
+                    foreach (var sensor in _sensors)
+                    {
+                        if (sensor.yBeacon == row && sensor.xBeacon == i)
+                        {
+                            foundBeacon = true;
+                            break;
+                        }
+                    }
+
+                    //now check if within manhattan dist of any
+                    if (!foundBeacon)
+                    {
+                        foreach (var sensor in _sensors)
+                        {
+                            if (sensor.CalcManhattanDist(sensor.ySensor, sensor.xSensor, row, i) <= sensor.ManhattanDist)
+                            {
+                                noBeaconLocations++;
+                                break;
+                            }
+                        }
+                    }
+                }
+                return FormatResult(noBeaconLocations, $"no beacons in row {row}");
+                //1000000: 1529240
+                //3000000: 3529239
+                //10000000: 5403290
+                //20000000: 5403290
+            }
+
+            private class Sensor
+            {
+                public long ySensor;
+                public long xSensor;
+                public long yBeacon;
+                public long xBeacon;
+                public long ManhattanDist;
+
+                public Sensor(long ySensor, long xSensor, long yBeacon, long xBeacon)
+                {
+                    this.ySensor = ySensor;
+                    this.xSensor = xSensor;
+                    this.yBeacon = yBeacon;
+                    this.xBeacon = xBeacon;
+                    this.ManhattanDist = CalcManhattanDist(ySensor, xSensor, yBeacon, xBeacon);
+                }
+
+                public long CalcManhattanDist(long ySensor, long xSensor, long yBeacon, long xBeacon) => Math.Abs(yBeacon - ySensor) + Math.Abs(xBeacon - xSensor);
             }
         }
     }

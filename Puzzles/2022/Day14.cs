@@ -8,16 +8,12 @@ namespace Puzzles
     {
         public class Day14 : DayBase
         {
-            private const int _xStart = 500;
-            private const int _yStart = 0;
+            private static (int y, int x) _start = (0, 500);
             private bool _part1 = false;
-
-            private List<List<(int y, int x)>> _rocks = new();
+            private List<List<(int y, int x)>> _rocks;
             private char[][] _cave;
-            private int _yMin = _yStart;
-            private int _yMax = _yStart;
-            private int _xMin = _xStart;
-            private int _xMax = _xStart;
+            private static (int y, int x) _min;
+            private static (int y, int x) _max;
 
             protected override string Title { get; } = "Day 14: Regolith Reservoir";
 
@@ -31,6 +27,9 @@ namespace Puzzles
             public override void Init(string InputFile)
             {
                 InputData = ReadFile(InputFile, true);
+                _min = _start;
+                _max = _start;
+                _rocks = new();
                 foreach (var item in InputData)
                 {
                     List<(int x, int y)> coords = new();
@@ -39,10 +38,10 @@ namespace Puzzles
                         string[] split3 = item2.Split(',');
                         int y = int.Parse(split3[1]);
                         int x = int.Parse(split3[0]);
-                        if (y < _yMin) _yMin = y;
-                        if (y > _yMax) _yMax = y;
-                        if (x < _xMin) _xMin = x;
-                        if (x > _xMax) _xMax = x;
+                        if (y < _min.y) _min.y = y;
+                        if (y > _max.y) _max.y = y;
+                        if (x < _min.x) _min.x = x;
+                        if (x > _max.x) _max.x = x;
                         coords.Add((y, x));
                     }
                     _rocks.Add(coords);
@@ -63,13 +62,13 @@ namespace Puzzles
                 return FormatResult(count, "sand units");
             }
 
-            private void SetCave(int y, int x, char what) => _cave[y - _yMin][x - _xMin] = what;
+            private void SetCave(int y, int x, char what) => _cave[y - _min.y][x - _min.x] = what;
 
             private char GetCave(int y, int x, bool part1)
             {
-                if (!part1 && y == _yMax) return '#'; // part2 has an infinite base at the bottom
-                if (y < _yMin || y > _yMax || x < _xMin || x > _xMax) return '.'; // to avoid error when trying to peek outside the grid
-                return _cave[y - _yMin][x - _xMin];
+                if (!part1 && y == _max.y) return '#'; // part2 has an infinite base at the bottom
+                if (y < _min.y || y > _max.y || x < _min.x || x > _max.x) return '.'; // to avoid error when trying to peek outside the grid
+                return _cave[y - _min.y][x - _min.x];
             }
 
             public void BuildCave()
@@ -77,12 +76,12 @@ namespace Puzzles
                 // build field
                 if (!_part1)
                 {
-                    _yMax += 2;
-                    int height = _yMax - _yMin;
-                    _xMin = Math.Min(_xMin, _xStart - height - 1); // for part2, extend the shape for the 45deg dumping angle
-                    _xMax = Math.Max(_xMax, _xStart + height + 1);
+                    _max.y += 2;
+                    int height = _max.y - _min.y;
+                    _min.x = Math.Min(_min.x, _start.x - height - 1); // for part2, extend the shape for the 45deg dumping angle
+                    _max.x = Math.Max(_max.x, _start.x + height + 1);
                 }
-                _cave = InitJaggedArray(_yMax - _yMin + 1, _xMax - _xMin + 1, '.');
+                _cave = InitJaggedArray(_max.y - _min.y + 1, _max.x - _min.x + 1, '.');
 
                 // add rocks
                 foreach (var rock in _rocks)
@@ -106,29 +105,20 @@ namespace Puzzles
 
             public bool DropSand()
             {
-                int x = _xStart;
-                int y = _yStart;
+                (int y, int x) pos = _start;
                 bool done = false;
-                if (GetCave(y, x, _part1) != '.') return false;
+                if (GetCave(pos.y, pos.x, _part1) != '.') return false;
                 do
                 {
-                    if (GetCave(y + 1, x, _part1) == '.') y++; // fall straight down
-                    else if (GetCave(y + 1, x - 1, _part1) == '.') // slide to the left
-                    {
-                        y++;
-                        x--;
-                    }
-                    else if (GetCave(y + 1, x + 1, _part1) == '.') // slide to the right
-                    {
-                        y++;
-                        x++;
-                    }
+                    if (GetCave(pos.y + 1, pos.x, _part1) == '.') pos.y++; // fall straight down
+                    else if (GetCave(pos.y + 1, pos.x - 1, _part1) == '.') pos = (pos.y + 1, pos.x - 1); // slide to the left
+                    else if (GetCave(pos.y + 1, pos.x + 1, _part1) == '.') pos = (pos.y + 1, pos.x + 1); // slide to the right
                     else // final position
                     {
-                        SetCave(y, x, 'o');
+                        SetCave(pos.y, pos.x, 'o');
                         done = true;
                     }
-                    if (y == _yMax) return false;
+                    if (pos.y == _max.y) return false;
                 } while (!done);
                 return true;
             }

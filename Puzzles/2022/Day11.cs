@@ -13,7 +13,7 @@ namespace Puzzles
 
         public class Day11 : DayBase
         {
-            private List<Monkey> monkeys = new();
+            private List<Monkey> monkeys;
 
             protected override string Title { get; } = "Day 11: Monkey in the Middle";
 
@@ -28,6 +28,7 @@ namespace Puzzles
             public override void Init(string InputFile)
             {
                 InputData = ReadFile(InputFile, true);
+                monkeys = new();
                 for (int i = 0; i < InputData.Length / 6; i++) monkeys.Add(new Monkey(InputData.Skip(i * 6).Take(6).ToArray()));
             }
 
