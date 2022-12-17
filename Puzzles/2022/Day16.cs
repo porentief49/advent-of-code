@@ -42,7 +42,7 @@ namespace Puzzles
 
                 //Queue<State> currentStates = new();
                 List<State> currentStates = new();
-                currentStates.Add(new State(_valves.First().Key, "", 0, 0));
+                currentStates.Add(new State("AA", "", 0, 0));
 
 
                 long maxReleasedSoFar;
