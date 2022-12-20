@@ -9,8 +9,8 @@ namespace Puzzles
     {
         public class Day17 : DayBase
         {
-            private const int cycles = 2022;
-            private int currentTop;
+            private long cycles;
+            private long currentTop;
             private List<Rock> rocks;
 
             protected override string Title { get; } = "Day 17: Pyroclastic Flow";
@@ -18,7 +18,7 @@ namespace Puzzles
             public override void SetupAll()
             {
                 AddInputFile(@"2022\17_Example.txt");
-                AddInputFile(@"2022\17_rAiner.txt");
+                //AddInputFile(@"2022\17_rAiner.txt");
                 //AddInputFile(@"2022\17_SEGCC.txt");
             }
 
@@ -26,15 +26,17 @@ namespace Puzzles
 
             public override string Solve(bool Part1)
             {
-                if (!Part1) return "";
+                cycles = Part1 ? 2022 : 1000000000000;
+                //if (!Part1) return "";
                 //char[,] shapes = new char[,] { { 'x', '<' } };
                 //int[,] example3 = new int[,] { { 1, 2, 3 }, { 4, 5, 6 } }; if (!Part1) return "";
                 //List<string> chamber = new("+-------+");
                 rocks = new();
                 currentTop = 0; //floor
                 int streamIndex = 0;
-                for (int i = 1; i <= cycles; i++)
+                for (long i = 1; i <= cycles; i++)
                 {
+                    if (i % 1000 == 0) Console.WriteLine($"cycle: {i}");
                     Rock rock = new(i);
                     rock.Y = currentTop + 3 + 1;
                     rock.X = 2;
@@ -57,6 +59,9 @@ namespace Puzzles
                     //chamber.Add("|.......|");
                     //chamber.Add("|.......|");
                     currentTop = Math.Max(currentTop, rock.Y + rock.Height - 1);
+
+                    //decimate
+                    if (rocks.Count > 1000) rocks.RemoveAt(0);
                 }
 
                 return FormatResult(currentTop, "rock tower height");
@@ -64,8 +69,8 @@ namespace Puzzles
 
             private void RockFalling(Rock rock, ref bool push, ref int streamIndex)
             {
-                int yCache = rock.Y;
-                int xCache = rock.X;
+                long yCache = rock.Y;
+                long xCache = rock.X;
 
                 // try step
                 if (push) // streams push sideways
@@ -78,9 +83,9 @@ namespace Puzzles
                     rock.Y--;
                 }
                 bool collision = false;
-                for (int y = 0; y < rock.Height; y++)
+                for (long y = 0; y < rock.Height; y++)
                 {
-                    for (int x = 0; x < rock.Width; x++)
+                    for (long x = 0; x < rock.Width; x++)
                     {
                         if (rock.Shape[y, x])
                         {
@@ -101,7 +106,7 @@ namespace Puzzles
             private void PrintChamber()
             {
                 //for (int y = currentTop + 8; y >= 0; y--)
-                for (int y = rocks.Last().Y + rocks.Last().Height - 1; y >= 0; y--)
+                for (long y = rocks.Last().Y + rocks.Last().Height - 1; y >= 0; y--)
                 {
                     StringBuilder sb = new();
                     for (int x = -1; x <= 7; x++)
@@ -127,7 +132,7 @@ namespace Puzzles
                 Console.WriteLine(string.Empty);
             }
 
-            private int CheckIntersect(int y, int x, bool includeFloating)
+            private int CheckIntersect(long y, long x, bool includeFloating)
             {
                 // 0 -> good
                 // 1 -> other rock
@@ -137,15 +142,16 @@ namespace Puzzles
                 if (x < 0 || x > 6) return 3;
                 if (y <= 0) return 4;
 
-                foreach (var rock in rocks)
+                //foreach (var rock in rocks)
+                for (int i = rocks.Count - 1; i >= 0; i--)
 
                     //check other rocks
-                    if (includeFloating || !rock.Floating)
+                    if (includeFloating || !rocks[i].Floating)
                     {
                         {
-                            int yRock = y - rock.Y;
-                            int xRock = x - rock.X;
-                            if (yRock >= 0 && yRock < rock.Height && xRock >= 0 && xRock < rock.Width) if (rock.Shape[yRock, xRock]) return rock.Floating ? 2 : 1;
+                            long yRock = y - rocks[i].Y;
+                            long xRock = x - rocks[i].X;
+                            if (yRock >= 0 && yRock < rocks[i].Height && xRock >= 0 && xRock < rocks[i].Width) if (rocks[i].Shape[yRock, xRock]) return rocks[i].Floating ? 2 : 1;
                         }
                     }
                 return 0;
@@ -162,13 +168,13 @@ namespace Puzzles
                 //                                        x = 0
                 public bool[,] Shape;
                 public bool Floating = true;
-                public int Y;
-                public int X;
-                public int Height;
-                public int Width;
+                public long Y;
+                public long X;
+                public long Height;
+                public long Width;
 
 
-                public Rock(int cycle)
+                public Rock(long cycle)
                 {
 
                     Shape = new bool[4, 4]; // all false
