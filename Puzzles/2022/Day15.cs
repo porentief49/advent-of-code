@@ -53,17 +53,17 @@ namespace Puzzles
             {
                 long y;
                 long x;
-                for (int i = 0; i < _sensors.Count; i++)
+                for (int i = 0; i < _sensors.Count; i++) // points can only be at the diamond perimeter of a sensor range
                 {
                     for (long ii = 0; ii <= _sensors[i].ManhattanDist; ii++)
                     {
-                        (x, y) = (_sensors[i].x + (_sensors[i].ManhattanDist + 1 - ii), _sensors[i].y - ii);//move from rightmost to left up
+                        (x, y) = (_sensors[i].x + (_sensors[i].ManhattanDist + 1 - ii), _sensors[i].y - ii); // move from rightmost to left up
                         if (CheckOutsideRange(y, x, true)) return (y, x);
-                        (x, y) = (_sensors[i].x - ii, _sensors[i].y - (_sensors[i].ManhattanDist + 1 - ii));//move from toptmost to left down
+                        (x, y) = (_sensors[i].x - ii, _sensors[i].y - (_sensors[i].ManhattanDist + 1 - ii)); // move from toptmost to left down
                         if (CheckOutsideRange(y, x, true)) return (y, x);
-                        (x, y) = (_sensors[i].x - (_sensors[i].ManhattanDist + 1 - ii), _sensors[i].y + ii);//move from leftmost to right down
+                        (x, y) = (_sensors[i].x - (_sensors[i].ManhattanDist + 1 - ii), _sensors[i].y + ii); // move from leftmost to right down
                         if (CheckOutsideRange(y, x, true)) return (y, x);
-                        (x, y) = (_sensors[i].x + ii, _sensors[i].y + (_sensors[i].ManhattanDist + 1 - ii));//move from bottommost to right up
+                        (x, y) = (_sensors[i].x + ii, _sensors[i].y + (_sensors[i].ManhattanDist + 1 - ii)); // move from bottommost to right up
                         if (CheckOutsideRange(y, x, true)) return (y, x);
                     }
                 }
