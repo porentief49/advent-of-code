@@ -1,16 +1,12 @@
 ﻿using System;
 
-namespace Puzzles
-{
-    public partial class Year2022
-    {
-        public class Day01 : DayBase
-        {
+namespace Puzzles {
+    public partial class Year2022 {
+        public class Day01 : DayBase {
 
             protected override string Title { get; } = "Day 1: Calorie Counting";
 
-            public override void SetupAll()
-            {
+            public override void SetupAll() {
                 AddInputFile(@"2022\01_Example.txt");
                 AddInputFile(@"2022\01_rAiner.txt");
                 AddInputFile(@"2022\01_SEGCC.txt");
@@ -18,15 +14,12 @@ namespace Puzzles
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, false);
 
-            public override string Solve(bool Part1)
-            {
+            public override string Solve(bool Part1) {
                 List<long> _elfsCalories = new();
                 long _calories = 0;
-                for (int i = 0; i < InputData?.Length; i++)
-                {
+                for (int i = 0; i < InputData?.Length; i++) {
                     if (InputData[i].Length > 0) _calories += long.Parse(InputData[i]);
-                    else
-                    {
+                    else {
                         _elfsCalories.Add(_calories);
                         _calories = 0;
                     }

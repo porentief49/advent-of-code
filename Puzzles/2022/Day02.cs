@@ -1,15 +1,11 @@
 ﻿using System;
 
-namespace Puzzles
-{
-    public partial class Year2022
-    {
-        public class Day02 : DayBase
-        {
+namespace Puzzles {
+    public partial class Year2022 {
+        public class Day02 : DayBase {
             protected override string Title { get; } = "Day 2: Rock Paper Scissors";
 
-            public override void SetupAll()
-            {
+            public override void SetupAll() {
                 AddInputFile(@"2022\02_Example.txt");
                 AddInputFile(@"2022\02_rAiner.txt");
                 AddInputFile(@"2022\02_SEGCC.txt");
@@ -17,8 +13,7 @@ namespace Puzzles
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
 
-            public override string Solve(bool Part1)
-            {
+            public override string Solve(bool Part1) {
                 List<(char They, char Me)> Rounds = new();
                 for (int i = 0; i < InputData?.Length; i++) Rounds.Add((InputData[i][0], InputData[i][2]));
                 int _totalScore = 0;
@@ -26,12 +21,10 @@ namespace Puzzles
                 return FormatResult(_totalScore, "total score");
             }
 
-            private int Play1((char They, char Me) Round)
-            {
+            private int Play1((char They, char Me) Round) {
                 int _forShape;
                 int _outcome;
-                switch (Round.Me)
-                {
+                switch (Round.Me) {
                     case 'X': // Rock
                         _forShape = 1;
                         _outcome = Round.They switch { 'A' => 3, 'B' => 0, 'C' => 6, _ => throw new Exception($"symbol for their draw {Round.They} unknown") };
@@ -50,12 +43,10 @@ namespace Puzzles
                 return _forShape + _outcome;
             }
 
-            private int Play2((char They, char Me) Round)
-            {
+            private int Play2((char They, char Me) Round) {
                 int _forShape;
                 int _outcome;
-                switch (Round.Me)
-                {
+                switch (Round.Me) {
                     case 'X': // loose
                         _outcome = 0;
                         _forShape = Round.They switch { 'A' => 3, 'B' => 1, 'C' => 2, _ => throw new Exception($"symbol for their draw {Round.They} unknown") };

@@ -3,20 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Puzzles
-{
-    public partial class Year2021
-    {
-        public class Day16 : DayBase_OLD
-        {
+namespace Puzzles {
+    public partial class Year2021 {
+        public class Day16 : DayBase_OLD {
             protected override string Title { get; } = "Day 16 - Packet Decoder";
 
             public override void Init() => Init(Inputs_2021.Rainer_16);
 
             public override void Init(string aResource) => Input = Tools.SplitLines(aResource, true);
 
-            public override string SolvePuzzle(bool aPart1)
-            {
+            public override string SolvePuzzle(bool aPart1) {
                 string lBin = string.Join(string.Empty, Input[0].ToLower().Select(x => HEX_BIN_LOOKUP[x]));
                 int lIndex = 0;
                 long lVersionSum = 0;
@@ -29,31 +25,25 @@ namespace Puzzles
                 { '4', "0100" }, { '5', "0101" }, { '6', "0110" }, { '7', "0111" }, { '8', "1000" }, { '9', "1001" }, { 'a', "1010" }, { 'b', "1011" }, { 'c', "1100" },
                 { 'd', "1101" }, { 'e', "1110" }, { 'f', "1111" } };
 
-            private long ReadSubPacket(string aBin, ref int aIndex, ref long aVersionSum)
-            {
+            private long ReadSubPacket(string aBin, ref int aIndex, ref long aVersionSum) {
                 long lExpressionValue = 0;
                 long lVersion = Convert.ToInt64(ReadNext(aBin, ref aIndex, 3), 2); // version
                 aVersionSum += lVersion;
                 long lType = Convert.ToInt64(ReadNext(aBin, ref aIndex, 3), 2); // type
-                if (lType == 4)
-                { //literal package
+                if (lType == 4) { //literal package
                     var lLiteralValue = new StringBuilder();
                     string lRead;
-                    do
-                    { // 5 bit chunks until [0] is 0
+                    do { // 5 bit chunks until [0] is 0
                         lRead = ReadNext(aBin, ref aIndex, 5);
                         lLiteralValue.Append(lRead.Substring(1, 4));
                     } while (lRead[0] == '1');
                     lExpressionValue = Convert.ToInt64(lLiteralValue.ToString(), 2);
                     if (Verbose) Console.WriteLine($"  Literal (Version {lVersion}, Type {lType}):  {lLiteralValue} -> {lExpressionValue}");
-                }
-                else
-                {
+                } else {
                     string lLengthTypeId = ReadNext(aBin, ref aIndex, 1); // length if
                     long lLength = Convert.ToInt64(ReadNext(aBin, ref aIndex, (lLengthTypeId == "0" ? 15 : 11)), 2); // length in bits or size in packages
                     int lStartIndex = aIndex;
-                    switch (lType)
-                    {
+                    switch (lType) {
                         case 0: //sum
                             lExpressionValue = ReadSubPacket(aBin, ref aIndex, ref aVersionSum);
                             if (lLengthTypeId == "0") while (aIndex < lStartIndex + lLength) lExpressionValue += ReadSubPacket(aBin, ref aIndex, ref aVersionSum);
@@ -90,8 +80,7 @@ namespace Puzzles
                 return lExpressionValue;
             }
 
-            private string ReadNext(string aBin, ref int aIndex, int aSize)
-            {
+            private string ReadNext(string aBin, ref int aIndex, int aSize) {
                 string lOut = aBin.Substring(aIndex, aSize);
                 aIndex += aSize;
                 return lOut;

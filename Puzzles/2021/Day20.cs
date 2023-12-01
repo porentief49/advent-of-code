@@ -4,20 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Puzzles
-{
-    public partial class Year2021
-    {
-        public class Day20 : DayBase_OLD
-        {
+namespace Puzzles {
+    public partial class Year2021 {
+        public class Day20 : DayBase_OLD {
             protected override string Title { get; } = "Day 20 - Trench Map";
 
             public override void Init() => Init(Inputs_2021.Rainer_20);
 
             public override void Init(string aResource) => Input = Tools.SplitLines(aResource, true);
 
-            public override string SolvePuzzle(bool aPart1)
-            {
+            public override string SolvePuzzle(bool aPart1) {
                 int lRuns = aPart1 ? 2 : 50;
                 string lAlgorithm = Input[0];
                 int lIndex = 1;
@@ -26,14 +22,11 @@ namespace Puzzles
                 while (lIndex < Input.Length);
                 if (Verbose) PrintImage(lImage, "Base Image:");
                 lImage = ExpandImage(lImage, ".");
-                for (int i = 0; i < lRuns; i++)
-                {
+                for (int i = 0; i < lRuns; i++) {
                     var lImageNew = new List<string>();
-                    for (int y = 1; y < lImage[0].Length - 1; y++)
-                    {
+                    for (int y = 1; y < lImage[0].Length - 1; y++) {
                         var lSb = new StringBuilder();
-                        for (int x = 1; x < lImage.Count - 1; x++)
-                        {
+                        for (int x = 1; x < lImage.Count - 1; x++) {
                             int lLookUp = 0;
                             for (int yy = -1; yy <= 1; yy++) for (int xx = -1; xx <= 1; xx++) lLookUp = (lLookUp << 1) + (lImage[y + yy][x + xx] == '#' ? 1 : 0);
                             lSb.Append(lAlgorithm[lLookUp]);
@@ -46,8 +39,7 @@ namespace Puzzles
                 return FormatResult(PixelCount(lImage), "pixel count");
             }
 
-            public static List<string> ExpandImage(List<string> aImage, string aExpand)
-            {
+            public static List<string> ExpandImage(List<string> aImage, string aExpand) {
                 var lImage = new List<string>();
                 string lEmpty = aExpand.Repeat(aImage[0].Length + 4);
                 Tools.Repeat(2, () => lImage.Add(lEmpty));
@@ -56,15 +48,13 @@ namespace Puzzles
                 return lImage;
             }
 
-            public static void PrintImage(List<string> aImage, string aTitle)
-            {
+            public static void PrintImage(List<string> aImage, string aTitle) {
                 Console.WriteLine($"{aTitle}:");
                 foreach (string lLine in aImage) Console.WriteLine(lLine);
                 Console.WriteLine();
             }
 
-            public static int PixelCount(List<string> aImage)
-            {
+            public static int PixelCount(List<string> aImage) {
                 int lCount = 0;
                 for (int y = 0; y < aImage.Count; y++) for (int x = 0; x < aImage[0].Length; x++) if (aImage[y][x] == '#') lCount++;
                 return lCount;

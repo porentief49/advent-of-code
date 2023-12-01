@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-namespace Puzzles
-{
-    public partial class Year2021
-    {
-        public class Day18 : DayBase_OLD
-        {
+namespace Puzzles {
+    public partial class Year2021 {
+        public class Day18 : DayBase_OLD {
             protected override string Title { get; } = "Day 18 - Snailfish";
 
             public override void Init() => Init(Inputs_2021.Rainer_18);
@@ -15,28 +12,22 @@ namespace Puzzles
 
             public override string SolvePuzzle(bool aPart1) => aPart1 ? PartA() : PartB();
 
-            private string PartB()
-            {
+            private string PartB() {
                 var lPairStructure = new cPair();
                 bool lStatus;
                 long lMaxMagnitude = 0;
                 long lMagnitude;
-                for (int i = 0; i < Input.Length; i++)
-                {
-                    for (int ii = 0; ii < Input.Length; ii++)
-                    {
-                        if (i != ii)
-                        {
+                for (int i = 0; i < Input.Length; i++) {
+                    for (int ii = 0; ii < Input.Length; ii++) {
+                        if (i != ii) {
 
                             // i + ii
                             string lExpression = "[" + Input[i] + "," + Input[ii] + "]";
-                            do
-                            {
+                            do {
                                 lPairStructure = ReadPairs(lExpression);
                                 lStatus = TryExploding(lPairStructure);
                                 lExpression = Flatten(lPairStructure);
-                                if (!lStatus)
-                                {
+                                if (!lStatus) {
                                     lPairStructure = ReadPairs(lExpression);
                                     lStatus = TrySplitting(lPairStructure);
                                     lExpression = Flatten(lPairStructure);
@@ -48,13 +39,11 @@ namespace Puzzles
 
                             // i + ii
                             lExpression = "[" + Input[ii] + "," + Input[i] + "]";
-                            do
-                            {
+                            do {
                                 lPairStructure = ReadPairs(lExpression);
                                 lStatus = TryExploding(lPairStructure);
                                 lExpression = Flatten(lPairStructure);
-                                if (!lStatus)
-                                {
+                                if (!lStatus) {
                                     lPairStructure = ReadPairs(lExpression);
                                     lStatus = TrySplitting(lPairStructure);
                                     lExpression = Flatten(lPairStructure);
@@ -69,24 +58,20 @@ namespace Puzzles
                 return FormatResult(lMaxMagnitude, "max magnitude");
             }
 
-            private string PartA()
-            {
+            private string PartA() {
                 var lPairStructure = new cPair();
                 bool lStatus;
                 string lExpression = string.Empty;
-                for (int i = 0; i < Input.Length; i++)
-                {
+                for (int i = 0; i < Input.Length; i++) {
                     if (Verbose) Console.WriteLine($"  {lExpression}");
                     if (Verbose) Console.WriteLine($"+ {Input[i]}");
                     if (i == 0) lExpression = Input[0];
                     else lExpression = "[" + lExpression + "," + Input[i] + "]";
-                    do
-                    {
+                    do {
                         lPairStructure = ReadPairs(lExpression);
                         lStatus = TryExploding(lPairStructure);
                         lExpression = Flatten(lPairStructure);
-                        if (!lStatus)
-                        {
+                        if (!lStatus) {
                             lPairStructure = ReadPairs(lExpression);
                             lStatus = TrySplitting(lPairStructure);
                             lExpression = Flatten(lPairStructure);
@@ -97,30 +82,24 @@ namespace Puzzles
                 return FormatResult(CalcMagnitude(lPairStructure), "final sum");
             }
 
-            public long CalcMagnitude(cPair aPair)
-            {
+            public long CalcMagnitude(cPair aPair) {
                 if (aPair.IsNumeric) return (long)aPair.Number;
                 return 3 * CalcMagnitude(aPair.Left) + 2 * CalcMagnitude(aPair.Right);
             }
 
-            public string Flatten(cPair aPair)
-            {
+            public string Flatten(cPair aPair) {
                 if (aPair is null) return "#";
                 if (aPair.IsNumeric) return (aPair.Number ?? 0).ToString();
                 return "[" + Flatten(aPair.Left) + "," + Flatten(aPair.Right) + "]";
             }
 
-            public bool TryExploding(cPair aPair)
-            {
+            public bool TryExploding(cPair aPair) {
                 bool lStatus = false;
                 const int EXPLOSION_LEVEL_MIN = 4;
                 if (Verbose) Console.WriteLine($"Exploding: {aPair.Left.Number}, {aPair.Right.Number}, {aPair.Level}");
-                if (aPair != null)
-                {
-                    if (!aPair.IsNumeric)
-                    {
-                        if (aPair.Left.IsNumeric && aPair.Right.IsNumeric && aPair.Level >= EXPLOSION_LEVEL_MIN)
-                        {
+                if (aPair != null) {
+                    if (!aPair.IsNumeric) {
+                        if (aPair.Left.IsNumeric && aPair.Right.IsNumeric && aPair.Level >= EXPLOSION_LEVEL_MIN) {
                             if (aPair.Left.PrevNumber != null) aPair.Left.PrevNumber.Number += (int)aPair.Left.Number;
                             if (aPair.Right.NextNumber != null) aPair.Right.NextNumber.Number += (int)aPair.Right.Number;
                             aPair.Left = null;
@@ -135,16 +114,12 @@ namespace Puzzles
                 return lStatus;
             }
 
-            public bool TrySplitting(cPair aPair)
-            {
+            public bool TrySplitting(cPair aPair) {
                 bool lStatus = false;
                 if (Verbose) Console.WriteLine($"Splitting: {aPair.Left.Number}, {aPair.Right.Number}, {aPair.Level}");
-                if (aPair != null)
-                {
-                    if (aPair.IsNumeric)
-                    {
-                        if (aPair.Number >= 10)
-                        {
+                if (aPair != null) {
+                    if (aPair.IsNumeric) {
+                        if (aPair.Number >= 10) {
                             var lNewPair = new cPair();
                             lNewPair.Number = aPair.Number / 2;
                             aPair.Left = lNewPair;
@@ -161,20 +136,17 @@ namespace Puzzles
                 return lStatus;
             }
 
-            public cPair ReadPairs(string aExpression)
-            {
+            public cPair ReadPairs(string aExpression) {
                 int lPos = 0;
                 cPair lPreviousNumber = null;
                 return Sub(aExpression, ref lPreviousNumber, ref lPos, 0);
             }
 
-            public cPair Sub(string aExpression, ref cPair aPreviousNumber, ref int aPos, int aLevel)
-            {
+            public cPair Sub(string aExpression, ref cPair aPreviousNumber, ref int aPos, int aLevel) {
                 var lPair = new cPair() { Level = aLevel };
 
                 // check if a number
-                if ("0123456789".Contains(aExpression[aPos]))
-                {
+                if ("0123456789".Contains(aExpression[aPos])) {
                     int lNumSize = 1;
                     while ((aPos + lNumSize < aExpression.Length) && "0123456789".Contains(aExpression[aPos + lNumSize])) lNumSize++;
                     lPair.Number = int.Parse(aExpression.Substring(aPos, lNumSize));
@@ -187,31 +159,24 @@ namespace Puzzles
                 }
 
                 // ok, not a number
-                if (aExpression[aPos] == '[')
-                {
+                if (aExpression[aPos] == '[') {
                     if (Verbose) Console.WriteLine(" ".Repeat(aLevel * 4) + $"Starting Pair with '{aExpression[aPos]}' - Pos: {aPos}, Level: {aLevel}");
                     aPos++;
-                }
-                else Console.WriteLine(" ".Repeat(aLevel * 4) + $"Problem, found '{aExpression[aPos]}' but expected '[' - Pos: {aPos}, Level: {aLevel}");
+                } else Console.WriteLine(" ".Repeat(aLevel * 4) + $"Problem, found '{aExpression[aPos]}' but expected '[' - Pos: {aPos}, Level: {aLevel}");
                 lPair.Left = Sub(aExpression, ref aPreviousNumber, ref aPos, aLevel + 1);
-                if (aExpression[aPos] == ',')
-                {
+                if (aExpression[aPos] == ',') {
                     if (Verbose) Console.WriteLine(" ".Repeat(aLevel * 4) + $"Continuing Pair with '{aExpression[aPos]}' - Pos: {aPos}, Level: {aLevel}");
                     aPos++;
-                }
-                else Console.WriteLine(" ".Repeat(aLevel * 4) + $"Problem, found '{aExpression[aPos]}'  but expected ',' - Pos: {aPos}, Level: {aLevel}");
+                } else Console.WriteLine(" ".Repeat(aLevel * 4) + $"Problem, found '{aExpression[aPos]}'  but expected ',' - Pos: {aPos}, Level: {aLevel}");
                 lPair.Right = Sub(aExpression, ref aPreviousNumber, ref aPos, aLevel + 1);
-                if (aExpression[aPos] == ']')
-                {
+                if (aExpression[aPos] == ']') {
                     if (Verbose) Console.WriteLine(" ".Repeat(aLevel * 4) + $"Closing Pair with '{aExpression[aPos]}' - Pos: {aPos}, Level: {aLevel}");
                     aPos++;
-                }
-                else Console.WriteLine(" ".Repeat(aLevel * 4) + $"Problem, found '{aExpression[aPos]}' but expected ']' - Pos: {aPos}, Level: {aLevel}");
+                } else Console.WriteLine(" ".Repeat(aLevel * 4) + $"Problem, found '{aExpression[aPos]}' but expected ']' - Pos: {aPos}, Level: {aLevel}");
                 return lPair;
             }
 
-            public class cPair
-            {
+            public class cPair {
                 public cPair Left;
                 public cPair Right;
                 public cPair PrevNumber;

@@ -10,8 +10,8 @@
 
 namespace Puzzles {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace Puzzles {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Inputs_2021 {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Inputs_2021() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Puzzles {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace Puzzles {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 157
         ///158
@@ -170,7 +170,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_01", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to forward 3
         ///down 9
@@ -236,7 +236,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_02", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 011010010110
         ///101110100110
@@ -281,7 +281,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_03", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 4,75,74,31,76,79,27,19,69,46,98,59,83,23,90,52,87,6,11,92,80,51,43,5,94,17,15,67,25,30,48,47,62,71,85,58,60,1,72,99,3,35,42,10,96,49,37,36,8,44,70,40,45,39,0,63,2,78,68,53,50,77,20,55,38,86,54,93,26,88,12,91,95,34,9,14,33,66,41,13,28,57,29,73,56,22,89,21,64,61,32,65,97,84,18,82,81,7,16,24
         ///
@@ -307,7 +307,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_04", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 102,578 -&gt; 363,317
         ///536,470 -&gt; 536,863
@@ -342,7 +342,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_05", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 3,5,4,1,2,1,5,5,1,1,1,1,4,1,4,5,4,5,1,3,1,1,1,4,1,1,3,1,1,5,3,1,1,3,1,3,1,1,1,4,1,2,5,3,1,4,2,3,1,1,2,1,1,1,4,1,1,1,1,2,1,1,1,3,1,1,4,1,4,1,5,1,4,2,1,1,5,4,4,4,1,4,1,1,1,1,3,1,5,1,4,5,3,1,4,1,5,2,2,5,1,3,2,2,5,4,2,3,4,1,2,1,1,2,1,1,5,4,1,1,1,1,3,1,5,4,1,5,1,1,4,3,4,3,1,5,1,1,2,1,1,5,3,1,1,1,1,1,5,1,1,1,1,1,1,1,2,2,5,5,1,2,1,2,1,1,5,1,3,1,5,2,1,4,1,5,3,1,1,1,2,1,3,1,4,4,1,1,5,1,1,4,1,4,2,3,5,2,5,1,3,1,2,1,4,1,1,1,1,2,1,4,1,3,4,1,1,1,1,1,1,1,2,1,5,1,1,1,1,2,3,1,1,2,3,1,1,3,1,1,3,1,3,1,3,3,1,1,2,1,3,2,3,1,1,3, [rest of string was truncated]&quot;;.
         /// </summary>
@@ -351,7 +351,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_06", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1101,1,29,67,1102,0,1,65,1008,65,35,66,1005,66,28,1,67,65,20,4,0,1001,65,1,65,1106,0,8,99,35,67,101,99,105,32,110,39,101,115,116,32,112,97,115,32,117,110,101,32,105,110,116,99,111,100,101,32,112,114,111,103,114,97,109,10,106,684,36,657,427,156,197,56,205,1104,170,307,291,88,330,12,24,1128,440,1099,1523,936,198,266,1257,874,196,912,335,46,320,666,132,1035,145,877,1484,222,690,479,386,59,101,765,506,27,250,478,609,807,1566,317,138,1390,245,1178,211,64,714,510,256,430,371,182,464,398,1749,57,1023,4,891,1177,45 [rest of string was truncated]&quot;;.
         /// </summary>
@@ -360,7 +360,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_07", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to dcbgefa cebd bfega eadbf db cdfaeb dba bfcgda egadcf aedcf | egadcfb eafcd db debc
         ///dfea ea abe dfgaeb fdcgba badeg dcfbeag dbgaf bcged fcebag | gfadb dfagb fdgabe eagdbf
@@ -374,7 +374,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_08", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 0198765456793498765667899895432323459895457899886789876798656767890198989323997654321296543219876545
         ///9997654345689987654345998789591014598784345798765678965987543459921987978919876543210989694998765432
@@ -388,7 +388,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_09", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to &lt;&lt;{&lt;[&lt;&lt;&lt;{&lt;&lt;(&lt;({}())({}[]))[[{}[]]&lt;{}[]&gt;])[&lt;[{}[]]{()()}&gt;{((){})&lt;&lt;&gt;&lt;&gt;&gt;}]&gt;&gt;[&lt;(&lt;&lt;{}&gt;&gt;[&lt;()()&gt;&lt;&lt;&gt;&lt;&gt;&gt;]
         ///{[[[{&lt;[(([[{(({}))([&lt;&gt;[]]((){}))}&lt;&lt;&lt;[][]&gt;[{}{}]&gt;[{()[]}(()())]&gt;][[[{&lt;&gt;()}[{}[]]]]]]&lt;{{{{()[]}}}[[{[][]}{{
@@ -402,7 +402,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 4781623888
         ///1784156114
@@ -421,7 +421,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to he-JK
         ///wy-KY
@@ -453,7 +453,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_12", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 17,52
         ///740,52
@@ -519,7 +519,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_13", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CPSSSFCFOFVFNVPKBFVN
         ///
@@ -584,7 +584,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_14", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 8278572114793756191833561127452853426929615899116958969481427593944191389121411192127899512211639555
         ///2495171585122426519281919685613271991924121543192937558138395964783255375528718245475125436917188379
@@ -598,7 +598,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_15", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 005532447836402684AC7AB3801A800021F0961146B1007A1147C89440294D005C12D2A7BC992D3F4E50C72CDF29EECFD0ACD5CC016962099194002CE31C5D3005F401296CAF4B656A46B2DE5588015C913D8653A3A001B9C3C93D7AC672F4FF78C136532E6E0007FCDFA975A3004B002E69EC4FD2D32CDF3FFDDAF01C91FCA7B41700263818025A00B48DEF3DFB89D26C3281A200F4C5AF57582527BC1890042DE00B4B324DBA4FAFCE473EF7CC0802B59DA28580212B3BD99A78C8004EC300761DC128EE40086C4F8E50F0C01882D0FE29900A01C01C2C96F38FCBB3E18C96F38FCBB3E1BCC57E2AA0154EDEC45096712A64A2520C6401A9E80213D9856265 [rest of string was truncated]&quot;;.
         /// </summary>
@@ -607,7 +607,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_16", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to target area: x=244..303, y=-91..-54
         ///.
@@ -617,7 +617,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_17", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to [[[[0,6],[8,7]],[2,3]],[3,[[6,5],[0,0]]]]
         ///[[2,[9,[4,9]]],[[[3,0],4],[2,[4,7]]]]
@@ -639,7 +639,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_18", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to --- scanner 0 ---
         ///712,493,-580
@@ -683,7 +683,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_19", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ######.#..##..######.....#...#.#...#.######.#.#...#..#..#..###.#####.#.####...#.#.#...#.#.#...#####..###.....#.#.....#.#.#..###..#.#.#####..#.....####.##.##..#..##.#.##.##..##.#####.####.#.#....#...#...#...#.#########..#..#####..#.#.###....#.##.###...##.#..#....##.###...#..##.#..#...#.#.#####.####...#.##..##..#.#######...#..##.##.....#..#..#.###...###.######..##.#..##.######....#.##.##...###.##..#.#.#.#########....####.####.#.#...#.#.#..#.#.##.#...#.#..#######..###..##.#..####.###...#.#.#.##.#####.##.###.#. [rest of string was truncated]&quot;;.
         /// </summary>
@@ -692,7 +692,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_20", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Player 1 starting position: 7
         ///Player 2 starting position: 1
@@ -703,7 +703,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_21", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to on x=-45..7,y=-17..27,z=5..49
         ///on x=-47..6,y=-17..30,z=-24..26
@@ -727,7 +727,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_22", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to #############
         ///#...........#
@@ -741,7 +741,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_23", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to inp w
         ///mul x 0
@@ -806,7 +806,7 @@ namespace Puzzles {
                 return ResourceManager.GetString("Rainer_24", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to &gt;...v&gt;..v......v&gt;&gt;&gt;.&gt;....&gt;v.&gt;v...&gt;....v...&gt;...&gt;.&gt;v.&gt;&gt;&gt;&gt;..&gt;.&gt;&gt;v.........&gt;&gt;vv..&gt;vvv&gt;.v&gt;v..v....v.&gt;.&gt;v&gt;...v&gt;.&gt;..&gt;vv.....v..&gt;v.v&gt;.v&gt;&gt;...v.v.&gt;&gt;.
         ///..&gt;&gt;&gt;....vv..&gt;&gt;.vv.v..v....&gt;v.&gt;&gt;.....&gt;.&gt;.&gt;v......v...v.........&gt;.&gt;&gt;..v.&gt;.....vvv..&gt;..vvv.&gt;.&gt;..&gt;v.vv&gt;...vv.v.v.&gt;.v..&gt;.v...v....&gt;&gt;vvv&gt;.v&gt;v&gt;&gt;v

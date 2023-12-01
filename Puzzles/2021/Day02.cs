@@ -1,32 +1,25 @@
 ﻿using System;
 
-namespace Puzzles
-{
-    public partial class Year2021
-    {
-        public class Day02 : DayBase
-        {
+namespace Puzzles {
+    public partial class Year2021 {
+        public class Day02 : DayBase {
             protected override string Title { get; } = "Day 2 - Dive!";
 
-            public override void SetupAll()
-            {
+            public override void SetupAll() {
                 AddInputFile(@"2021\02_Example.txt");
                 AddInputFile(@"2021\02_rAiner.txt");
             }
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
 
-            public override string Solve(bool aPart1)
-            {
+            public override string Solve(bool aPart1) {
                 int lHorizontal = 0;
                 int lDepth = 0;
                 int lAim = 0;
-                for (int i = 0; i < InputData?.Length; i++)
-                {
+                for (int i = 0; i < InputData?.Length; i++) {
                     string[] lSplit = InputData[i].ToLower().Split(' ');
                     int lSteps = int.Parse(lSplit[1]);
-                    switch (lSplit[0])
-                    {
+                    switch (lSplit[0]) {
                         case "up":
                             if (aPart1) lDepth -= lSteps;
                             else lAim -= lSteps;
@@ -37,8 +30,7 @@ namespace Puzzles
                             break;
                         case "forward":
                             if (aPart1) lHorizontal += lSteps;
-                            else
-                            {
+                            else {
                                 lHorizontal += lSteps;
                                 lDepth += lAim * lSteps;
                             }

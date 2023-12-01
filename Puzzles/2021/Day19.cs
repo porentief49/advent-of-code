@@ -4,12 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Puzzles
-{
-    public partial class Year2021
-    {
-        public class Day19 : DayBase_OLD
-        {
+namespace Puzzles {
+    public partial class Year2021 {
+        public class Day19 : DayBase_OLD {
             protected override string Title { get; } = "Day 19 - Beacon Scanner";
 
             public override void Init() => Init(Inputs_2021.Rainer_19);
@@ -18,17 +15,13 @@ namespace Puzzles
 
             private long mMaxManhattanDist = 0;
 
-            public override string SolvePuzzle(bool aPart1)
-            {
-                if (aPart1)
-                { // will calculate part2 as well, cached and then simply returned
+            public override string SolvePuzzle(bool aPart1) {
+                if (aPart1) { // will calculate part2 as well, cached and then simply returned
 
                     // parse input
                     var lScanners = new List<cScanner>();
-                    foreach (string lLine in Input)
-                    {
-                        if (lLine.Trim().Length > 0)
-                        {
+                    foreach (string lLine in Input) {
+                        if (lLine.Trim().Length > 0) {
                             if (lLine.Substring(0, 3) == "---") lScanners.Add(new cScanner());
                             else lScanners.Last().AddBeacon(lLine);
                         }
@@ -42,39 +35,29 @@ namespace Puzzles
                     bool lAdded;
 
                     //now compare the others
-                    do
-                    {
+                    do {
                         lAdded = false;
-                        for (int lToScanner = 0; lToScanner < lScanners.Count; lToScanner++)
-                        {
-                            if (!lScanners[lToScanner].AlreadyMapped)
-                            {
+                        for (int lToScanner = 0; lToScanner < lScanners.Count; lToScanner++) {
+                            if (!lScanners[lToScanner].AlreadyMapped) {
                                 bool lFound = false;
-                                for (int lRotation = 0; lRotation < 24; lRotation++)
-                                {
-                                    for (int lThisRefBeacon = 0; lThisRefBeacon < lKnownBeacons.Count; lThisRefBeacon++)
-                                    {
-                                        for (int lToRefBeacon = 0; lToRefBeacon < lScanners[lToScanner].BeaconCount; lToRefBeacon++)
-                                        {
+                                for (int lRotation = 0; lRotation < 24; lRotation++) {
+                                    for (int lThisRefBeacon = 0; lThisRefBeacon < lKnownBeacons.Count; lThisRefBeacon++) {
+                                        for (int lToRefBeacon = 0; lToRefBeacon < lScanners[lToScanner].BeaconCount; lToRefBeacon++) {
                                             int lDx = lScanners[lToScanner].Beacon(lToRefBeacon, lRotation).X - lKnownBeacons[lThisRefBeacon].X;
                                             int lDy = lScanners[lToScanner].Beacon(lToRefBeacon, lRotation).Y - lKnownBeacons[lThisRefBeacon].Y;
                                             int lDz = lScanners[lToScanner].Beacon(lToRefBeacon, lRotation).Z - lKnownBeacons[lThisRefBeacon].Z;
                                             int lMatchCount = 0;
-                                            for (int lThisBeacon = 0; lThisBeacon < lKnownBeacons.Count; lThisBeacon++)
-                                            {
-                                                for (int lToBeacon = 0; lToBeacon < lScanners[lToScanner].BeaconCount; lToBeacon++)
-                                                {
+                                            for (int lThisBeacon = 0; lThisBeacon < lKnownBeacons.Count; lThisBeacon++) {
+                                                for (int lToBeacon = 0; lToBeacon < lScanners[lToScanner].BeaconCount; lToBeacon++) {
                                                     if (lScanners[lToScanner].Beacon(lToBeacon, lRotation).X - lDx == lKnownBeacons[lThisBeacon].X &&
                                                         lScanners[lToScanner].Beacon(lToBeacon, lRotation).Y - lDy == lKnownBeacons[lThisBeacon].Y &&
                                                         lScanners[lToScanner].Beacon(lToBeacon, lRotation).Z - lDz == lKnownBeacons[lThisBeacon].Z) lMatchCount++;
                                                 }
                                             }
-                                            if (lMatchCount >= 12)
-                                            {
+                                            if (lMatchCount >= 12) {
                                                 if (Verbose) Console.WriteLine($"\nMatching: {lMatchCount}, ToScanner {lToScanner}, Dx {-lDx}, Dy {-lDy}, Dz {-lDz}, Rotation {lRotation}");
                                                 lScanners[lToScanner].Position = (-lDx, -lDy, -lDz, lRotation);
-                                                for (int i = 0; i < lScanners[lToScanner].BeaconCount; i++)
-                                                {
+                                                for (int i = 0; i < lScanners[lToScanner].BeaconCount; i++) {
                                                     (int X, int Y, int Z) lThis = lScanners[lToScanner].Beacon(i, lRotation);
                                                     lKnownBeacons.AddIfNew((lThis.X - lDx, lThis.Y - lDy, lThis.Z - lDz));
                                                 }
@@ -94,13 +77,10 @@ namespace Puzzles
 
                     // calc manhattan distance
                     long lMaxDist = 0;
-                    for (int i = 0; i < lScanners.Count; i++)
-                    {
-                        for (int ii = 0; ii < lScanners.Count; ii++)
-                        {
+                    for (int i = 0; i < lScanners.Count; i++) {
+                        for (int ii = 0; ii < lScanners.Count; ii++) {
                             long lThisDist = Math.Abs(lScanners[i].Position.X - lScanners[ii].Position.X) + Math.Abs(lScanners[i].Position.Y - lScanners[ii].Position.Y) + Math.Abs(lScanners[i].Position.Z - lScanners[ii].Position.Z);
-                            if (lThisDist > lMaxDist)
-                            {
+                            if (lThisDist > lMaxDist) {
                                 lMaxDist = lThisDist;
                                 if (Verbose) Console.WriteLine($"Distance from {i} --> {ii}: {lThisDist}");
                             }
@@ -115,8 +95,7 @@ namespace Puzzles
             }
         }
 
-        public class cScanner
-        {
+        public class cScanner {
             List<(int X, int Y, int Z)> mBeacons = new List<(int X, int Y, int Z)>();
 
             public (int X, int Y, int Z, int Rotation) Position = (0, 0, 0, 0);
@@ -127,10 +106,8 @@ namespace Puzzles
 
             public int BeaconCount => mBeacons.Count();
 
-            public static (int X, int Y, int Z) Rotate(int aX, int aY, int aZ, int aOrientation)
-            {
-                switch (aOrientation)
-                {
+            public static (int X, int Y, int Z) Rotate(int aX, int aY, int aZ, int aOrientation) {
+                switch (aOrientation) {
                     case 0: // X Y Z
                         return (aX, aY, aZ);
                     case 1: // X -Z Y
@@ -184,13 +161,11 @@ namespace Puzzles
                 }
             }
 
-            public (int X, int Y, int Z) Beacon(int aIndex, int aOrientation)
-            {
+            public (int X, int Y, int Z) Beacon(int aIndex, int aOrientation) {
                 return Rotate(mBeacons[aIndex].X, mBeacons[aIndex].Y, mBeacons[aIndex].Z, aOrientation);
             }
 
-            public void AddBeacon(string aCoords)
-            {
+            public void AddBeacon(string aCoords) {
                 (int X, int Y, int Z) lCoords;
                 string[] lSplit = aCoords.Split(',');
                 lCoords.X = int.Parse(lSplit[0]);

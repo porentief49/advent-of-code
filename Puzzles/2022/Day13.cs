@@ -7,17 +7,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.VisualBasic;
 
-namespace Puzzles
-{
-    public partial class Year2022
-    {
-        public class Day13 : DayBase
-        {
+namespace Puzzles {
+    public partial class Year2022 {
+        public class Day13 : DayBase {
             List<Packet> _packets;
             protected override string Title { get; } = "Day 13: Distress Signal";
 
-            public override void SetupAll()
-            {
+            public override void SetupAll() {
                 AddInputFile(@"2022\13_Example.txt");
                 AddInputFile(@"2022\13_rAiner.txt");
                 AddInputFile(@"2022\13_SEGCC.txt");
@@ -25,57 +21,46 @@ namespace Puzzles
 
             public override void Init(string InputFile) => _packets = ReadFile(InputFile, true).Select(x => Packet.Parse(x)).ToList();
 
-            public override string Solve(bool part1)
-            {
-                if (part1)
-                {
+            public override string Solve(bool part1) {
+                if (part1) {
                     int rightOrders = 0;
-                    for (int i = 0; i < _packets.Count / 2; i++)
-                    {
+                    for (int i = 0; i < _packets.Count / 2; i++) {
                         int result = _packets[i * 2].CompareTo(_packets[i * 2 + 1]);
                         if (Verbose) Console.WriteLine($"Pair {i + 1} -> {result}");
-                        if (result == -1) rightOrders+=(i + 1);
+                        if (result == -1) rightOrders += (i + 1);
                     }
                     return FormatResult(rightOrders, "right order index sum");
                 }
                 _packets.AddRange((new string[] { "[[2]]", "[[6]]" }).Select(x => Packet.Parse(x, true)));
                 _packets.Sort();
-                int product = Enumerable.Range(0, _packets.Count).Where(x => _packets[x].marker).Aggregate((x, y) => (x+1) * (y+1));
+                int product = Enumerable.Range(0, _packets.Count).Where(x => _packets[x].marker).Aggregate((x, y) => (x + 1) * (y + 1));
                 return FormatResult(product, "marker index product");
             }
 
-            private class Packet : IComparable<Packet>
-            {
+            private class Packet : IComparable<Packet> {
                 public Packet parent;
                 public List<Packet> list = new();
                 public int integer = -1;
                 public bool marker;
 
-                public Packet(Packet parent, bool marker = false)
-                {
+                public Packet(Packet parent, bool marker = false) {
                     this.parent = parent;
                     this.marker = marker;
                 }
 
-                public static Packet Parse(string input, bool marker = false)
-                {
+                public static Packet Parse(string input, bool marker = false) {
                     string[] split = input.Replace("[", ",[,").Replace("]", ",],").Split(',', StringSplitOptions.RemoveEmptyEntries);
                     Packet entry = new(null, marker);
                     Packet current = entry;
                     if (split[0] != "[") throw new Exception("packet value needs to start with '['");
-                    for (int i = 1; i < split.Length; i++)
-                    {
-                        if (split[i]=="]") current = current.parent;
-                        else
-                        {
+                    for (int i = 1; i < split.Length; i++) {
+                        if (split[i] == "]") current = current.parent;
+                        else {
                             Packet addOne = new(current);
-                            if (split[i] == "[")
-                            {
+                            if (split[i] == "[") {
                                 current.list.Add(addOne);
                                 current = addOne;
-                            }
-                            else
-                            {
+                            } else {
                                 addOne.integer = int.Parse(split[i]);
                                 current.list.Add(addOne);
                             }
@@ -84,39 +69,32 @@ namespace Puzzles
                     return entry;
                 }
 
-                public int CompareTo(Packet? other)
-                {
+                public int CompareTo(Packet? other) {
                     if ((this.integer > -1) && (other.integer > -1)) // both integers
                     {
                         if (this.integer < other.integer) return -1; // -1 means right sequence
-                        if (this.integer > other.integer)return 1; // 1 means wrong sequence
-                    }
-                    else if ((this.integer == -1) && (other.integer == -1)) // both lists
-                    {
-                        for (int i = 0; i < Math.Max(this.list.Count, other.list.Count); i++)
-                        {
-                            if ((i < this.list.Count) && (i < other.list.Count))
-                            {
-                                int result = this.list[i].CompareTo(other.list[i]); 
+                        if (this.integer > other.integer) return 1; // 1 means wrong sequence
+                    } else if ((this.integer == -1) && (other.integer == -1)) // both lists
+                      {
+                        for (int i = 0; i < Math.Max(this.list.Count, other.list.Count); i++) {
+                            if ((i < this.list.Count) && (i < other.list.Count)) {
+                                int result = this.list[i].CompareTo(other.list[i]);
                                 if (result != 0) return result;
-                            }
-                            else
-                            {
+                            } else {
                                 if (this.list.Count < other.list.Count) return -1;
                                 else return 1;
                             }
                         }
                         return 0; // 0 means no decision (yet), can't happen at the outermost call
-                    }
-                    else // mixed types
-                    {
+                    } else // mixed types
+                      {
                         bool which = this.integer > -1;
                         Packet toReplace = which ? this : other;
                         Packet replacement = new(toReplace);
                         replacement.integer = toReplace.integer;
                         toReplace.list.Add(replacement);
                         toReplace.integer = -1;
-                        return this.CompareTo(other); 
+                        return this.CompareTo(other);
                     }
                     return 0;
                 }

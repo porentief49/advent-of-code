@@ -6,10 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Puzzles
-{
-    public abstract class DayBase
-    {
+namespace Puzzles {
+    public abstract class DayBase {
 
         const string _relativePath = @"..\..\..\..\InputData\";
 
@@ -31,17 +29,14 @@ namespace Puzzles
 
         public abstract void SetupAll();
 
-        public string RunAll()
-        {
+        public string RunAll() {
             SetupAll();
             string _report = string.Empty;
             string _result;
             _report += Title + $" - RunAll on {InputFiles.Count} input files\r\n";
-            foreach (var _inputFile in InputFiles)
-            {
+            foreach (var _inputFile in InputFiles) {
                 _report += $"\r\n  File: {_inputFile}\r\n";
-                if (File.Exists(_relativePath + _inputFile))
-                {
+                if (File.Exists(_relativePath + _inputFile)) {
                     Stopwatch lWatch = Stopwatch.StartNew();
                     Init(_inputFile);
                     _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Initialization\r\n";
@@ -51,24 +46,20 @@ namespace Puzzles
                     lWatch.Restart();
                     _result = Solve(false);
                     _report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 2 ==> {_result}\r\n";
-                }
-                else _report += $"    not found!\r\n";
+                } else _report += $"    not found!\r\n";
             }
             return _report;
         }
 
         protected string FormatResult(object Result, string Label) => (BareOutput ? string.Empty : Label + ": ") + Result.ToString();
 
-        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines)
-        {
+        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines) {
             return File.ReadAllText(_relativePath + FilePath).Replace("\r", string.Empty).Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
         }
 
-        protected static T[][] InitJaggedArray<T>(int Dim1, int Dim2, T InitValue)
-        {
+        protected static T[][] InitJaggedArray<T>(int Dim1, int Dim2, T InitValue) {
             T[][] _grid = new T[Dim1][];
-            for (int i = 0; i < Dim1; i++)
-            {
+            for (int i = 0; i < Dim1; i++) {
                 T[] _line = new T[Dim2];
                 for (int ii = 0; ii < Dim2; ii++) _line[ii] = InitValue;
                 _grid[i] = _line;
@@ -82,8 +73,7 @@ namespace Puzzles
         protected static void PrintGrid(int[][] Grid, int digits) => Console.WriteLine(string.Join("\r\n", Grid.Select(y => string.Join(' ', y.Select(x => x.ToString() + " ".Repeat(digits).Substring(0, digits)).ToArray()))) + "\r\n");
     }
 
-    public abstract class DayBase_OLD
-    {
+    public abstract class DayBase_OLD {
         public bool BareOutput { get; set; } = false;
 
         public bool Verbose { get; set; } = false;
@@ -100,8 +90,7 @@ namespace Puzzles
 
         public abstract string SolvePuzzle(bool aPart1);
 
-        public string RunBothAndReport(string aResource = "")
-        {
+        public string RunBothAndReport(string aResource = "") {
             Stopwatch lWatch = Stopwatch.StartNew();
             if (aResource.Length == 0) Init();
             else Init(aResource);
@@ -119,47 +108,39 @@ namespace Puzzles
         protected string FormatResult(object aResult, string aLabel) => (BareOutput ? string.Empty : aLabel + ": ") + aResult.ToString();
     }
 
-    public static class Tools
-    {
-        public static void FindAllPermutations(string aIn, ref List<string> lResult, string aPrefix = "")
-        {
+    public static class Tools {
+        public static void FindAllPermutations(string aIn, ref List<string> lResult, string aPrefix = "") {
             // credit: https://stackoverflow.com/questions/756055/listing-all-permutations-of-a-string-integer
             if (string.IsNullOrEmpty(aIn)) lResult.Add(aPrefix);
             for (int i = 0; i < aIn.Length; i++) FindAllPermutations(aIn.Remove(i, 1), ref lResult, aPrefix + aIn[i]);
         }
 
-        public static string[] SplitLines(string aResource, bool aRemoveEmptyLines)
-        {
+        public static string[] SplitLines(string aResource, bool aRemoveEmptyLines) {
             return aResource.Replace("\r", string.Empty).Split(new char[] { '\n' }, StringSplitOptions.TrimEntries | (aRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None));
         }
 
-        public static void Repeat(int aCount, Action aAction)
-        {
+        public static void Repeat(int aCount, Action aAction) {
             for (int i = 0; i < aCount; i++) aAction();
         }
 
         // Extensions
-        public static string SortCharacters(this string aIn)
-        {
+        public static string SortCharacters(this string aIn) {
             char[] characters = aIn.ToArray();
             Array.Sort(characters);
             return new string(characters);
         }
 
-        public static string Repeat(this string aIn, long aCount)
-        {
+        public static string Repeat(this string aIn, long aCount) {
             StringBuilder lOut = new StringBuilder();
             for (int i = 0; i < aCount; i++) lOut.Append(aIn);
             return lOut.ToString();
         }
 
-        public static void AddIfNew<T>(this List<T> aList, T aAdd)
-        {
+        public static void AddIfNew<T>(this List<T> aList, T aAdd) {
             if (!aList.Contains(aAdd)) aList.Add(aAdd);
         }
 
-        public static void AddIfNew<T>(this List<T> aList, T[] aAdd)
-        {
+        public static void AddIfNew<T>(this List<T> aList, T[] aAdd) {
             foreach (T lAdd in aAdd) if (!aList.Contains(lAdd)) aList.Add(lAdd);
         }
     }

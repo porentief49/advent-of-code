@@ -3,20 +3,16 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Text;
 
-namespace Puzzles
-{
-    public partial class Year2022
-    {
-        public class Day17 : DayBase
-        {
+namespace Puzzles {
+    public partial class Year2022 {
+        public class Day17 : DayBase {
             private long cycles;
             private long currentTop;
             private List<Rock> rocks;
 
             protected override string Title { get; } = "Day 17: Pyroclastic Flow";
 
-            public override void SetupAll()
-            {
+            public override void SetupAll() {
                 AddInputFile(@"2022\17_Example.txt");
                 //AddInputFile(@"2022\17_rAiner.txt");
                 //AddInputFile(@"2022\17_SEGCC.txt");
@@ -24,8 +20,7 @@ namespace Puzzles
 
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
 
-            public override string Solve(bool Part1)
-            {
+            public override string Solve(bool Part1) {
                 cycles = Part1 ? 2022 : 1000000000000;
                 //if (!Part1) return "";
                 //char[,] shapes = new char[,] { { 'x', '<' } };
@@ -34,8 +29,7 @@ namespace Puzzles
                 rocks = new();
                 currentTop = 0; //floor
                 int streamIndex = 0;
-                for (long i = 1; i <= cycles; i++)
-                {
+                for (long i = 1; i <= cycles; i++) {
                     if (i % 1000 == 0) Console.WriteLine($"cycle: {i}");
                     Rock rock = new(i);
                     rock.Y = currentTop + 3 + 1;
@@ -50,8 +44,7 @@ namespace Puzzles
                     //    keepGoing = RockFalls();
                     //} while (keepGoing);
                     bool push = true;
-                    while (rock.Floating)
-                    {
+                    while (rock.Floating) {
                         RockFalling(rock, ref push, ref streamIndex);
                         //PrintChamber();
                     }
@@ -67,8 +60,7 @@ namespace Puzzles
                 return FormatResult(currentTop, "rock tower height");
             }
 
-            private void RockFalling(Rock rock, ref bool push, ref int streamIndex)
-            {
+            private void RockFalling(Rock rock, ref bool push, ref int streamIndex) {
                 long yCache = rock.Y;
                 long xCache = rock.X;
 
@@ -77,25 +69,20 @@ namespace Puzzles
                 {
                     if (InputData[0][streamIndex++ % InputData[0].Length] == '>') rock.X++;
                     else rock.X--;
-                }
-                else // fall down
-                {
+                } else // fall down
+                  {
                     rock.Y--;
                 }
                 bool collision = false;
-                for (long y = 0; y < rock.Height; y++)
-                {
-                    for (long x = 0; x < rock.Width; x++)
-                    {
-                        if (rock.Shape[y, x])
-                        {
+                for (long y = 0; y < rock.Height; y++) {
+                    for (long x = 0; x < rock.Width; x++) {
+                        if (rock.Shape[y, x]) {
                             if (CheckIntersect(rock.Y + y, rock.X + x, false) > 0) collision = true;
                         }
                     }
                 }
 
-                if (collision)
-                {  // didn't work
+                if (collision) {  // didn't work
                     rock.Y = yCache;
                     rock.X = xCache;
                     if (!push) rock.Floating = false; // can only rest if falling
@@ -103,14 +90,11 @@ namespace Puzzles
                 push = !push;
             }
 
-            private void PrintChamber()
-            {
+            private void PrintChamber() {
                 //for (int y = currentTop + 8; y >= 0; y--)
-                for (long y = rocks.Last().Y + rocks.Last().Height - 1; y >= 0; y--)
-                {
+                for (long y = rocks.Last().Y + rocks.Last().Height - 1; y >= 0; y--) {
                     StringBuilder sb = new();
-                    for (int x = -1; x <= 7; x++)
-                    {
+                    for (int x = -1; x <= 7; x++) {
                         //int isRock = 0;
                         //foreach (var rock in rocks)
                         //{
@@ -132,8 +116,7 @@ namespace Puzzles
                 Console.WriteLine(string.Empty);
             }
 
-            private int CheckIntersect(long y, long x, bool includeFloating)
-            {
+            private int CheckIntersect(long y, long x, bool includeFloating) {
                 // 0 -> good
                 // 1 -> other rock
                 // 2 -> floating rock
@@ -146,8 +129,7 @@ namespace Puzzles
                 for (int i = rocks.Count - 1; i >= 0; i--)
 
                     //check other rocks
-                    if (includeFloating || !rocks[i].Floating)
-                    {
+                    if (includeFloating || !rocks[i].Floating) {
                         {
                             long yRock = y - rocks[i].Y;
                             long xRock = x - rocks[i].X;
@@ -157,8 +139,7 @@ namespace Puzzles
                 return 0;
             }
 
-            private class Rock
-            {
+            private class Rock {
                 //static string[] shapess = new string[] { ".... .... .... #.... ....",
                 //                                         ".... .#.. ..#. #.... ....",
                 //                                         ".... ###. ..#. #.... ##..",
@@ -174,12 +155,10 @@ namespace Puzzles
                 public long Width;
 
 
-                public Rock(long cycle)
-                {
+                public Rock(long cycle) {
 
                     Shape = new bool[4, 4]; // all false
-                    switch ((cycle - 1) % 5)
-                    {
+                    switch ((cycle - 1) % 5) {
                         case 0:
                             Height = 1;
                             Width = 4;

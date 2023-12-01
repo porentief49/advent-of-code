@@ -2,33 +2,26 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Puzzles;
 
-namespace _Year2022
-{
+namespace _Year2022 {
     [TestClass]
-    public static class Helpers
-    {
+    public static class Helpers {
         private const string _inputExtension = ".txt";
         public static DayBase? Puzzle;
         public static string InputPrefix = string.Empty;
 
-        public static void RunTest(string InputFile, bool Part1, string Expect)
-        {
-            if (Puzzle is not null)
-            {
+        public static void RunTest(string InputFile, bool Part1, string Expect) {
+            if (Puzzle is not null) {
                 Puzzle.BareOutput = true;
                 Puzzle.Init(InputPrefix + InputFile + _inputExtension);
                 Assert.AreEqual(Expect, Puzzle.Solve(Part1));
-            }
-            else Assert.Fail("Puzzle not instantiated");
+            } else Assert.Fail("Puzzle not instantiated");
         }
     }
 
     [TestClass]
-    public class _Day01
-    {
+    public class _Day01 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day01();
             Helpers.InputPrefix = @"2022\01_";
         }
@@ -53,11 +46,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day02
-    {
+    public class _Day02 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day02();
             Helpers.InputPrefix = @"2022\02_";
         }
@@ -82,11 +73,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day03
-    {
+    public class _Day03 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day03();
             Helpers.InputPrefix = @"2022\03_";
         }
@@ -111,11 +100,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day04
-    {
+    public class _Day04 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day04();
             Helpers.InputPrefix = @"2022\04_";
         }
@@ -140,11 +127,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day05
-    {
+    public class _Day05 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day05();
             Helpers.InputPrefix = @"2022\05_";
         }
@@ -169,11 +154,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day06
-    {
+    public class _Day06 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day06();
             Helpers.InputPrefix = @"2022\06_";
         }
@@ -222,11 +205,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day07
-    {
+    public class _Day07 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day07();
             Helpers.InputPrefix = @"2022\07_";
         }
@@ -251,11 +232,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day08
-    {
+    public class _Day08 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day08();
             Helpers.InputPrefix = @"2022\08_";
         }
@@ -280,11 +259,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day09
-    {
+    public class _Day09 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day09();
             Helpers.InputPrefix = @"2022\09_";
         }
@@ -315,11 +292,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day10
-    {
+    public class _Day10 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day10();
             Helpers.InputPrefix = @"2022\10_";
         }
@@ -344,11 +319,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day11
-    {
+    public class _Day11 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day11();
             Helpers.InputPrefix = @"2022\11_";
         }
@@ -373,11 +346,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day12
-    {
+    public class _Day12 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day12();
             Helpers.InputPrefix = @"2022\12_";
         }
@@ -402,11 +373,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day13
-    {
+    public class _Day13 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day13();
             Helpers.InputPrefix = @"2022\13_";
         }
@@ -431,11 +400,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day14
-    {
+    public class _Day14 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day14();
             Helpers.InputPrefix = @"2022\14_";
         }
@@ -460,11 +427,9 @@ namespace _Year2022
     }
 
     [TestClass]
-    public class _Day15
-    {
+    public class _Day15 {
         [TestInitialize]
-        public void _Init()
-        {
+        public void _Init() {
             Helpers.Puzzle = new Year2022.Day15();
             Helpers.InputPrefix = @"2022\15_";
         }
