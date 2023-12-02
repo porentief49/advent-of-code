@@ -19,7 +19,7 @@ namespace Puzzles {
 
         protected abstract string Title { get; }
 
-        protected string[]? InputData { get; set; }
+        protected string[] InputData { get; set; } = new string[0];
 
         protected void AddInputFile(string InputFile) => InputFiles.Add(InputFile);
 
