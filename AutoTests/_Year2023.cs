@@ -38,5 +38,26 @@ namespace _Year2023 {
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "54845");
     }
+
+    [TestClass]
+    public class _Day03 {
+        [TestInitialize]
+        public void _Init() {
+            Helpers.Puzzle = new Year2023.Day03();
+            Helpers.InputPrefix = @"2023\03_";
+        }
+
+        [TestMethod]
+        public void _Part1_Example() => Helpers.RunTest("Example", true, "4361");
+
+        [TestMethod]
+        public void _Part2_Example() => Helpers.RunTest("Example", false, "467835");
+
+        [TestMethod]
+        public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "560670");
+
+        [TestMethod]
+        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "91622824");
+    }
 }
 
