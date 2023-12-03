@@ -16,9 +16,9 @@ namespace Puzzles {
             public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
 
             public override string Solve(bool Part1) {
-                var preprocess = (Part1 ? InputData : InputData?.Select(i => Words2Digits(i)));
-                var filtered = preprocess?.Select(p => p.Where(c => numbers.Contains(c)));
-                var calValues = filtered?.Select(f => int.Parse($"{f.FirstOrDefault('0')}{f.LastOrDefault('0')}"));
+                var preprocess = (Part1 ? InputData : InputData.Select(i => Words2Digits(i)));
+                var filtered = preprocess.Select(p => p.Where(c => numbers.Contains(c)));
+                var calValues = filtered.Select(f => int.Parse($"{f.FirstOrDefault('0')}{f.LastOrDefault('0')}"));
                 return calValues?.Aggregate((x, y) => x + y).ToString() ?? string.Empty;
             }
 

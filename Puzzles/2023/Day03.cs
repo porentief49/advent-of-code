@@ -21,11 +21,10 @@ namespace Puzzles {
                     bool inNumber = false;
                     int number = 0;
                     for (int col = 0; col < InputData[0].Length; col++) {
-                        var character = InputData[row][col];
+                        char character = InputData[row][col];
                         if (character >= '0' && character <= '9') {
-                            if (inNumber) {
-                                number = number * 10 + character - '0';
-                            } else {
+                            if (inNumber) number = number * 10 + character - '0';
+                            else {
                                 number = character - '0';
                                 start = col;
                                 inNumber = true;
@@ -45,12 +44,13 @@ namespace Puzzles {
                     for (int col = 0; col < InputData[0].Length; col++) {
                         if (InputData[row][col] == '*') {
                             var twoFactors = numbers.Where(n => Math.Abs(row - n.Row) <= 1 && col >= n.ColStart - 1 && col <= n.ColEnd + 1);
-                            if (twoFactors.Count() == 2) sum+= twoFactors.First().Value * twoFactors.Last().Value;
+                            if (twoFactors.Count() == 2) sum += twoFactors.First().Value * twoFactors.Last().Value;
                         }
                     }
                 }
                 return sum.ToString();
             }
+
             private bool IsNearSymbol(Number number) {
                 bool isNearSymbol = false;
                 for (int col = number.ColStart - 1; col <= number.ColEnd + 1; col++) {
