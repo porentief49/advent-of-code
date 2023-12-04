@@ -2,7 +2,9 @@
 using System.Text.RegularExpressions;
 
 namespace Puzzles {
+
     public partial class Year2023 {
+
         public class Day03 : DayBase {
 
             protected override string Title { get; } = "Day 3: Gear Ratios";

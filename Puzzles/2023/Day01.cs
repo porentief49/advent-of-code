@@ -1,7 +1,9 @@
 ﻿using System;
 
 namespace Puzzles {
+
     public partial class Year2023 {
+
         public class Day01 : DayBase {
 
             protected override string Title { get; } = "Day 1: Trebuchet?!";
