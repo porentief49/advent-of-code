@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
-
-namespace Puzzles {
+﻿namespace Puzzles {
 
     public partial class Year2023 {
 
@@ -22,8 +19,8 @@ namespace Puzzles {
                 if (Part1) {
                     for (int i = 0; i < game.Count; i++) if (game[i].MatchCount > 0) totalScore += (ulong)Math.Pow(2, game[i].MatchCount - 1);
                 } else {
-                    for (int i = 0; i < game.Count; i++)                         for (int ii = 0; ii < game[i].MatchCount; ii++) game[i + ii + 1].Copies += game[i].Copies;
-                    totalScore = game.Select(g => g.Copies).Aggregate((x,y) => x + y);  
+                    for (int i = 0; i < game.Count; i++) for (int ii = 0; ii < game[i].MatchCount; ii++) game[i + ii + 1].Copies += game[i].Copies;
+                    totalScore = game.Select(g => g.Copies).Aggregate((x, y) => x + y);
                 }
                 return totalScore.ToString();
             }

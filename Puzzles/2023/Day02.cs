@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Puzzles {
+﻿namespace Puzzles {
 
     public partial class Year2023 {
 
@@ -45,9 +43,9 @@ namespace Puzzles {
                 }
 
                 private (int red, int green, int blue) Draw(string draw) {
-                    int red=0;
-                    int green=0;
-                    int blue=0;
+                    int red = 0;
+                    int green = 0;
+                    int blue = 0;
                     foreach (var item in draw.Trim().Split(',')) {
                         var split = item.Trim().Split(" ");
                         if (split[1] == "red") red = int.Parse(split[0]);
