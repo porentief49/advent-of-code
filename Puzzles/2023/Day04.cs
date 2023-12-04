@@ -15,21 +15,16 @@
 
             public override string Solve(bool Part1) {
                 var game = InputData.Select(i => new Card(i)).ToList();
-                ulong totalScore = 0;
-                if (Part1) {
-                    for (int i = 0; i < game.Count; i++) if (game[i].MatchCount > 0) totalScore += (ulong)Math.Pow(2, game[i].MatchCount - 1);
-                } else {
-                    for (int i = 0; i < game.Count; i++) for (int ii = 0; ii < game[i].MatchCount; ii++) game[i + ii + 1].Copies += game[i].Copies;
-                    totalScore = game.Select(g => g.Copies).Aggregate((x, y) => x + y);
-                }
-                return totalScore.ToString();
+                if (Part1) return game.Where(g => g.MatchCount > 0).Select(g => Math.Pow(2, g.MatchCount - 1)).Sum().ToString();
+                for (int i = 0; i < game.Count; i++) for (int ii = 0; ii < game[i].MatchCount; ii++) game[i + ii + 1].Copies += game[i].Copies;
+                return game.Select(g => g.Copies).Aggregate((x, y) => x + y).ToString();
             }
 
             private class Card {
                 public List<int> Winning;
                 public List<int> Mine;
                 public readonly int MatchCount;
-                public ulong Copies;
+                public ulong Copies; // smells like this is getting LARGE
 
                 public Card(string line) {
                     var split = line.Replace(':', '|').Split('|', StringSplitOptions.RemoveEmptyEntries);
