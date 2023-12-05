@@ -23,7 +23,7 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadFile(InputFile, true);
+                InputData = ReadLines(InputFile, true);
             }
 
             public override string Solve(bool Part1) {

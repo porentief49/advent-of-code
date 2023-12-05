@@ -17,7 +17,7 @@ namespace Puzzles {
                 AddInputFile(@"2022\06_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 int _markerLength = Part1 ? 4 : 14;

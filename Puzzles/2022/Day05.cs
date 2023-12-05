@@ -12,7 +12,7 @@ namespace Puzzles {
                 AddInputFile(@"2022\05_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, false);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, false);
 
             public override string Solve(bool Part1) {
                 int _splitterRow = 0;

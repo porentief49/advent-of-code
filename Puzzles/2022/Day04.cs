@@ -11,7 +11,7 @@ namespace Puzzles {
                 AddInputFile(@"2022\04_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 List<(Range Elf1, Range Elf2)> Assignments = new();

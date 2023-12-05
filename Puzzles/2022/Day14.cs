@@ -21,7 +21,7 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadFile(InputFile, true);
+                InputData = ReadLines(InputFile, true);
                 _min = _start;
                 _max = _start;
                 _rocks = new();

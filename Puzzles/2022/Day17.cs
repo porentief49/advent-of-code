@@ -18,7 +18,7 @@ namespace Puzzles {
                 //AddInputFile(@"2022\17_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 cycles = Part1 ? 2022 : 1000000000000;

@@ -53,9 +53,12 @@ namespace Puzzles {
 
         protected string FormatResult(object Result, string Label) => (BareOutput ? string.Empty : Label + ": ") + Result.ToString();
 
-        protected string[] ReadFile(string FilePath, bool RemoveEmptyLines) {
-            return File.ReadAllText(_relativePath + FilePath).Replace("\r", string.Empty).Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+        protected string ReadFile(string FilePath, bool ReplaceCrLfWithLfOnly) {
+            string raw = File.ReadAllText(_relativePath + FilePath);
+            return ReplaceCrLfWithLfOnly ? raw.Replace("\r", string.Empty) : raw;
         }
+
+        protected string[] ReadLines(string FilePath, bool RemoveEmptyLines) => ReadFile(FilePath, true).Split('\n', RemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
 
         protected static T[][] InitJaggedArray<T>(int Dim1, int Dim2, T InitValue) {
             T[][] _grid = new T[Dim1][];

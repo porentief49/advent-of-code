@@ -12,7 +12,7 @@ namespace Puzzles {
                 AddInputFile(@"2021\01_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => mDepths = ReadFile(InputFile, true).Select(x => int.Parse(x)).ToArray();
+            public override void Init(string InputFile) => mDepths = ReadLines(InputFile, true).Select(x => int.Parse(x)).ToArray();
 
             public override string Solve(bool Part1) {
                 int lPrev = mDepths[0] + (Part1 ? 0 : (mDepths[1] + mDepths[2]));

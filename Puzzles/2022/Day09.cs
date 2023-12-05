@@ -19,7 +19,7 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadFile(InputFile, true);
+                InputData = ReadLines(InputFile, true);
                 _movements = InputData.Select(x => (x[0], int.Parse(x.Split(' ')[1]))).ToList();
             }
 

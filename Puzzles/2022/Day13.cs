@@ -19,7 +19,7 @@ namespace Puzzles {
                 AddInputFile(@"2022\13_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => _packets = ReadFile(InputFile, true).Select(x => Packet.Parse(x)).ToList();
+            public override void Init(string InputFile) => _packets = ReadLines(InputFile, true).Select(x => Packet.Parse(x)).ToList();
 
             public override string Solve(bool part1) {
                 if (part1) {

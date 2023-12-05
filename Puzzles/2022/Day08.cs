@@ -16,7 +16,7 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadFile(InputFile, true);
+                InputData = ReadLines(InputFile, true);
                 _treeHeights = InputData.Select(y => y.Select(l => int.Parse(l.ToString())).ToArray()).ToArray();
             }
 

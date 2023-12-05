@@ -20,7 +20,7 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadFile(InputFile, true);
+                InputData = ReadLines(InputFile, true);
                 _isExample = InputFile.Contains("Example");
             }
 

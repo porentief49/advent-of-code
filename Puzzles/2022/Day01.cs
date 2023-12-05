@@ -12,7 +12,7 @@ namespace Puzzles {
                 AddInputFile(@"2022\01_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, false);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, false);
 
             public override string Solve(bool Part1) {
                 List<long> _elfsCalories = new();

@@ -17,7 +17,7 @@ namespace Puzzles {
                 AddInputFile(@"2022\07_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 FileSystemElement _fileSystem = new("/", true, null, -1);

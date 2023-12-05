@@ -10,7 +10,7 @@ namespace Puzzles {
                 AddInputFile(@"2021\02_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
 
             public override string Solve(bool aPart1) {
                 int lHorizontal = 0;

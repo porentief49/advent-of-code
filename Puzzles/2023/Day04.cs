@@ -11,7 +11,7 @@
                 AddInputFile(@"2023\04_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 var game = InputData.Select(i => new Card(i)).ToList();

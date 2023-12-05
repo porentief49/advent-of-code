@@ -11,7 +11,7 @@
                 AddInputFile(@"2023\03_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadFile(InputFile, true);
+            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 List<Number> numbers = new();

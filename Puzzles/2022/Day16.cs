@@ -19,7 +19,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) {
                 _valves = new();
-                InputData = ReadFile(InputFile, true);
+                InputData = ReadLines(InputFile, true);
                 foreach (var line in InputData) {
                     string[] split = line.Replace(";", string.Empty).Replace('=', ' ').Replace(", ", "|").Split(' ');
                     _valves.Add(split[1], new Valve(split[1], long.Parse(split[5]), split[10].Split('|')));

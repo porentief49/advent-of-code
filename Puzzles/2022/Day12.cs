@@ -22,7 +22,7 @@ namespace Puzzles {
             }
 
             public override void Init(string file) {
-                InputData = ReadFile(file, true);
+                InputData = ReadLines(file, true);
                 _dim = (InputData.Length, InputData[0].Length);
                 _map = new Node[_dim.y][];
                 for (int y = 0; y < _dim.y; y++) {
