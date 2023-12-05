@@ -29,7 +29,7 @@ namespace Puzzles {
                 //Part 2
                 List<(ulong start, ulong length)> seedRanges = new();
                 for (int i = 0; i < seeds.Length / 2; i++) seedRanges.Add((seeds[i * 2], seeds[i * 2 + 1]));
-                //Console.WriteLine($"starting with seedranges: {string.Join(" | ", seedRanges.Select((s, i) => $"{i}: {s.Start}-{s.Length}"))}");
+                //Console.WriteLine($"starting with {seedRanges.Count()} ranges: {string.Join(" | ", seedRanges.Select((s, i) => $"{i}: {s.start}-{s.length}"))}");
                 foreach (var map in maps) {
                     List<(ulong start, ulong length)> newSeedRanges = new();
                     foreach (var seedRange in seedRanges) {
@@ -53,7 +53,7 @@ namespace Puzzles {
                         } while (seed < seedRange.start + seedRange.length);
                     }
                     seedRanges = newSeedRanges;
-                    //Console.WriteLine($"finished round with {NewSeedRanges.Count()} seedranges: {string.Join(" | ", seedRanges.Select((s, i) => $"{i}: {s.Start}-{s.Length}"))}");
+                    //Console.WriteLine($"finished round with {seedRanges.Count()} ranges: {string.Join(" | ", seedRanges.Select((s, i) => $"{i}: {s.start}-{s.length}"))}");
                 }
                 return seedRanges.Min(s => s.start).ToString();
             }
