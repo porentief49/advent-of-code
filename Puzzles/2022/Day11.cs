@@ -23,12 +23,12 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadLines(InputFile, true);
+                InputAsLines = ReadLines(InputFile, true);
             }
 
             public override string Solve(bool Part1) {
                 monkeys = new();
-                for (int i = 0; i < InputData.Length / 6; i++) monkeys.Add(new Monkey(InputData.Skip(i * 6).Take(6).ToArray()));
+                for (int i = 0; i < InputAsLines.Length / 6; i++) monkeys.Add(new Monkey(InputAsLines.Skip(i * 6).Take(6).ToArray()));
                 long leastCommon = monkeys.Select(x => x.DivisibleBy).Aggregate((x, y) => x * y);
                 int rounds = Part1 ? 20 : 10000;
                 for (int i = 0; i < rounds; i++) {

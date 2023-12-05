@@ -11,11 +11,11 @@ namespace Puzzles {
                 AddInputFile(@"2022\02_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 List<(char They, char Me)> Rounds = new();
-                for (int i = 0; i < InputData?.Length; i++) Rounds.Add((InputData[i][0], InputData[i][2]));
+                for (int i = 0; i < InputAsLines?.Length; i++) Rounds.Add((InputAsLines[i][0], InputAsLines[i][2]));
                 int _totalScore = 0;
                 foreach (var _round in Rounds) _totalScore += Part1 ? Play1(_round) : Play2(_round);
                 return FormatResult(_totalScore, "total score");

@@ -11,10 +11,10 @@
                 AddInputFile(@"2023\04_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
-                var game = InputData.Select(i => new Card(i)).ToList();
+                var game = InputAsLines.Select(i => new Card(i)).ToList();
                 if (Part1) return game.Where(g => g.MatchCount > 0).Select(g => Math.Pow(2, g.MatchCount - 1)).Sum().ToString();
                 for (int i = 0; i < game.Count; i++) for (int ii = 0; ii < game[i].MatchCount; ii++) game[i + ii + 1].Copies += game[i].Copies;
                 return game.Select(g => g.Copies).Aggregate((x, y) => x + y).ToString();

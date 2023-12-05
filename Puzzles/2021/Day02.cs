@@ -10,14 +10,14 @@ namespace Puzzles {
                 AddInputFile(@"2021\02_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool aPart1) {
                 int lHorizontal = 0;
                 int lDepth = 0;
                 int lAim = 0;
-                for (int i = 0; i < InputData?.Length; i++) {
-                    string[] lSplit = InputData[i].ToLower().Split(' ');
+                for (int i = 0; i < InputAsLines?.Length; i++) {
+                    string[] lSplit = InputAsLines[i].ToLower().Split(' ');
                     int lSteps = int.Parse(lSplit[1]);
                     switch (lSplit[0]) {
                         case "up":

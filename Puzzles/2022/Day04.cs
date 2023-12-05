@@ -11,12 +11,12 @@ namespace Puzzles {
                 AddInputFile(@"2022\04_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 List<(Range Elf1, Range Elf2)> Assignments = new();
-                for (int i = 0; i < InputData?.Length; i++) {
-                    string[] _split = InputData[i].Split(',');
+                for (int i = 0; i < InputAsLines?.Length; i++) {
+                    string[] _split = InputAsLines[i].Split(',');
                     Assignments.Add((new(_split[0]), new(_split[1])));
                 }
                 int _overlapCount = 0;

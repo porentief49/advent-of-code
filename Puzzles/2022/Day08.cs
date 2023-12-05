@@ -16,13 +16,13 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadLines(InputFile, true);
-                _treeHeights = InputData.Select(y => y.Select(l => int.Parse(l.ToString())).ToArray()).ToArray();
+                InputAsLines = ReadLines(InputFile, true);
+                _treeHeights = InputAsLines.Select(y => y.Select(l => int.Parse(l.ToString())).ToArray()).ToArray();
             }
 
             public override string Solve(bool Part1) {
-                int _xSize = InputData[0].Length;
-                int _ySize = InputData.Length;
+                int _xSize = InputAsLines[0].Length;
+                int _ySize = InputAsLines.Length;
                 bool[][] _visibleTrees = new bool[_ySize][];
                 int[][] _scenicScores = new int[_ySize][];
                 for (int i = 0; i < _ySize; i++) {

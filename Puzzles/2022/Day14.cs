@@ -21,11 +21,11 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadLines(InputFile, true);
+                InputAsLines = ReadLines(InputFile, true);
                 _min = _start;
                 _max = _start;
                 _rocks = new();
-                foreach (var item in InputData) {
+                foreach (var item in InputAsLines) {
                     List<(int x, int y)> coords = new();
                     foreach (var item2 in item.Split(" -> ")) {
                         string[] split3 = item2.Split(',');

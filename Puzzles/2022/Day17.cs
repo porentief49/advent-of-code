@@ -18,7 +18,7 @@ namespace Puzzles {
                 //AddInputFile(@"2022\17_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 cycles = Part1 ? 2022 : 1000000000000;
@@ -67,7 +67,7 @@ namespace Puzzles {
                 // try step
                 if (push) // streams push sideways
                 {
-                    if (InputData[0][streamIndex++ % InputData[0].Length] == '>') rock.X++;
+                    if (InputAsLines[0][streamIndex++ % InputAsLines[0].Length] == '>') rock.X++;
                     else rock.X--;
                 } else // fall down
                   {

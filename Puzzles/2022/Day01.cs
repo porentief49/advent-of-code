@@ -12,13 +12,13 @@ namespace Puzzles {
                 AddInputFile(@"2022\01_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, false);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, false);
 
             public override string Solve(bool Part1) {
                 List<long> _elfsCalories = new();
                 long _calories = 0;
-                for (int i = 0; i < InputData?.Length; i++) {
-                    if (InputData[i].Length > 0) _calories += long.Parse(InputData[i]);
+                for (int i = 0; i < InputAsLines?.Length; i++) {
+                    if (InputAsLines[i].Length > 0) _calories += long.Parse(InputAsLines[i]);
                     else {
                         _elfsCalories.Add(_calories);
                         _calories = 0;

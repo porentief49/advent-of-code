@@ -11,10 +11,10 @@
                 AddInputFile(@"2023\02_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
-                var games = InputData.Select(i => new Game(i)).ToList();
+                var games = InputAsLines.Select(i => new Game(i)).ToList();
                 int sum = 0;
                 foreach (var game in games) {
                     if (Part1) {

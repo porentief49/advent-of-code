@@ -17,11 +17,11 @@ namespace Puzzles {
                 AddInputFile(@"2022\06_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 int _markerLength = Part1 ? 4 : 14;
-                for (int i = 0; i < InputData[0].Length - _markerLength; i++) if (InputData[0].Skip(i).Take(_markerLength).Distinct().Count() == _markerLength) return FormatResult(i + _markerLength, "packet start");
+                for (int i = 0; i < InputAsLines[0].Length - _markerLength; i++) if (InputAsLines[0].Skip(i).Take(_markerLength).Distinct().Count() == _markerLength) return FormatResult(i + _markerLength, "packet start");
                 return FormatResult(-1, "no packet marker found");
             }
         }

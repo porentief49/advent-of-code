@@ -11,16 +11,16 @@
                 AddInputFile(@"2023\03_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 List<Number> numbers = new();
-                for (int row = 0; row < InputData.Length; row++) {
+                for (int row = 0; row < InputAsLines.Length; row++) {
                     int start = 0;
                     bool inNumber = false;
                     int number = 0;
-                    for (int col = 0; col < InputData[0].Length; col++) {
-                        char character = InputData[row][col];
+                    for (int col = 0; col < InputAsLines[0].Length; col++) {
+                        char character = InputAsLines[row][col];
                         if (character >= '0' && character <= '9') {
                             if (inNumber) number = number * 10 + character - '0';
                             else {
@@ -35,13 +35,13 @@
                             }
                         }
                     }
-                    if (inNumber) numbers.Add(new Number(number, row, start, InputData[0].Length));
+                    if (inNumber) numbers.Add(new Number(number, row, start, InputAsLines[0].Length));
                 }
                 if (Part1) return numbers.Where(n => IsNearSymbol(n)).Sum(n => n.Value).ToString();
                 int sum = 0;
-                for (int row = 0; row < InputData.Length; row++) {
-                    for (int col = 0; col < InputData[0].Length; col++) {
-                        if (InputData[row][col] == '*') {
+                for (int row = 0; row < InputAsLines.Length; row++) {
+                    for (int col = 0; col < InputAsLines[0].Length; col++) {
+                        if (InputAsLines[row][col] == '*') {
                             var twoFactors = numbers.Where(n => Math.Abs(row - n.Row) <= 1 && col >= n.ColStart - 1 && col <= n.ColEnd + 1);
                             if (twoFactors.Count() == 2) sum += twoFactors.First().Value * twoFactors.Last().Value;
                         }
@@ -61,8 +61,8 @@
                 return isNearSymbol;
 
                 bool CheckSymbol(int row, int col) {
-                    if (row < 0 || row >= InputData.Length - 1 || col < 0 || col >= InputData[0].Length - 1) return false;
-                    char c = InputData[row][col];
+                    if (row < 0 || row >= InputAsLines.Length - 1 || col < 0 || col >= InputAsLines[0].Length - 1) return false;
+                    char c = InputAsLines[row][col];
                     return (c != '.' && (c < '0' || c > '9'));
                 }
             }

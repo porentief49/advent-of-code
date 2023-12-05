@@ -20,14 +20,14 @@ namespace Puzzles {
             }
 
             public override void Init(string InputFile) {
-                InputData = ReadLines(InputFile, true);
+                InputAsLines = ReadLines(InputFile, true);
                 _isExample = InputFile.Contains("Example");
             }
 
             public override string Solve(bool Part1) {
                 _maxDim = _isExample ? 20 : 4000000;
                 _sensors = new();
-                foreach (var line in InputData) {
+                foreach (var line in InputAsLines) {
                     string[] split = line.Replace('=', ' ').Replace(':', ' ').Replace(',', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     _sensors.Add(new(long.Parse(split[5]), long.Parse(split[3]), long.Parse(split[13]), long.Parse(split[11])));
                 }

@@ -13,12 +13,13 @@ namespace Puzzles {
                 AddInputFile(@"2023\05_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, false);
+            public override void Init(string InputFile) => InputAsText = ReadText(InputFile, true);
 
             public override string Solve(bool Part1) {
-                var mapDefinitions = string.Join('\n', InputData).Split("\n\n");
+                var mapDefinitions = InputAsText.Split("\n\n");
                 var maps = mapDefinitions.Skip(1).Select(m => new Map(m));
                 var seeds = mapDefinitions.First().Split(' ').Skip(1).Select(m => ulong.Parse(m)).ToArray();
+
                 if (Part1) {
                     List<ulong> locations = new();
                     foreach (var seed in seeds) locations.Add(CalcLocation(maps, seed));

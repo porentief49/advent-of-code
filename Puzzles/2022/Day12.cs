@@ -22,14 +22,14 @@ namespace Puzzles {
             }
 
             public override void Init(string file) {
-                InputData = ReadLines(file, true);
-                _dim = (InputData.Length, InputData[0].Length);
+                InputAsLines = ReadLines(file, true);
+                _dim = (InputAsLines.Length, InputAsLines[0].Length);
                 _map = new Node[_dim.y][];
                 for (int y = 0; y < _dim.y; y++) {
                     Node[] line = new Node[_dim.x];
                     for (int x = 0; x < _dim.x; x++) {
                         int height;
-                        switch (InputData[y][x]) {
+                        switch (InputAsLines[y][x]) {
                             case 'S':
                                 _start1 = (y, x);
                                 height = 0;
@@ -39,7 +39,7 @@ namespace Puzzles {
                                 height = 25;
                                 break;
                             default:
-                                height = InputData[y][x] - 97;
+                                height = InputAsLines[y][x] - 97;
                                 break;
                         }
                         line[x] = new(y, x, height);

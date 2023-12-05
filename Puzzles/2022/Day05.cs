@@ -12,15 +12,15 @@ namespace Puzzles {
                 AddInputFile(@"2022\05_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, false);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, false);
 
             public override string Solve(bool Part1) {
                 int _splitterRow = 0;
                 int _stackCount = 0;
 
                 //prepare stuff
-                _splitterRow = Array.IndexOf(InputData, string.Empty);
-                _stackCount = InputData[_splitterRow - 1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).Max();
+                _splitterRow = Array.IndexOf(InputAsLines, string.Empty);
+                _stackCount = InputAsLines[_splitterRow - 1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).Max();
 
                 // build stacks
                 Stack<char>[] _stacks = new Stack<char>[_stackCount];
@@ -28,14 +28,14 @@ namespace Puzzles {
                 for (int _row = _splitterRow - 2; _row >= 0; _row--) {
                     for (int ii = 0; ii < _stackCount; ii++) {
                         int _col = ii * 4 + 1;
-                        if (InputData[_row].Length > _col && InputData[_row][_col] != ' ') _stacks[ii].Push(InputData[_row][_col]);
+                        if (InputAsLines[_row].Length > _col && InputAsLines[_row][_col] != ' ') _stacks[ii].Push(InputAsLines[_row][_col]);
                     }
                 }
 
                 // move crates
-                for (int _row = _splitterRow + 1; _row < InputData?.Length; _row++) {
-                    if (InputData[_row].Length > 0) {
-                        string[] _split = InputData[_row].Split(' ');
+                for (int _row = _splitterRow + 1; _row < InputAsLines?.Length; _row++) {
+                    if (InputAsLines[_row].Length > 0) {
+                        string[] _split = InputAsLines[_row].Split(' ');
                         int _count = int.Parse(_split[1]);
                         int _from = int.Parse(_split[3]);
                         int _to = int.Parse(_split[5]);

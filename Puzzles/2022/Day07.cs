@@ -17,14 +17,14 @@ namespace Puzzles {
                 AddInputFile(@"2022\07_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 FileSystemElement _fileSystem = new("/", true, null, -1);
                 FileSystemElement _root = _fileSystem;
                 FileSystemElement _curFolder = _root;
-                for (int i = 0; i < InputData?.Length; i++) {
-                    string[] _split = InputData[i].Split(' ');
+                for (int i = 0; i < InputAsLines?.Length; i++) {
+                    string[] _split = InputAsLines[i].Split(' ');
                     if (_split[0] != "$") _curFolder?.SubElements.Add(new(_split[1], _split[0] == "dir", _curFolder, _split[0] == "dir" ? -1 : long.Parse(_split[0]))); // listing
                     else if (_split[1] == "cd") _curFolder = _split[2] switch { "/" => _root, ".." => _curFolder.Parent ?? _root, _ => _curFolder.SubElements.First(x => x.Name == _split[2]) }; // command // ls doesn't really have any effect
                 }

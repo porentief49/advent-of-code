@@ -11,11 +11,11 @@ namespace Puzzles {
                 AddInputFile(@"2022\03_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 List<PackItems> Rucksacks = new();
-                for (int i = 0; i < InputData?.Length; i++) Rucksacks.Add(new(InputData[i]));
+                for (int i = 0; i < InputAsLines?.Length; i++) Rucksacks.Add(new(InputAsLines[i]));
                 int _prioritySum = 0;
                 if (Part1) {
                     foreach (var _rucksack in Rucksacks) _prioritySum += _rucksack.RearrangementPriority();

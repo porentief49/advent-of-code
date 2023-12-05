@@ -15,14 +15,14 @@ namespace Puzzles {
                 AddInputFile(@"2022\10_SEGCC.txt");
             }
 
-            public override void Init(string InputFile) => InputData = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
             public override string Solve(bool Part1) {
                 // work the instructions
                 int _xReg = 1;
                 List<int> _xRegValues = new() { _xReg, _xReg }; // to get the index right
-                for (int i = 0; i < InputData.Length; i++) {
-                    string[] _split = InputData[i].Split(' ');
+                for (int i = 0; i < InputAsLines.Length; i++) {
+                    string[] _split = InputAsLines[i].Split(' ');
                     if (_split[0] == "noop") _xRegValues.Add(_xReg);
                     else {
                         _xRegValues.Add(_xReg);
