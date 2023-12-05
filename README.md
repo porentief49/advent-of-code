@@ -1,7 +1,7 @@
-# Advent of Code - Gruber Family
+# Advent of Code
 
 ![](pix/aoc.png)
 
 | 2021 | 2022 | 2023 |
 |---|---|---|
-| 50 ⭐ | 31 ⭐ | 6 ⭐ |
+| 50 ⭐ | 31 ⭐ | 8 ⭐ |
