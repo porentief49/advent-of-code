@@ -4,35 +4,84 @@ namespace Puzzles {
 
     public partial class Year2023 {
 
-        public class Day06 : DayBase {
+        public class Day05 : DayBase {
 
-            protected override string Title { get; } = "Day 6: Wait For It";
+            protected override string Title { get; } = "Day 5: If You Give A Seed A Fertilizer";
 
             public override void SetupAll() {
-                AddInputFile(@"2023\06_Example.txt");
-                AddInputFile(@"2023\06_rAiner.txt");
+                AddInputFile(@"2023\05_Example.txt");
+                AddInputFile(@"2023\05_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
+            public override void Init(string InputFile) => InputAsText = ReadText(InputFile, true);
 
             public override string Solve(bool Part1) {
-                if (!Part1) return "";
-                var times = InputAsLines[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).Select(t => int.Parse(t)).ToArray();
-                var distances = InputAsLines[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).Select(d => int.Parse(d)).ToArray();
-                var result = 1;
-                for (int race = 0; race < times.Count(); race++) {
-                    var wincount = 0;
-                    for (int chargeTime = 0; chargeTime <= times[race]; chargeTime++) {
-                        var dist = chargeTime * (times[race] - chargeTime);
-                        if (dist > distances[race]) {
-                            //Console.WriteLine($"race {race}, chargeTime {chargeTime}, distance {dist}");
-                            wincount++;
+                var mapDefinitions = InputAsText.Split("\n\n");
+                var maps = mapDefinitions.Skip(1).Select(m => new Map(m));
+                var seeds = mapDefinitions.First().Split(' ').Skip(1).Select(m => ulong.Parse(m)).ToArray();
+
+                if (Part1) {
+                    List<ulong> locations = new();
+                    foreach (var seed in seeds) locations.Add(CalcLocation(maps, seed));
+                    return locations.Min().ToString();
+                }
+
+                //Part 2
+                List<(ulong start, ulong length)> seedRanges = new();
+                for (int i = 0; i < seeds.Length / 2; i++) seedRanges.Add((seeds[i * 2], seeds[i * 2 + 1]));
+                //Console.WriteLine($"starting with {seedRanges.Count()} ranges: {string.Join(" | ", seedRanges.Select((s, i) => $"{i}: {s.start}-{s.length}"))}");
+                foreach (var map in maps) {
+                    List<(ulong start, ulong length)> newSeedRanges = new();
+                    foreach (var seedRange in seedRanges) {
+                        ulong seed = seedRange.start;
+                        ulong length = seedRange.length;
+                        do {
+                            ulong howMany = 0;
+                            foreach (var range in map.Ranges) {
+                                if (seed >= range.sourceStart && seed < range.sourceStart + range.length) { // found a range
+                                    howMany = Math.Min(length, range.length - (seed - range.sourceStart));
+                                    newSeedRanges.Add((seed + range.destinationStart - range.sourceStart, howMany));
+                                    break;
+                                }
+                            }
+                            if (howMany == 0) { // found no range
+                                howMany = length;
+                                newSeedRanges.Add((seed, length));
+                            }
+                            seed += howMany;
+                            length -= howMany;
+                        } while (seed < seedRange.start + seedRange.length);
+                    }
+                    seedRanges = newSeedRanges;
+                    //Console.WriteLine($"finished round with {seedRanges.Count()} ranges: {string.Join(" | ", seedRanges.Select((s, i) => $"{i}: {s.start}-{s.length}"))}");
+                }
+                return seedRanges.Min(s => s.start).ToString();
+            }
+
+            private static ulong CalcLocation(IEnumerable<Map> maps, ulong seed) {
+                ulong location = seed;
+                foreach (var map in maps) {
+                    foreach (var range in map.Ranges) {
+                        if (location >= range.sourceStart && location < range.sourceStart + range.length) {
+                            location = location - range.sourceStart + range.destinationStart;
+                            break;
                         }
                     }
-                    //Console.WriteLine(wincount);
-                    result *= wincount;
                 }
-                return result.ToString();
+                return location;
+            }
+
+            private class Map {
+
+                public List<(ulong destinationStart, ulong sourceStart, ulong length)> Ranges = new();
+
+                public Map(string mapDefinition) {
+                    var lines = mapDefinition.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 1; i < lines.Length; i++) {
+                        var split = lines[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        Ranges.Add((ulong.Parse(split[0]), ulong.Parse(split[1]), ulong.Parse(split[2])));
+                    }
+                }
             }
         }
     }
