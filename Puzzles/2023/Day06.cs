@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Puzzles {
+﻿namespace Puzzles {
 
     public partial class Year2023 {
 
