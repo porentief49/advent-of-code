@@ -11,6 +11,7 @@ namespace Puzzles {
             public override void SetupAll() {
                 AddInputFile(@"2023\05_Example.txt");
                 AddInputFile(@"2023\05_rAiner.txt");
+                AddInputFile(@"2023\05_Jannis.txt");
             }
 
             public override void Init(string InputFile) => InputAsText = ReadText(InputFile, true);

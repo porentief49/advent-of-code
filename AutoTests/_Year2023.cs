@@ -121,6 +121,12 @@ namespace _Year2023 {
 
         [TestMethod]
         public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "79004094");
+
+        [TestMethod]
+        public void _Part1_Jannis() => Helpers.RunTest("Jannis", true, "240320250");
+
+        [TestMethod]
+        public void _Part2_Jannis() => Helpers.RunTest("Jannis", false, "28580589");
     }
 
     [TestClass]
