@@ -44,6 +44,8 @@
                                 }
                             }
                             if (howMany == 0) { // found no range
+                                // there's a bug in this algo actually. If a seed range start doesn't get picked up by a range, I will assume that
+                                // the rest of this seed range goes unchanged. This condition isn't stated anywhere, but apparently held true for my input. Lucky me!
                                 howMany = length;
                                 newSeedRanges.Add((seed, length));
                             }

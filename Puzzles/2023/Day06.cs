@@ -30,7 +30,7 @@
                     return result.ToString();
                 }
 
-                // part 2 - instead of iterating through, now finding the zero point of the second-order function
+                // part 2 - instead of iterating through, now finding the zero points of the second-order function
                 // distance = (totaltime - chargetime) * chargettime
                 // - chargetime² + totaltime * chargetime - distance = 0
                 // zero points of second order function: x12 = -(p/2) +- sqrt((p/2)² - q)
