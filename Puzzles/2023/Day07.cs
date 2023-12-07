@@ -21,7 +21,7 @@ namespace Puzzles {
 
             public override string Solve(bool part1) {
                 var hands = InputAsLines.Select(i => new Hand(i, part1 ? "23456789TJQKA" : "J23456789TQKA", part1));
-                var sorted = hands.OrderBy(h => h).ToList();
+                var sorted = hands.OrderBy(h => h);
                 return sorted.Select((s, i) => s.Bid * ((ulong)i + 1)).Aggregate((x, y) => x + y).ToString();
             }
 
@@ -43,7 +43,7 @@ namespace Puzzles {
                     else if (diffCardCount.Count == 3) Type = diffCardCount.Any(c => c == 3) ? 3 : 2;
                     else if (diffCardCount.Count == 4) Type = 1;
                     if (!part1) {
-                        var jokerCount = Cards.Count(c => c == 'J');
+                        var jokerCount = Cards.Count(c => c == 'J'); // jokers will upgrade the Type
                         if (jokerCount > 0) Type = Type switch { 0 => 1, 1 => 3, 2 => jokerCount == 1 ? 4 : 5, 3 => 5, 4 => jokerCount == 1 ? 5 : 6, _ => 6 };
                     }
                 }
