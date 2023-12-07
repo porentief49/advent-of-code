@@ -9,7 +9,7 @@ namespace Puzzles {
             const long _totalFileSystemSize = 70000000;
             const long _updateSize = 30000000;
 
-            protected override string Title { get; } = "Day 7: No Space Left On Device";
+            protected override string Title { get; } = "Day 7: Camel Cards";
 
             public override void SetupAll() {
                 AddInputFile(@"2022\07_Example.txt");
