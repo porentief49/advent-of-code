@@ -2,6 +2,7 @@
 using System.Reflection.Metadata;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System;
 
 namespace Puzzles {
 
@@ -21,19 +22,14 @@ namespace Puzzles {
             public override string Solve(bool Part1) {
                 var hands = InputAsLines.Select(i => new Hand(i, Part1 ? "23456789TJQKA" : "J23456789TQKA", Part1));
                 var sorted = hands.OrderBy(h => h).ToList();
-                if (!Part1) foreach (var item in sorted) Console.WriteLine($"{item.Cards} - {item.Type}");
-
-
                 return sorted.Select((s, i) => s.Bid * ((ulong)i + 1)).Aggregate((x, y) => x + y).ToString();
             }
-
-            private enum HandType { FiveOfAKind = 6, FourOfAKind = 5, FullHouse = 4, ThreeOfAKind = 3, TwoPairs = 2, OnePair = 1, HighCard = 0 }
 
             private class Hand : IComparable {
                 public string Cards;
                 public int[] CardStrengths;
                 public ulong Bid;
-                public HandType Type;
+                public int Type = 0; //FiveOfAKind = 6, FourOfAKind = 5, FullHouse = 4, ThreeOfAKind = 3, TwoPairs = 2, OnePair = 1, HighCard = 0
 
                 public Hand(string line, string strengths, bool part1) {
                     var split = line.Split(' ');
@@ -41,36 +37,30 @@ namespace Puzzles {
                     Bid = ulong.Parse(split[1]);
                     CardStrengths = Cards.Select(c => strengths.IndexOf(c)).ToArray();
                     var diffCardCount = Cards.Distinct().Select(d => Cards.Where(c => c == d).Count()).ToList();
-                    if (diffCardCount[0] == 5) Type = HandType.FiveOfAKind;
-                    else if (diffCardCount.Any(c => c == 4)) Type = HandType.FourOfAKind;
-                    else if (diffCardCount.Count == 2) Type = HandType.FullHouse;
-                    else if (diffCardCount.Count == 3) Type = diffCardCount.Any(c => c == 3) ? HandType.ThreeOfAKind : HandType.TwoPairs;
-                    else if (diffCardCount.Count == 4) Type = HandType.OnePair;
-                    else Type = HandType.HighCard;
+                    if (diffCardCount[0] == 5) Type = 6;
+                    else if (diffCardCount.Any(c => c == 4)) Type = 5;
+                    else if (diffCardCount.Count == 2) Type = 4;
+                    else if (diffCardCount.Count == 3) Type = diffCardCount.Any(c => c == 3) ? 3 : 2;
+                    else if (diffCardCount.Count == 4) Type = 1;
                     if (!part1) {
-                        var jokers = Cards.Count(c => c == 'J');
-                        if (jokers > 0) {
-                            Type = Type switch {
-                                HandType.HighCard => HandType.OnePair,
-                                HandType.OnePair => HandType.ThreeOfAKind,
-                                HandType.TwoPairs => jokers == 1 ? HandType.FullHouse : HandType.FourOfAKind,
-                                HandType.ThreeOfAKind => HandType.FourOfAKind,
-                                HandType.FullHouse => jokers == 1 ? HandType.FourOfAKind : HandType.FiveOfAKind,
-                                HandType.FourOfAKind => HandType.FiveOfAKind,
-                                HandType.FiveOfAKind => HandType.FiveOfAKind
-                            };
-                        }
+                        var jokerCount = Cards.Count(c => c == 'J');
+                        if (jokerCount > 0) Type = Type switch { 0 => 1, 1 => 3, 2 => jokerCount == 1 ? 4 : 5, 3 => 5, 4 => jokerCount == 1 ? 5 : 6, _ => 6 };
                     }
                 }
 
                 public int CompareTo(object? incomingHand) {
                     Hand? incoming = incomingHand as Hand;
-                    if (Type > incoming?.Type) return 1;
-                    if (Type < incoming?.Type) return -1;
+                    int x = Type.CompareTo(incoming?.Type);
+                    //if (Type > incoming?.Type) return 1;
+                    //if (Type < incoming?.Type) return -1;
+                    if (x != 0) return x;
                     for (int i = 0; i < CardStrengths.Length; i++) {
-                        if (CardStrengths[i] > incoming?.CardStrengths[i]) return 1;
-                        if (CardStrengths[i] < incoming?.CardStrengths[i]) return -11;
+                        //if (CardStrengths[i] > incoming?.CardStrengths[i]) return 1;
+                        //if (CardStrengths[i] < incoming?.CardStrengths[i]) return -1;
+                        x = CardStrengths[i].CompareTo(incoming?.CardStrengths[i]);
+                        if (x != 0) return x;
                     }
+
                     return 0;
                 }
 
