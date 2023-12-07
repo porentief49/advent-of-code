@@ -12,14 +12,14 @@
                 AddInputFile(@"2023\05_Jannis.txt");
             }
 
-            public override void Init(string InputFile) => InputAsText = ReadText(InputFile, true);
+            public override void Init(string inputFile) => InputAsText = ReadText(inputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve(bool part1) {
                 var mapDefinitions = InputAsText.Split("\n\n");
                 var maps = mapDefinitions.Skip(1).Select(m => new Map(m));
                 var seeds = mapDefinitions.First().Split(' ').Skip(1).Select(m => ulong.Parse(m)).ToArray();
 
-                if (Part1) {
+                if (part1) {
                     List<ulong> locations = new();
                     foreach (var seed in seeds) locations.Add(CalcLocation(maps, seed));
                     return locations.Min().ToString();

@@ -17,10 +17,10 @@ namespace Puzzles {
                 AddInputFile(@"2023\07_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
+            public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool Part1) {
-                var hands = InputAsLines.Select(i => new Hand(i, Part1 ? "23456789TJQKA" : "J23456789TQKA", Part1));
+            public override string Solve(bool part1) {
+                var hands = InputAsLines.Select(i => new Hand(i, part1 ? "23456789TJQKA" : "J23456789TQKA", part1));
                 var sorted = hands.OrderBy(h => h).ToList();
                 return sorted.Select((s, i) => s.Bid * ((ulong)i + 1)).Aggregate((x, y) => x + y).ToString();
             }
@@ -51,16 +51,11 @@ namespace Puzzles {
                 public int CompareTo(object? incomingHand) {
                     Hand? incoming = incomingHand as Hand;
                     int x = Type.CompareTo(incoming?.Type);
-                    //if (Type > incoming?.Type) return 1;
-                    //if (Type < incoming?.Type) return -1;
                     if (x != 0) return x;
                     for (int i = 0; i < CardStrengths.Length; i++) {
-                        //if (CardStrengths[i] > incoming?.CardStrengths[i]) return 1;
-                        //if (CardStrengths[i] < incoming?.CardStrengths[i]) return -1;
                         x = CardStrengths[i].CompareTo(incoming?.CardStrengths[i]);
                         if (x != 0) return x;
                     }
-
                     return 0;
                 }
 

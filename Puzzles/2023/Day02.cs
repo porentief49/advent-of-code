@@ -11,13 +11,13 @@
                 AddInputFile(@"2023\02_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
+            public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve(bool part1) {
                 var games = InputAsLines.Select(i => new Game(i)).ToList();
                 int sum = 0;
                 foreach (var game in games) {
-                    if (Part1) {
+                    if (part1) {
                         bool valid = true; // assume best
                         foreach (var draw in game.Draws) if (draw.red > 12 || draw.green > 13 || draw.blue > 14) valid = false;
                         if (valid) sum += game.Id;

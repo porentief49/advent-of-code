@@ -11,9 +11,9 @@
                 //AddInputFile(@"2023\08_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
+            public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve(bool part1) {
                 return "";
             }
         }

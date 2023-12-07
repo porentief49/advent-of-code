@@ -11,9 +11,9 @@
                 AddInputFile(@"2023\03_rAiner.txt");
             }
 
-            public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
+            public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve(bool part1) {
                 List<Number> numbers = new();
                 for (int row = 0; row < InputAsLines.Length; row++) {
                     int start = 0;
@@ -37,7 +37,7 @@
                     }
                     if (inNumber) numbers.Add(new Number(number, row, start, InputAsLines[0].Length));
                 }
-                if (Part1) return numbers.Where(n => IsNearSymbol(n)).Sum(n => n.Value).ToString();
+                if (part1) return numbers.Where(n => IsNearSymbol(n)).Sum(n => n.Value).ToString();
                 int sum = 0;
                 for (int row = 0; row < InputAsLines.Length; row++) {
                     for (int col = 0; col < InputAsLines[0].Length; col++) {
