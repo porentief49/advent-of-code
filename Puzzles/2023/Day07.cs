@@ -21,14 +21,16 @@ namespace Puzzles {
             public override string Solve(bool Part1) {
                 var hands = InputAsLines.Select(i => new Hand(i, Part1 ? "23456789TJQKA" : "J23456789TQKA", Part1));
                 var sorted = hands.OrderBy(h => h).ToList();
+                if (!Part1) foreach (var item in sorted) Console.WriteLine($"{item.Cards} - {item.Type}");
+
+
                 return sorted.Select((s, i) => s.Bid * ((ulong)i + 1)).Aggregate((x, y) => x + y).ToString();
             }
 
-            private enum HandType { FiveOfAKind = 6, FourOfAKind = 5, FullHouse = 4, ThreeOfAKind = 3, TwoPair = 2, OnePair = 1, HighCard = 0 }
+            private enum HandType { FiveOfAKind = 6, FourOfAKind = 5, FullHouse = 4, ThreeOfAKind = 3, TwoPairs = 2, OnePair = 1, HighCard = 0 }
 
             private class Hand : IComparable {
                 public string Cards;
-                public List<string> CardPermutations = new();
                 public int[] CardStrengths;
                 public ulong Bid;
                 public HandType Type;
@@ -38,25 +40,26 @@ namespace Puzzles {
                     Cards = split[0];
                     Bid = ulong.Parse(split[1]);
                     CardStrengths = Cards.Select(c => strengths.IndexOf(c)).ToArray();
-                    CardPermutations.Add(Cards);
+                    var diffCardCount = Cards.Distinct().Select(d => Cards.Where(c => c == d).Count()).ToList();
+                    if (diffCardCount[0] == 5) Type = HandType.FiveOfAKind;
+                    else if (diffCardCount.Any(c => c == 4)) Type = HandType.FourOfAKind;
+                    else if (diffCardCount.Count == 2) Type = HandType.FullHouse;
+                    else if (diffCardCount.Count == 3) Type = diffCardCount.Any(c => c == 3) ? HandType.ThreeOfAKind : HandType.TwoPairs;
+                    else if (diffCardCount.Count == 4) Type = HandType.OnePair;
+                    else Type = HandType.HighCard;
                     if (!part1) {
-                        for (int i = 0; i < Cards.Length; i++) {
-                            if (Cards[i] == 'J') {
-                                var cardCount = CardPermutations.Count; // cache as we change the colleciton
-                                for (int ii = 0; ii < cardCount; ii++) CardPermutations.AddRange(strengths.Skip(1).Select(s => ReplaceChar(CardPermutations[ii], i, s)));
-                            }
+                        var jokers = Cards.Count(c => c == 'J');
+                        if (jokers > 0) {
+                            Type = Type switch {
+                                HandType.HighCard => HandType.OnePair,
+                                HandType.OnePair => HandType.ThreeOfAKind,
+                                HandType.TwoPairs => jokers == 1 ? HandType.FullHouse : HandType.FourOfAKind,
+                                HandType.ThreeOfAKind => HandType.FourOfAKind,
+                                HandType.FullHouse => jokers == 1 ? HandType.FourOfAKind : HandType.FiveOfAKind,
+                                HandType.FourOfAKind => HandType.FiveOfAKind,
+                                HandType.FiveOfAKind => HandType.FiveOfAKind
+                            };
                         }
-                    }
-                    Type = HandType.HighCard; // assume worst
-                    foreach (var cards in CardPermutations) {
-                        var counts = cards.Distinct().Select(d => cards.Where(c => c == d).Count()).ToList();
-                        HandType thisType = HandType.HighCard;
-                        if (counts[0] == 5) thisType = HandType.FiveOfAKind;
-                        else if (counts.Any(c => c == 4)) thisType = HandType.FourOfAKind;
-                        else if (counts.Count == 2) thisType = HandType.FullHouse;
-                        else if (counts.Count == 3) thisType = counts.Any(c => c == 3) ? HandType.ThreeOfAKind : HandType.TwoPair;
-                        else if (counts.Count == 4) thisType = HandType.OnePair;
-                        if (thisType > Type) Type = thisType;
                     }
                 }
 
