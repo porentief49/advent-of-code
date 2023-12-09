@@ -16,41 +16,25 @@ namespace Puzzles {
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
-                if (!part1) return "";
-                var history = InputAsLines.Select(i => new History(i)).ToList();
-                foreach (var row in history) row.Predict();
-                foreach (var row in history) row.Print("After");
-                return history.Select(h => h.Data.Last().Last()).Sum().ToString();
-            }
+            public override string Solve(bool part1) => InputAsLines.Select(i => new History(i)).Select(h => h.Predict(part1)).Sum().ToString();
 
             private class History {
 
                 public List<List<long>> Data = new();
 
                 public History(string input) {
-                    var diff = input.Split(' ').Select(i => long.Parse(i)).ToList();
-                    Data.Add(diff);
-                    do {
-                        diff = diff.Zip(diff.Skip(1), (xx, y) => y - xx).ToList();
-                        Data.Add(diff);
-                    } while (diff.Max() - diff.Min() > 0);
-                    Data.Reverse();
+                    Data.Add(input.Split(' ').Select(i => long.Parse(i)).ToList());
+                    do Data.Insert(0, Data[0].Zip(Data[0].Skip(1), (xx, y) => y - xx).ToList());
+                    while (Data[0].Max() != 0 || Data[0].Min() != 0);
                 }
 
-                public void Predict() {
+                public long Predict(bool right) {
                     long last = 0;
-                    foreach (var row in Data) {
-                        last += row.Last();
-                        row.Add(last);
-                    }
+                    foreach (var row in Data) last = right ? row.Last() + last : row.First() - last;
+                    return last;
                 }
 
-                public void Print(string label) {
-                    Console.WriteLine(label);
-                    foreach (var row in Data) Console.WriteLine(string.Join(" ", row));
-                    Console.WriteLine("");
-                }
+                public void Print(string label) => Console.WriteLine($"{label}\r\n{string.Join("\r\n", Data.Select(d => string.Join(" ", d)))}\r\n");
             }
         }
     }
