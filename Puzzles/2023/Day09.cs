@@ -24,7 +24,7 @@ namespace Puzzles {
 
                 public History(string input) {
                     Data.Add(input.Split(' ').Select(i => long.Parse(i)).ToList());
-                    do Data.Insert(0, Data[0].Zip(Data[0].Skip(1), (xx, y) => y - xx).ToList());
+                    do Data.Insert(0, Data[0].Zip(Data[0].Skip(1), (x, y) => y - x).ToList());
                     while (Data[0].Max() != 0 || Data[0].Min() != 0);
                 }
 
