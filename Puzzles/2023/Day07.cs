@@ -50,11 +50,11 @@ namespace Puzzles {
 
                 public int CompareTo(object? incomingHand) {
                     Hand? incoming = incomingHand as Hand;
-                    int x = Type.CompareTo(incoming?.Type);
-                    if (x != 0) return x;
+                    int result = Type.CompareTo(incoming?.Type);
+                    if (result != 0) return result;
                     for (int i = 0; i < CardStrengths.Length; i++) {
-                        x = CardStrengths[i].CompareTo(incoming?.CardStrengths[i]);
-                        if (x != 0) return x;
+                        result = CardStrengths[i].CompareTo(incoming?.CardStrengths[i]);
+                        if (result != 0) return result;
                     }
                     return 0;
                 }

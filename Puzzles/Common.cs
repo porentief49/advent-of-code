@@ -23,6 +23,8 @@ namespace Puzzles {
 
         protected string InputAsText { get; set; } = string.Empty;
 
+        protected string InputFile { get; set; } = string.Empty;
+
         protected void AddInputFile(string inputFile) => _inputFiles.Add(inputFile);
 
         public abstract void Init(string inputFile);
@@ -37,6 +39,7 @@ namespace Puzzles {
             string result;
             report += Title + $" - RunAll on {_inputFiles.Count} input files\r\n";
             foreach (var inputFile in _inputFiles) {
+                InputFile = inputFile;
                 report += $"\r\n  File: {inputFile}\r\n";
                 if (File.Exists(_relativePath + inputFile)) {
                     Stopwatch lWatch = Stopwatch.StartNew();
@@ -89,11 +92,11 @@ namespace Puzzles {
 
         public abstract void Init();
 
-        public abstract void Init(string aResource);
+        public abstract void Init(string resource);
 
-        public void InitFile(string aFile) => Init(File.ReadAllText(aFile));
+        public void InitFile(string file) => Init(File.ReadAllText(file));
 
-        public abstract string SolvePuzzle(bool aPart1);
+        public abstract string SolvePuzzle(bool part1);
 
         public string RunBothAndReport(string aResource = "") {
             Stopwatch lWatch = Stopwatch.StartNew();
