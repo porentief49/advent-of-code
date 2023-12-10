@@ -11,6 +11,10 @@ namespace Puzzles {
             public override void SetupAll() {
                 AddInputFile(@"2023\10_Example1.txt");
                 AddInputFile(@"2023\10_Example2.txt");
+                AddInputFile(@"2023\10_Example3.txt");
+                AddInputFile(@"2023\10_Example4.txt");
+                AddInputFile(@"2023\10_Example5.txt");
+                AddInputFile(@"2023\10_Example6.txt");
                 AddInputFile(@"2023\10_rAiner.txt");
             }
 
@@ -22,7 +26,7 @@ namespace Puzzles {
 
                 List<Pos> path = new();
 
-                if (!part1) return "";
+                //if (!part1) return "";
                 Pos.Field = InputAsLines;
                 var dimension = new Pos(InputAsLines.Length - 1, InputAsLines[0].Length - 1);
 
@@ -30,30 +34,41 @@ namespace Puzzles {
                 int startRow = InputAsLines.ToList().FindIndex(i => i.Contains('S'));
                 var start = new Pos(startRow, InputAsLines[startRow].ToList().IndexOf('S'));
 
-                // find two directions to go to
-
-                var posA = start.Go(Directions.Nowhere);
-                Directions dirA = Directions.Nowhere;
-                Directions dirAlast = Directions.Nowhere;
-                if (start.FromStartCanGo(Directions.North)) dirA = Directions.North;
-                if (start.FromStartCanGo(Directions.East)) dirA = Directions.East;
-                if (start.FromStartCanGo(Directions.South)) dirA = Directions.South;
-                if (start.FromStartCanGo(Directions.West)) dirA = Directions.West;
-                posA = posA.Go(dirA);
-                dirAlast = dirA;
+                // pick any direction to go - either way is good
+                var pos = start.Go(Directions.Nowhere);
+                //Console.WriteLine($"Step {0} --- PosA: r {pos.Row} | c {pos.Col} --- PosB: r {pos.Row} | c {pos.Col}");
+                path.Add(pos);
+                Directions dir = Directions.Nowhere;
+                Directions lastDir = Directions.Nowhere;
+                if (start.FromStartCanGo(Directions.North)) dir = Directions.North;
+                if (start.FromStartCanGo(Directions.East)) dir = Directions.East;
+                if (start.FromStartCanGo(Directions.South)) dir = Directions.South;
+                if (start.FromStartCanGo(Directions.West)) dir = Directions.West;
+                pos = pos.Go(dir);
+                path.Add(pos);
+                lastDir = dir;
                 int steps = 1;
+                //Console.WriteLine($"Step {steps} --- PosA: r {pos.Row} | c {pos.Col} --- PosB: r {pos.Row} | c {pos.Col}");
                 do {
-                    if (posA.CanGo(Directions.North) && dirAlast != Directions.South) dirA = Directions.North;
-                    if (posA.CanGo(Directions.East) && dirAlast != Directions.West) dirA = Directions.East;
-                    if (posA.CanGo(Directions.South) && dirAlast != Directions.North) dirA = Directions.South;
-                    if (posA.CanGo(Directions.West) && dirAlast != Directions.East) dirA = Directions.West;
-                    posA = posA.Go(dirA);
-                    dirAlast = dirA;
+                    if (pos.CanGo(Directions.North) && lastDir != Directions.South) dir = Directions.North;
+                    if (pos.CanGo(Directions.East) && lastDir != Directions.West) dir = Directions.East;
+                    if (pos.CanGo(Directions.South) && lastDir != Directions.North) dir = Directions.South;
+                    if (pos.CanGo(Directions.West) && lastDir != Directions.East) dir = Directions.West;
+                    pos = pos.Go(dir);
+                    path.Add(pos);
+                    lastDir = dir;
                     steps++;
-                    //Console.WriteLine($"Step {steps} --- PosA: r {posA.Row} | c {posA.Col} --- PosB: r {posB.Row} | c {posB.Col}");
-                } while (!(posA.Row == start.Row && posA.Col == start.Col));
-                return (steps/2).ToString();
-             
+                    //Console.WriteLine($"Step {steps} --- PosA: r {pos.Row} | c {pos.Col} --- PosB: r {pos.Row} | c {pos.Col}");
+                } while (!(pos.Row == start.Row && pos.Col == start.Col));
+                if(part1) return (steps/2).ToString();
+
+                // part2 - hull integral
+                int area = 0;
+                for (int i = 1; i < path.Count; i++) {
+                    area += (path[i].Col) * (path[i].Row - path[i - 1].Row);
+                }
+                return (Math.Abs(area)-steps/2+1).ToString();
+
             }
 
 
