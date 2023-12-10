@@ -27,22 +27,20 @@ namespace Puzzles {
             public override string Solve(bool part1) {
                 List<Pos> path = new();
                 Pos.Field = InputAsLines;
+
+                // find start pos
                 int startRow = InputAsLines.ToList().FindIndex(i => i.Contains('S'));
                 int startCol = InputAsLines[startRow].ToList().IndexOf('S');
-                var pos = new Pos(startRow, startCol, null);
-                path.Add(pos);
+                path.Add(new Pos(startRow, startCol, null));
 
-                if ("-7J".Contains(InputAsLines[startRow][startCol + 1])) pos = new Pos(startRow, startCol + 1, pos);
-                else if ("|JL".Contains(InputAsLines[startRow + 1][startCol])) pos = new Pos(startRow + 1, startCol, pos);
-                else pos = new Pos(startRow, startCol-1, pos); // third option must work if other two didn't
-                path.Add(pos);
+                // first step
+                if ("-7J".Contains(InputAsLines[startRow][startCol + 1])) path.Add(new Pos(startRow, startCol + 1, path.Last()));
+                else if ("|JL".Contains(InputAsLines[startRow + 1][startCol])) path.Add(new Pos(startRow + 1, startCol, path.Last()));
+                else path.Add(new Pos(startRow, startCol - 1, path.Last())); // if the other two didn't work, the third must
 
-                do {
-
-
-                    pos = pos.Next();
-                    path.Add(pos);
-                } while (!(pos.Row == path[0].Row && pos.Col == path[0].Col));
+                // all other steps
+                do path.Add(path.Last().Next());
+                while (!(path.Last().Row == path[0].Row && path.Last().Col == path[0].Col));
                 //Console.WriteLine($"{string.Join("\r\n", path.Select((s, i) => $"Step {i} --- Pos: r {s.Row} | c {s.Col} "))}");
                 var farthest = path.Count / 2;
                 if (part1) return farthest.ToString();
