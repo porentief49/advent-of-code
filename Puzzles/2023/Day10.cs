@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.Serialization;
 
 namespace Puzzles {
 
@@ -27,27 +28,22 @@ namespace Puzzles {
                 List<Pos> path = new();
                 Pos.Field = InputAsLines;
                 int startRow = InputAsLines.ToList().FindIndex(i => i.Contains('S'));
-                var startPos = new Pos(startRow, InputAsLines[startRow].ToList().IndexOf('S'));
-                var pos = startPos.Go(Dir.Nowhere);
+                int startCol = InputAsLines[startRow].ToList().IndexOf('S');
+                var pos = new Pos(startRow, startCol, null);
                 path.Add(pos);
-                Dir dir = Dir.Nowhere;
-                Dir prevDir = Dir.Nowhere;
-                if (startPos.Go(Dir.East).CanGo(Dir.West)) dir = Dir.East;
-                else if (startPos.Go(Dir.South).CanGo(Dir.North)) dir = Dir.South;
-                else dir = Dir.West; // third has to work if other two (random) failed
-                pos = pos.Go(dir);
+
+                if ("-7J".Contains(InputAsLines[startRow][startCol + 1])) pos = new Pos(startRow, startCol + 1, pos);
+                else if ("|JL".Contains(InputAsLines[startRow + 1][startCol])) pos = new Pos(startRow + 1, startCol, pos);
+                else pos = new Pos(startRow, startCol-1, pos); // third option must work if other two didn't
                 path.Add(pos);
-                prevDir = dir;
+
                 do {
-                    if (pos.CanGo(Dir.North) && prevDir != Dir.South) dir = Dir.North;
-                    if (pos.CanGo(Dir.East) && prevDir != Dir.West) dir = Dir.East;
-                    if (pos.CanGo(Dir.South) && prevDir != Dir.North) dir = Dir.South;
-                    if (pos.CanGo(Dir.West) && prevDir != Dir.East) dir = Dir.West;
-                    pos = pos.Go(dir);
+
+
+                    pos = pos.Next();
                     path.Add(pos);
-                    prevDir = dir;
-                } while (!(pos.Row == startPos.Row && pos.Col == startPos.Col));
-                //Console.WriteLine($"{string.Join("\r\n", path.Select((s, i) => $"Step {i} --- PosA: r {s.Row} | c {s.Col} "))}");
+                } while (!(pos.Row == path[0].Row && pos.Col == path[0].Col));
+                //Console.WriteLine($"{string.Join("\r\n", path.Select((s, i) => $"Step {i} --- Pos: r {s.Row} | c {s.Col} "))}");
                 var farthest = path.Count / 2;
                 if (part1) return farthest.ToString();
 
@@ -57,34 +53,48 @@ namespace Puzzles {
                 return (Math.Abs(area) - farthest + 1).ToString();
             }
 
-
-
-
             private class Pos {
+                public static string[] Field;
                 public int Row;
                 public int Col;
-                public char Pipe;
-                public static string[] Field;
+                private Pos? _cameFrom = null;
 
-                public Pos(int row, int col) {
+                public Pos(int row, int col, Pos? cameFrom) {
                     Row = row;
                     Col = col;
+                    _cameFrom = cameFrom;
                 }
 
-                public Pos Go(Dir direction) {
-                    if (direction == Dir.East) return new Pos(Row, Col + 1);
-                    if (direction == Dir.South) return new Pos(Row + 1, Col);
-                    if (direction == Dir.West) return new Pos(Row, Col - 1);
-                    if (direction == Dir.North) return new Pos(Row - 1, Col);
-                    return new Pos(Row, Col);
-                }
-
-                public bool CanGo(Dir direction) {
-                    if (direction == Dir.West) return Col > 0 && "J7-".Contains(Field[Row][Col]);
-                    if (direction == Dir.North) return Row > 0 && "JL|".Contains(Field[Row][Col]);
-                    if (direction == Dir.East) return Col < (Field[0].Length - 1) && "LF-".Contains(Field[Row][Col]);
-                    if (direction == Dir.South) return Row < (Field.Length - 1) && "F7|".Contains(Field[Row][Col]);
-                    throw new Exception("should not happen");
+                public Pos Next() {
+                    int row = Row;
+                    int col = Col;
+                    switch (Field[Row][Col]) {
+                        case '|':
+                            row += _cameFrom?.Row == Row + 1 ? -1 : 1;
+                            break;
+                        case '-':
+                            col += _cameFrom?.Col == Col + 1 ? -1 : 1;
+                            break;
+                        case 'L':
+                            if (_cameFrom?.Row == Row && _cameFrom.Col == Col + 1) row -= 1;
+                            else col += 1;
+                            break;
+                        case 'J':
+                            if (_cameFrom?.Row == Row && _cameFrom.Col == Col - 1) row -= 1;
+                            else col -= 1;
+                            break;
+                        case '7':
+                            if (_cameFrom?.Row == Row && _cameFrom.Col == Col - 1) row += 1;
+                            else col -= 1;
+                            break;
+                        case 'F':
+                            if (_cameFrom?.Row == Row && _cameFrom.Col == Col + 1) row += 1;
+                            else col += 1;
+                            break;
+                        default:
+                            break;
+                    }
+                    return new Pos(row, col, this);
                 }
             }
         }
