@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Puzzles {
 
@@ -18,57 +19,42 @@ namespace Puzzles {
                 AddInputFile(@"2023\10_rAiner.txt");
             }
 
-            private enum Directions { Nowhere, East, South, West, North };
+            private enum Dir { Nowhere, East, South, West, North };
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
             public override string Solve(bool part1) {
-
                 List<Pos> path = new();
-
-                //if (!part1) return "";
                 Pos.Field = InputAsLines;
-                var dimension = new Pos(InputAsLines.Length - 1, InputAsLines[0].Length - 1);
-
-                // find starting point
                 int startRow = InputAsLines.ToList().FindIndex(i => i.Contains('S'));
-                var start = new Pos(startRow, InputAsLines[startRow].ToList().IndexOf('S'));
-
-                // pick any direction to go - either way is good
-                var pos = start.Go(Directions.Nowhere);
-                //Console.WriteLine($"Step {0} --- PosA: r {pos.Row} | c {pos.Col} --- PosB: r {pos.Row} | c {pos.Col}");
+                var startPos = new Pos(startRow, InputAsLines[startRow].ToList().IndexOf('S'));
+                var pos = startPos.Go(Dir.Nowhere);
                 path.Add(pos);
-                Directions dir = Directions.Nowhere;
-                Directions lastDir = Directions.Nowhere;
-                if (start.FromStartCanGo(Directions.North)) dir = Directions.North;
-                if (start.FromStartCanGo(Directions.East)) dir = Directions.East;
-                if (start.FromStartCanGo(Directions.South)) dir = Directions.South;
-                if (start.FromStartCanGo(Directions.West)) dir = Directions.West;
+                Dir dir = Dir.Nowhere;
+                Dir prevDir = Dir.Nowhere;
+                if (startPos.Go(Dir.East).CanGo(Dir.West)) dir = Dir.East;
+                else if (startPos.Go(Dir.South).CanGo(Dir.North)) dir = Dir.South;
+                else dir = Dir.West; // third has to work if other two (random) failed
                 pos = pos.Go(dir);
                 path.Add(pos);
-                lastDir = dir;
-                int steps = 1;
-                //Console.WriteLine($"Step {steps} --- PosA: r {pos.Row} | c {pos.Col} --- PosB: r {pos.Row} | c {pos.Col}");
+                prevDir = dir;
                 do {
-                    if (pos.CanGo(Directions.North) && lastDir != Directions.South) dir = Directions.North;
-                    if (pos.CanGo(Directions.East) && lastDir != Directions.West) dir = Directions.East;
-                    if (pos.CanGo(Directions.South) && lastDir != Directions.North) dir = Directions.South;
-                    if (pos.CanGo(Directions.West) && lastDir != Directions.East) dir = Directions.West;
+                    if (pos.CanGo(Dir.North) && prevDir != Dir.South) dir = Dir.North;
+                    if (pos.CanGo(Dir.East) && prevDir != Dir.West) dir = Dir.East;
+                    if (pos.CanGo(Dir.South) && prevDir != Dir.North) dir = Dir.South;
+                    if (pos.CanGo(Dir.West) && prevDir != Dir.East) dir = Dir.West;
                     pos = pos.Go(dir);
                     path.Add(pos);
-                    lastDir = dir;
-                    steps++;
-                    //Console.WriteLine($"Step {steps} --- PosA: r {pos.Row} | c {pos.Col} --- PosB: r {pos.Row} | c {pos.Col}");
-                } while (!(pos.Row == start.Row && pos.Col == start.Col));
-                if(part1) return (steps/2).ToString();
+                    prevDir = dir;
+                } while (!(pos.Row == startPos.Row && pos.Col == startPos.Col));
+                //Console.WriteLine($"{string.Join("\r\n", path.Select((s, i) => $"Step {i} --- PosA: r {s.Row} | c {s.Col} "))}");
+                var farthest = path.Count / 2;
+                if (part1) return farthest.ToString();
 
-                // part2 - hull integral
+                // part2 - area integral
                 int area = 0;
-                for (int i = 1; i < path.Count; i++) {
-                    area += (path[i].Col) * (path[i].Row - path[i - 1].Row);
-                }
-                return (Math.Abs(area)-steps/2+1).ToString();
-
+                for (int i = 1; i < path.Count; i++) area += (path[i].Col) * (path[i].Row - path[i - 1].Row);
+                return (Math.Abs(area) - farthest + 1).ToString();
             }
 
 
@@ -83,83 +69,23 @@ namespace Puzzles {
                 public Pos(int row, int col) {
                     Row = row;
                     Col = col;
-                    Pipe = Field[Row][Col];
                 }
 
-                public Pos Go(Directions direction) {
-                    switch (direction) {
-                        case Directions.East:
-                            return new Pos(Row, Col + 1);
-                        case Directions.South:
-                            return new Pos(Row + 1, Col);
-                        case Directions.West:
-                            return new Pos(Row, Col - 1);
-                        case Directions.North:
-                            return new Pos(Row - 1, Col);
-                        default:
-                            return new Pos(Row, Col);
-                    }
+                public Pos Go(Dir direction) {
+                    if (direction == Dir.East) return new Pos(Row, Col + 1);
+                    if (direction == Dir.South) return new Pos(Row + 1, Col);
+                    if (direction == Dir.West) return new Pos(Row, Col - 1);
+                    if (direction == Dir.North) return new Pos(Row - 1, Col);
+                    return new Pos(Row, Col);
                 }
 
-                public bool FromStartCanGo(Directions direction) {
-                    char pipe;
-                    switch (direction) {
-                        case Directions.East:
-                            if (Col == Field[0].Length - 1) return false;
-                            pipe = Field[Row][Col + 1];
-                            return (pipe == 'J' || pipe == '7' || pipe == '-');
-                        case Directions.South:
-                            if (Row == Field.Length - 1) return false;
-                            pipe = Field[Row + 1][Col];
-                            return (pipe == 'J' || pipe == 'L' || pipe == '|');
-                        case Directions.West:
-                            if (Col == 0) return false;
-                            pipe = Field[Row][Col - 1];
-                            return (pipe == 'L' || pipe == 'F' || pipe == '-');
-                        case Directions.North:
-                            if (Row == 0) return false;
-                            pipe = Field[Row - 1][Col];
-                            return (pipe == 'F' || pipe == '7' || pipe == '|');
-                        default:
-                            throw new Exception("should not happen");
-                    }
+                public bool CanGo(Dir direction) {
+                    if (direction == Dir.West) return Col > 0 && "J7-".Contains(Field[Row][Col]);
+                    if (direction == Dir.North) return Row > 0 && "JL|".Contains(Field[Row][Col]);
+                    if (direction == Dir.East) return Col < (Field[0].Length - 1) && "LF-".Contains(Field[Row][Col]);
+                    if (direction == Dir.South) return Row < (Field.Length - 1) && "F7|".Contains(Field[Row][Col]);
+                    throw new Exception("should not happen");
                 }
-
-                public bool CanGo(Directions direction) {
-                    char pipe = Field[Row][Col];
-                    switch (direction) {
-                        case Directions.West:
-                            if (Col == 0) return false;
-                            //pipe = Field[Row][Col + 1];
-                            return (pipe == 'J' || pipe == '7' || pipe == '-');
-                        case Directions.North:
-                            if (Row == 0) return false;
-                            //pipe = Field[Row + 1][Col];
-                            return (pipe == 'J' || pipe == 'L' || pipe == '|');
-                        case Directions.East:
-                            if (Col == Field[0].Length - 1) return false;
-                            //pipe = Field[Row][Col - 1];
-                            return (pipe == 'L' || pipe == 'F' || pipe == '-');
-                        case Directions.South:
-                            if (Row == Field.Length - 1) return false;
-                            //pipe = Field[Row - 1][Col];
-                            return (pipe == 'F' || pipe == '7' || pipe == '|');
-                        default:
-                            throw new Exception("should not happen");
-                    }
-                }
-
-                //public bool AcceptsDirection(Directions direction) {
-                //    char pipe = InputAsLines[Row][Col];
-                //    switch (direction) {
-                //        case Directions.East:
-                //        case Directions.South:
-                //        case Directions.West:
-                //        case Directions.North:
-                //        default:
-                //            break;
-                //    }
-                //}
             }
         }
     }

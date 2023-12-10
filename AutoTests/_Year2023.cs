@@ -225,19 +225,43 @@ namespace _Year2023 {
         public void _Part1_Example1() => Helpers.RunTest("Example1", true, "4");
 
         [TestMethod]
-        public void _Part2_Example1() => Helpers.RunTest("Example1", false, "");
+        public void _Part2_Example1() => Helpers.RunTest("Example1", false, "1");
 
         [TestMethod]
         public void _Part1_Example2() => Helpers.RunTest("Example2", true, "8");
 
         [TestMethod]
-        public void _Part2_Example2() => Helpers.RunTest("Example2", false, "");
+        public void _Part2_Example2() => Helpers.RunTest("Example2", false, "1");
+
+        [TestMethod]
+        public void _Part1_Example3() => Helpers.RunTest("Example3", true, "23");
+
+        [TestMethod]
+        public void _Part2_Example3() => Helpers.RunTest("Example3", false, "4");
+
+        [TestMethod]
+        public void _Part1_Example4() => Helpers.RunTest("Example4", true, "22");
+
+        [TestMethod]
+        public void _Part2_Example4() => Helpers.RunTest("Example4", false, "4");
+
+        [TestMethod]
+        public void _Part1_Example5() => Helpers.RunTest("Example5", true, "70");
+
+        [TestMethod]
+        public void _Part2_Example5() => Helpers.RunTest("Example5", false, "8");
+
+        [TestMethod]
+        public void _Part1_Example6() => Helpers.RunTest("Example6", true, "80");
+
+        [TestMethod]
+        public void _Part2_Example6() => Helpers.RunTest("Example6", false, "10");
 
         [TestMethod]
         public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "6968");
 
         [TestMethod]
-        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "");
+        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "413");
     }
 
     [TestClass]
