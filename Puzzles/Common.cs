@@ -17,6 +17,10 @@ namespace Puzzles {
 
         public bool Verbose { get; set; } = false;
 
+        public bool Part1 { get; set; }
+
+        public bool Part2 => !Part1;
+
         protected abstract string Title { get; }
 
         protected string[] InputAsLines { get; set; } = new string[0];
@@ -29,7 +33,7 @@ namespace Puzzles {
 
         public abstract void Init(string inputFile);
 
-        public abstract string Solve(bool part1);
+        public abstract string Solve();
 
         public abstract void SetupAll();
 
@@ -45,11 +49,13 @@ namespace Puzzles {
                     Stopwatch lWatch = Stopwatch.StartNew();
                     Init(inputFile);
                     report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Initialization\r\n";
+                    Part1 = true;
                     lWatch.Restart();
-                    result = Solve(true);
+                    result = Solve();
                     report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 1 ==> {result}\r\n";
+                    Part1 = false;
                     lWatch.Restart();
-                    result = Solve(false);
+                    result = Solve();
                     report += $"    {lWatch.Elapsed.TotalSeconds.ToString("0.0000000", CultureInfo.InvariantCulture)}s Part 2 ==> {result}\r\n";
                 } else report += $"    not found!\r\n";
             }

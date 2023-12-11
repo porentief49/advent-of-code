@@ -24,7 +24,7 @@ namespace Puzzles {
                 _isExample = InputFile.Contains("Example");
             }
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 _maxDim = _isExample ? 20 : 4000000;
                 _sensors = new();
                 foreach (var line in InputAsLines) {

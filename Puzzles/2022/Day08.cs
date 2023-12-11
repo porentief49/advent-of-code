@@ -20,7 +20,7 @@ namespace Puzzles {
                 _treeHeights = InputAsLines.Select(y => y.Select(l => int.Parse(l.ToString())).ToArray()).ToArray();
             }
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 int _xSize = InputAsLines[0].Length;
                 int _ySize = InputAsLines.Length;
                 bool[][] _visibleTrees = new bool[_ySize][];

@@ -41,7 +41,7 @@ namespace Puzzles {
                 }
             }
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 _part1 = Part1;
                 BuildCave();
                 if (Verbose) PrintGrid(_cave);

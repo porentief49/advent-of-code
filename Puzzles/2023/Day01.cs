@@ -15,8 +15,8 @@
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
-                var preprocess = (part1 ? InputAsLines : InputAsLines.Select(i => Words2Digits(i)));
+            public override string Solve() {
+                var preprocess = (Part1 ? InputAsLines : InputAsLines.Select(i => Words2Digits(i)));
                 var filtered = preprocess.Select(p => p.Where(c => numbers.Contains(c)));
                 var calValues = filtered.Select(f => int.Parse($"{f.FirstOrDefault('0')}{f.LastOrDefault('0')}"));
                 return calValues?.Aggregate((x, y) => x + y).ToString() ?? string.Empty;

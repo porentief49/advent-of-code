@@ -15,7 +15,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 return FormatResult(0, "not yet implemented");
             }
         }

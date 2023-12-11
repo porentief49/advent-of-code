@@ -19,7 +19,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 int _markerLength = Part1 ? 4 : 14;
                 for (int i = 0; i < InputAsLines[0].Length - _markerLength; i++) if (InputAsLines[0].Skip(i).Take(_markerLength).Distinct().Count() == _markerLength) return FormatResult(i + _markerLength, "packet start");
                 return FormatResult(-1, "no packet marker found");

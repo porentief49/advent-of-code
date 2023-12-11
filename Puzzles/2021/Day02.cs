@@ -12,7 +12,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool aPart1) {
+            public override string Solve() {
                 int lHorizontal = 0;
                 int lDepth = 0;
                 int lAim = 0;
@@ -21,15 +21,15 @@ namespace Puzzles {
                     int lSteps = int.Parse(lSplit[1]);
                     switch (lSplit[0]) {
                         case "up":
-                            if (aPart1) lDepth -= lSteps;
+                            if (Part1) lDepth -= lSteps;
                             else lAim -= lSteps;
                             break;
                         case "down":
-                            if (aPart1) lDepth += lSteps;
+                            if (Part1) lDepth += lSteps;
                             else lAim += lSteps;
                             break;
                         case "forward":
-                            if (aPart1) lHorizontal += lSteps;
+                            if (Part1) lHorizontal += lSteps;
                             else {
                                 lHorizontal += lSteps;
                                 lDepth += lAim * lSteps;

@@ -19,8 +19,8 @@ namespace Puzzles {
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
-                var hands = InputAsLines.Select(i => new Hand(i, part1 ? "23456789TJQKA" : "J23456789TQKA", part1));
+            public override string Solve() {
+                var hands = InputAsLines.Select(i => new Hand(i, Part1 ? "23456789TJQKA" : "J23456789TQKA", Part1));
                 var sorted = hands.OrderBy(h => h);
                 return sorted.Select((s, i) => s.Bid * ((ulong)i + 1)).Aggregate((x, y) => x + y).ToString();
             }

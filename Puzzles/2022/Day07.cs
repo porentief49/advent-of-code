@@ -19,7 +19,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 FileSystemElement _fileSystem = new("/", true, null, -1);
                 FileSystemElement _root = _fileSystem;
                 FileSystemElement _curFolder = _root;

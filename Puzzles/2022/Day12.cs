@@ -48,10 +48,10 @@ namespace Puzzles {
                 }
             }
 
-            public override string Solve(bool part1) {
+            public override string Solve() {
                 int bestBestDistance = int.MaxValue;
                 List<Node> startLocations = new();
-                if (part1) startLocations.Add(_map[_start1.y][_start1.x]);
+                if (Part1) startLocations.Add(_map[_start1.y][_start1.x]);
                 else for (int y = 0; y < _dim.y; y++) for (int x = 0; x < _dim.x; x++) if (_map[y][x].Height == 0) startLocations.Add(_map[y][x]);
                 foreach (Node startNode in startLocations) {
                     bool targetReached = false;

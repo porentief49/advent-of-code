@@ -24,7 +24,7 @@ namespace Puzzles {
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
+            public override string Solve() {
                 List<Pos> path = new();
                 Pos.Field = InputAsLines;
 
@@ -43,7 +43,7 @@ namespace Puzzles {
                 while (!(path.Last().Row == path[0].Row && path.Last().Col == path[0].Col));
                 //Console.WriteLine($"{string.Join("\r\n", path.Select((s, i) => $"Step {i} --- Pos: r {s.Row} | c {s.Col} "))}");
                 var farthest = path.Count / 2;
-                if (part1) return farthest.ToString();
+                if (Part1) return farthest.ToString();
 
                 // part2 - area integral
                 int area = 0;

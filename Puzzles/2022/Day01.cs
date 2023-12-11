@@ -14,7 +14,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, false);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 List<long> _elfsCalories = new();
                 long _calories = 0;
                 for (int i = 0; i < InputAsLines?.Length; i++) {

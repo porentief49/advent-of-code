@@ -16,12 +16,12 @@ namespace Puzzles {
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
-                if (InputFile.Contains($"{(part1 ? "2" : "1")}.")) return string.Empty; // different input files this time
+            public override string Solve() {
+                if (InputFile.Contains($"{(Part1 ? "2" : "1")}.")) return string.Empty; // different input files this time
                 var instructions = InputAsLines[0];
                 var instructionLength = instructions.Length;
                 var nodes = InputAsLines.Skip(1).Select(i => new Node(i)).ToList();
-                if (part1) return CalcSteps(nodes[0], 1)[0].ToString();
+                if (Part1) return CalcSteps(nodes[0], 1)[0].ToString();
                 var startNodes = nodes.FindAll(n => n.Name.Last() == 'A').ToList();
                 var steps = startNodes.Select(n => CalcSteps(n, 2));
                 if (steps.All(s => s[0] != s[1] - s[0])) return "not all last elements point to the original starting points - modulo / lcm algorithm does not work";
@@ -34,7 +34,7 @@ namespace Puzzles {
                     do {
                         var next = instructions[steps++ % instructionLength] == 'L' ? node.Left : node.Right;
                         node = nodes.Single(n => n.Name == next);
-                        if ((part1 && node.Name == "ZZZ") || (!part1 && node.Name.EndsWith('Z'))) {
+                        if ((Part1 && node.Name == "ZZZ") || (!Part1 && node.Name.EndsWith('Z'))) {
                             result.Add(steps);
                             count++;
                         }

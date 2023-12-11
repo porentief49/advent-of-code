@@ -13,7 +13,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 List<(Range Elf1, Range Elf2)> Assignments = new();
                 for (int i = 0; i < InputAsLines?.Length; i++) {
                     string[] _split = InputAsLines[i].Split(',');

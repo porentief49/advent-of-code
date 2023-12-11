@@ -13,9 +13,9 @@
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
+            public override string Solve() {
 
-                if (part1) {
+                if (Part1) {
                     int[] times = InputAsLines[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).Select(t => int.Parse(t)).ToArray();
                     int[] distances = InputAsLines[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).Select(d => int.Parse(d)).ToArray();
                     int result = 1;

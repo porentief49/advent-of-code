@@ -9,11 +9,12 @@ namespace _Year2021 {
         public static DayBase? Puzzle;
         public static string InputPrefix = string.Empty;
 
-        public static void RunTest(string InputFile, bool Part1, string Expect) {
+        public static void RunTest(string inputFile, bool part1, string expect) {
             if (Puzzle is not null) {
                 Puzzle.BareOutput = true;
-                Puzzle.Init(InputPrefix + InputFile + _inputExtension);
-                Assert.AreEqual(Expect, Puzzle.Solve(Part1));
+                Puzzle.Init(InputPrefix + inputFile + _inputExtension);
+                Puzzle.Part1 = part1;
+                Assert.AreEqual(expect, Puzzle.Solve());
             } else Assert.Fail("Puzzle not instantiated");
         }
     }

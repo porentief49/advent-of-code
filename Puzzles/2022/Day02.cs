@@ -13,7 +13,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 List<(char They, char Me)> Rounds = new();
                 for (int i = 0; i < InputAsLines?.Length; i++) Rounds.Add((InputAsLines[i][0], InputAsLines[i][2]));
                 int _totalScore = 0;

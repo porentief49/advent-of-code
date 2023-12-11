@@ -13,7 +13,7 @@
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
+            public override string Solve() {
                 List<Number> numbers = new();
                 for (int row = 0; row < InputAsLines.Length; row++) {
                     int start = 0;
@@ -37,7 +37,7 @@
                     }
                     if (inNumber) numbers.Add(new Number(number, row, start, InputAsLines[0].Length));
                 }
-                if (part1) return numbers.Where(n => IsNearSymbol(n)).Sum(n => n.Value).ToString();
+                if (Part1) return numbers.Where(n => IsNearSymbol(n)).Sum(n => n.Value).ToString();
                 int sum = 0;
                 for (int row = 0; row < InputAsLines.Length; row++) {
                     for (int col = 0; col < InputAsLines[0].Length; col++) {

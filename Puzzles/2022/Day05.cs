@@ -14,7 +14,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, false);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 int _splitterRow = 0;
                 int _stackCount = 0;
 

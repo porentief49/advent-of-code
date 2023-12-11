@@ -30,7 +30,7 @@ namespace Puzzles {
                 }
             }
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 if (!Part1) return "";
 
                 //Queue<State> currentStates = new();

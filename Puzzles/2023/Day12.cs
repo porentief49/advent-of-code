@@ -13,7 +13,7 @@
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
+            public override string Solve() {
                 return "";
             }
         }

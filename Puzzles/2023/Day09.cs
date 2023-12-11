@@ -16,7 +16,7 @@ namespace Puzzles {
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) => InputAsLines.Select(i => new History(i)).Select(h => h.Predict(part1)).Sum().ToString();
+            public override string Solve() => InputAsLines.Select(i => new History(i)).Select(h => h.Predict(Part1)).Sum().ToString();
 
             private class History {
 

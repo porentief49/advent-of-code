@@ -14,7 +14,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => mDepths = ReadLines(InputFile, true).Select(x => int.Parse(x)).ToArray();
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 int lPrev = mDepths[0] + (Part1 ? 0 : (mDepths[1] + mDepths[2]));
                 int lCountIncreases = 0;
                 for (int i = 1; i < mDepths.Length - (Part1 ? 0 : 2); i++) {

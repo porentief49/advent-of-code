@@ -23,7 +23,7 @@ namespace Puzzles {
                 _movements = InputAsLines.Select(x => (x[0], int.Parse(x.Split(' ')[1]))).ToList();
             }
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 int _knotCount = Part1 ? 2 : 10;
                 var _Trails = new List<List<(int x, int y)>>();
                 List<(int x, int y)> _current = new();

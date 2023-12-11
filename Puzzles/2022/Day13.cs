@@ -21,8 +21,8 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => _packets = ReadLines(InputFile, true).Select(x => Packet.Parse(x)).ToList();
 
-            public override string Solve(bool part1) {
-                if (part1) {
+            public override string Solve() {
+                if (Part1) {
                     int rightOrders = 0;
                     for (int i = 0; i < _packets.Count / 2; i++) {
                         int result = _packets[i * 2].CompareTo(_packets[i * 2 + 1]);

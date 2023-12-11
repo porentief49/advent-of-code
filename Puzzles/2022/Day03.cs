@@ -13,7 +13,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 List<PackItems> Rucksacks = new();
                 for (int i = 0; i < InputAsLines?.Length; i++) Rucksacks.Add(new(InputAsLines[i]));
                 int _prioritySum = 0;

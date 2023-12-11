@@ -14,12 +14,12 @@
 
             public override void Init(string inputFile) => InputAsText = ReadText(inputFile, true);
 
-            public override string Solve(bool part1) {
+            public override string Solve() {
                 var mapDefinitions = InputAsText.Split("\n\n");
                 var maps = mapDefinitions.Skip(1).Select(m => new Map(m));
                 var seeds = mapDefinitions.First().Split(' ').Skip(1).Select(m => ulong.Parse(m)).ToArray();
 
-                if (part1) {
+                if (Part1) {
                     List<ulong> locations = new();
                     foreach (var seed in seeds) locations.Add(CalcLocation(maps, seed));
                     return locations.Min().ToString();

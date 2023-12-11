@@ -15,14 +15,14 @@ namespace Puzzles {
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
+            public override string Solve() {
                 List<string> rows = InputAsLines.ToList();
                 Galaxy.EmptyRows = Enumerable.Range(0, rows.Count).Where(r => rows[r].All(ch => ch == '.')).ToList();
                 Galaxy.EmptyCols = Enumerable.Range(0, rows[0].Length).Where(c => rows.Select(r => r[c]).All(c => c == '.')).ToList();
                 var galaxies = new List<Galaxy>();
                 for (int row = 0; row < rows.Count; row++) for (int col = 0; col < rows[row].Length; col++) if (rows[row][col] == '#') galaxies.Add(new Galaxy(row, col));
                 long totalDist = 0;
-                Galaxy.EmptyReplaceWith = part1 ? 2 : 1000000;
+                Galaxy.EmptyReplaceWith = Part1 ? 2 : 1000000;
                 for (int i = 0; i < galaxies.Count; i++) for (int ii = i + 1; ii < galaxies.Count; ii++) totalDist += galaxies[i].ManhattanDist(galaxies[ii]);
                 return totalDist.ToString();
             }

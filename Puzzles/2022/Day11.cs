@@ -26,7 +26,7 @@ namespace Puzzles {
                 InputAsLines = ReadLines(InputFile, true);
             }
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 monkeys = new();
                 for (int i = 0; i < InputAsLines.Length / 6; i++) monkeys.Add(new Monkey(InputAsLines.Skip(i * 6).Take(6).ToArray()));
                 long leastCommon = monkeys.Select(x => x.DivisibleBy).Aggregate((x, y) => x * y);

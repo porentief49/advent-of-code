@@ -13,11 +13,11 @@
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            public override string Solve(bool part1) {
+            public override string Solve() {
                 var games = InputAsLines.Select(i => new Game(i)).ToList();
                 int sum = 0;
                 foreach (var game in games) {
-                    if (part1) {
+                    if (Part1) {
                         bool valid = true; // assume best
                         foreach (var draw in game.Draws) if (draw.red > 12 || draw.green > 13 || draw.blue > 14) valid = false;
                         if (valid) sum += game.Id;

@@ -20,7 +20,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 cycles = Part1 ? 2022 : 1000000000000;
                 //if (!Part1) return "";
                 //char[,] shapes = new char[,] { { 'x', '<' } };

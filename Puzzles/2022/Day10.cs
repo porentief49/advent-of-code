@@ -17,7 +17,7 @@ namespace Puzzles {
 
             public override void Init(string InputFile) => InputAsLines = ReadLines(InputFile, true);
 
-            public override string Solve(bool Part1) {
+            public override string Solve() {
                 // work the instructions
                 int _xReg = 1;
                 List<int> _xRegValues = new() { _xReg, _xReg }; // to get the index right
