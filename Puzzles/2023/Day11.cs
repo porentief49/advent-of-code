@@ -14,16 +14,24 @@
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
             public override string Solve(bool part1) {
-                if (!part1) return "";
+                //if (!part1) return "";
                 List<string> rows = InputAsLines.ToList();
+
+
+                Galaxy.emptyRows.Clear();
+                Galaxy.emptyCols.Clear();
+                //List<int> emptyRows = new List<int>();
+                //List<int> emptyCols = new List<int>();
+
                 //PrintGrid(rows);
 
                 // expand rows
                 int r = 0;
                 do {
                     if (rows[r].All(ch => ch == '.')) {
-                        rows.Insert(r, rows[r]);
-                        r++;
+                        //rows.Insert(r, rows[r]);
+                        //r++;
+                        Galaxy.emptyRows.Add(r);
                     }
                     r++;
                 } while (r < rows.Count);
@@ -32,8 +40,9 @@
                 int c = 0;
                 do {
                     if (rows.Select(r => r[c]).All(ch => ch == '.')) {
-                        for (int i = 0; i < rows.Count; i++) rows[i] = rows[i].Insert(c, ".");
-                        c++;
+                        //for (int i = 0; i < rows.Count; i++) rows[i] = rows[i].Insert(c, ".");
+                        //c++;
+                        Galaxy.emptyCols.Add(c);
                     }
                     c++;
                 } while (c < rows[0].Length);
@@ -52,7 +61,9 @@
                 }
 
                 // sum shortest paths
-                int totalDist = 0;
+                Galaxy.EmptyReplaceWith = part1 ? 2 : 1000000;
+
+                long totalDist = 0;
                 for (int i = 0; i < galaxies.Count; i++) {
                     for (int ii = i + 1; ii < galaxies.Count; ii++) {
                         totalDist += galaxies[i].ManhattanDist(galaxies[ii]);
@@ -66,13 +77,26 @@
             private class Galaxy {
                 public int Row;
                 public int Col;
+                public static List<int> emptyRows = new List<int>();
+                public static List<int> emptyCols = new List<int>();
+                public static long EmptyReplaceWith = 1;
 
                 public Galaxy(int row, int col) {
                     Row = row;
                     Col = col;
                 }
 
-                public int ManhattanDist(Galaxy other) => Math.Abs(other.Row - Row) + Math.Abs(other.Col - Col);
+                public long ManhattanDist(Galaxy other) {
+                    var fromRow = Math.Min(Row, other.Row);
+                    var toRow = Math.Max(Row, other.Row);
+                    var rows = (long)(toRow - fromRow) + emptyRows.Where(r => r >= fromRow && r <= toRow).Count() * (EmptyReplaceWith - 1);
+
+                    var fromCol = Math.Min(Col, other.Col);
+                    var toCol = Math.Max(Col, other.Col);
+                    var cols = (long)(toCol - fromCol) + emptyCols.Where(c => c >= fromCol && c <= toCol).Count() * (EmptyReplaceWith - 1);
+
+                    return rows + cols;
+                }
             }
         }
     }
