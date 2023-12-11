@@ -276,13 +276,13 @@ namespace _Year2023 {
         public void _Part1_Example() => Helpers.RunTest("Example", true, "374");
 
         [TestMethod]
-        public void _Part2_Example() => Helpers.RunTest("Example", false, "");
+        public void _Part2_Example() => Helpers.RunTest("Example", false, "82000210");
 
         [TestMethod]
         public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "9805264");
 
         [TestMethod]
-        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "");
+        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "779032247216");
     }
 
     [TestClass]
