@@ -19,7 +19,7 @@ namespace Puzzles {
 
         public bool Part1 { get; set; }
 
-        public bool Part2 => !Part1;
+        protected bool Part2 => !Part1;
 
         protected abstract string Title { get; }
 
