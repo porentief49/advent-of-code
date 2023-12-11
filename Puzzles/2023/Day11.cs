@@ -18,7 +18,7 @@ namespace Puzzles {
             public override string Solve() {
                 List<string> rows = InputAsLines.ToList();
                 Galaxy.EmptyRows = Enumerable.Range(0, rows.Count).Where(r => rows[r].All(ch => ch == '.')).ToList();
-                Galaxy.EmptyCols = Enumerable.Range(0, rows[0].Length).Where(c => rows.Select(r => r[c]).All(c => c == '.')).ToList();
+                Galaxy.EmptyCols = Enumerable.Range(0, rows[0].Length).Where(c => rows.Select(r => r[c]).All(ch => ch == '.')).ToList();
                 var galaxies = new List<Galaxy>();
                 for (int row = 0; row < rows.Count; row++) for (int col = 0; col < rows[row].Length; col++) if (rows[row][col] == '#') galaxies.Add(new Galaxy(row, col));
                 long totalDist = 0;
