@@ -11,7 +11,7 @@ namespace Puzzles {
             public override void SetupAll() {
                 AddInputFile(@"2023\12_Example.txt");
                 //AddInputFile(@"2023\12_Try.txt");
-                //AddInputFile(@"2023\12_rAiner.txt");
+                AddInputFile(@"2023\12_rAiner.txt");
             }
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
@@ -20,7 +20,7 @@ namespace Puzzles {
                 Verbose = true;
                 List<Row> data;
                 data = InputAsLines.Select(i => new Row(i, Part1)).ToList();
-                return data.Select(d => d.CountArrangements()).Sum().ToString();
+                return data.Select(d => d.CountArrangements()).Aggregate((x, y) => x + y).ToString();
             }
 
 
@@ -41,37 +41,48 @@ namespace Puzzles {
                     }
                 }
 
-                public int CountArrangements() {
+                public ulong CountArrangements() {
 
                     List<string> options = new();
                     List<string> newOptions;
-                    List<uint> counts = new List<uint> { 1 };
+                    List<ulong> counts = new List<ulong> { 1 };
+                    List<ulong> newCounts;
                     options.Add(Damaged);
 
-                    Console.WriteLine($"Running '{Damaged}' for conts {string.Join(",", Contiguous)}");
+                    if (_verbose) Console.WriteLine($"Running '{Damaged}' for conts {string.Join(",", Contiguous)}");
                     do {
 
                         // step 1
-                        options = options.Select(o => Trim(o)).Where(o => o.Length > 0).ToList();
+                        //options = options.Select(o => Trim(o)).Where(o => o.Length > 0).ToList();
+                        var trim = options.Select(o => Trim(o)).ToList();
+                        var nonZeroIndices = Enumerable.Range(0, trim.Count).Where(i => trim[i].Length > 0).ToList();
+                        options = nonZeroIndices.Select(i => trim[i]).ToList();
+                        counts = nonZeroIndices.Select(i => counts[i]).ToList();
+
+
                         if (_verbose) Console.WriteLine($"  we have [{string.Join(", ", options)}] for conts {string.Join(",", Contiguous)}");
 
-                        //// combine
-                        //Combine(ref options, ref counts);
-                        //if (_verbose) Console.WriteLine($"    after combination [{string.Join(", ", options)}] for conts {string.Join(",", Contiguous)}");
+                        // combine
+                        Combine(ref options, ref counts);
+                        if (_verbose) Console.WriteLine($"    after combination [{string.Join(", ", options)}] for conts {string.Join(",", Contiguous)}");
 
                         // steps 2 and 3
                         newOptions = new();
+                        newCounts = new();
                         int cont = Contiguous[0];
-                        foreach (string option in options) {
-
-                            if (_verbose) Console.WriteLine($"    Testing option '{option}' for conts {string.Join(",", Contiguous)}");
+                        for (int i = 0; i < options.Count; i++) {
+                            //string option = options[i];
+                            if (_verbose) Console.WriteLine($"    Testing option '{options[i]}' for conts {string.Join(",", Contiguous)}");
 
 
                             // insert leftmost, get options
-                            for (int ii = 0; ii <= option.Length - cont; ii++) {
-                                (bool works, string result) = TestPos(option, cont, ii);
+                            for (int ii = 0; ii <= options[i].Length - cont; ii++) {
+                                (bool works, string result) = TestPos(options[i], cont, ii);
                                 if (_verbose) Console.WriteLine($"      testing index {ii}, worked= {works}, result '{result}'");
-                                if (works) newOptions.Add(result);
+                                if (works) {
+                                    newOptions.Add(result);
+                                    newCounts.Add(counts[i]);
+                                }
                             }
                         }
 
@@ -80,24 +91,26 @@ namespace Puzzles {
                         if (_verbose) Console.WriteLine($"    new options: [{string.Join(", ", newOptions)}]");
                         //if (Contiguous.Count == 1) break;
 
-                        //// combine
-                        //Combine(ref options, ref counts);
-                        //if (_verbose) Console.WriteLine($"    after combination [{string.Join(", ", options)}] for conts {string.Join(",", Contiguous)}");
+                        // combine
+                        Combine(ref options, ref counts);
+                        if (_verbose) Console.WriteLine($"    after combination [{string.Join(", ", options)}] for conts {string.Join(",", Contiguous)}");
 
                         // step 5
                         options = newOptions.Select(o => o.Substring(cont)).ToList();
+                        counts = newCounts;
                         if (_verbose) Console.WriteLine($"    after decimation: [{string.Join(", ", options)}]");
                         Contiguous.RemoveAt(0);
 
                     } while (Contiguous.Count > 0);
-                    var count = options.Where(o => !o.Contains('#')).Count();
-                    Console.WriteLine($"==> Result: {count}\r\n\r\n");
+                    //var count = options.Where(o => !o.Contains('#')).Count();
+                    var count = Enumerable.Range(0, options.Count).Where(i => !options[i].Contains('#')).Select(i => counts[i]).Aggregate((x, y) => x + y);
+                    if (_verbose) Console.WriteLine($"==> Result: {count}\r\n\r\n");
                     return count;
                 }
 
-                private void Combine(ref List<string> options, ref List<uint> counts) {
+                private void Combine(ref List<string> options, ref List<ulong> counts) {
                     List<string> decOptions = options.Distinct().ToList();
-                    List<uint> decCounts = new List<uint>(decOptions.Count);
+                    List<ulong> decCounts = new ulong[decOptions.Count].ToList();
                     for (int i = 0; i < decOptions.Count; i++) {
                         for (int ii = 0; ii < options.Count; ii++) {
                             if (decOptions[i] == options[ii]) decCounts[i] += counts[ii];
