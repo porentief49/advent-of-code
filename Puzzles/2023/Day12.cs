@@ -17,28 +17,21 @@ namespace Puzzles {
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
             public override string Solve() {
-                Verbose = true;
                 List<Row> data;
-                data = InputAsLines.Select(i => new Row(i, Part1)).ToList();
+                data = InputAsLines.Select(i => new Row(i, Part1 ? 1 : 5)).ToList();
                 return data.Select(d => d.CountArrangements()).Aggregate((x, y) => x + y).ToString();
             }
 
 
             public class Row {
                 private bool _verbose = false;
-                public string Damaged;
-                //public List<char> Repaired;
-                public List<int> Contiguous;
+                private string _damaged;
+                private List<int> _contiguous;
 
-                public Row(string input, bool part1) {
+                public Row(string input, int repeat) {
                     var split = input.Split(' ');
-                    if (part1) {
-                        Damaged = split[0];
-                        Contiguous = split[1].Split(',').Select(c => int.Parse(c)).ToList();
-                    } else {
-                        Damaged = split[0] + "?" + split[0] + "?" + split[0] + "?" + split[0] + "?" + split[0];
-                        Contiguous = (split[1] + "," + split[1] + "," + split[1] + "," + split[1] + "," + split[1]).Split(',').Select(c => int.Parse(c)).ToList();
-                    }
+                    _damaged = $"{split[0]}?".Repeat(repeat - 1) + split[0];
+                    _contiguous = ($"{split[1]},".Repeat(repeat - 1) + split[1]).Split(',').Select(c => int.Parse(c)).ToList();
                 }
 
                 public ulong CountArrangements() {
@@ -47,38 +40,33 @@ namespace Puzzles {
                     List<string> newOptions;
                     List<ulong> counts = new List<ulong> { 1 };
                     List<ulong> newCounts;
-                    options.Add(Damaged);
+                    options.Add(_damaged);
 
-                    if (_verbose) Console.WriteLine($"Running '{Damaged}' for conts {string.Join(",", Contiguous)}");
+                    if (_verbose) Console.WriteLine($"Running '{_damaged}' for conts {string.Join(",", _contiguous)}");
                     do {
 
-                        // step 1
-                        //options = options.Select(o => Trim(o)).Where(o => o.Length > 0).ToList();
+                        // trim (remove leading and trailing '.', and combine any consecutive '..' into single '.')
                         var trim = options.Select(o => Trim(o)).ToList();
+
+                        // filter-out zero-size entries
                         var nonZeroIndices = Enumerable.Range(0, trim.Count).Where(i => trim[i].Length > 0).ToList();
                         options = nonZeroIndices.Select(i => trim[i]).ToList();
                         counts = nonZeroIndices.Select(i => counts[i]).ToList();
+                        if (_verbose) Console.WriteLine($"  we have [{string.Join(", ", options)}] for conts {string.Join(",", _contiguous)}");
 
+                        // combine equals into single entries & increase their counts
+                        (options, counts) = Combine(options, counts);
+                        if (_verbose) Console.WriteLine($"    after combination [{string.Join(", ", options)}] for conts {string.Join(",", _contiguous)}");
 
-                        if (_verbose) Console.WriteLine($"  we have [{string.Join(", ", options)}] for conts {string.Join(",", Contiguous)}");
-
-                        // combine
-                        Combine(ref options, ref counts);
-                        if (_verbose) Console.WriteLine($"    after combination [{string.Join(", ", options)}] for conts {string.Join(",", Contiguous)}");
-
-                        // steps 2 and 3
+                        // try to resolve leftmost by inserting the '.###.' pattern into all possible locations, determine all valid options
                         newOptions = new();
                         newCounts = new();
-                        int cont = Contiguous[0];
+                        int cont = _contiguous[0];
                         for (int i = 0; i < options.Count; i++) {
-                            //string option = options[i];
-                            if (_verbose) Console.WriteLine($"    Testing option '{options[i]}' for conts {string.Join(",", Contiguous)}");
-
-
-                            // insert leftmost, get options
+                            if (_verbose) Console.WriteLine($"    Testing option '{options[i]}' for conts {string.Join(",", _contiguous)}");
                             for (int ii = 0; ii <= options[i].Length - cont; ii++) {
                                 (bool works, string result) = TestPos(options[i], cont, ii);
-                                if (_verbose) Console.WriteLine($"      testing index {ii}, worked= {works}, result '{result}'");
+                                if (_verbose) Console.WriteLine($"      testing index {ii}, works= {works}, result '{result}'");
                                 if (works) {
                                     newOptions.Add(result);
                                     newCounts.Add(counts[i]);
@@ -86,53 +74,31 @@ namespace Puzzles {
                             }
                         }
 
-                        // step 4
-                        newOptions = newOptions.Select(o => Trim(o)).ToList();
-                        if (_verbose) Console.WriteLine($"    new options: [{string.Join(", ", newOptions)}]");
-                        //if (Contiguous.Count == 1) break;
+                        // trim & combine again
+                        (newOptions, newCounts) = Combine(newOptions.Select(o => Trim(o)).ToList(), newCounts);
 
-                        // combine
-                        Combine(ref options, ref counts);
-                        if (_verbose) Console.WriteLine($"    after combination [{string.Join(", ", options)}] for conts {string.Join(",", Contiguous)}");
 
-                        // step 5
+                        // decimate by taking off left-most (resolved) digits and the first entry in the contiguous list
                         options = newOptions.Select(o => o.Substring(cont)).ToList();
                         counts = newCounts;
                         if (_verbose) Console.WriteLine($"    after decimation: [{string.Join(", ", options)}]");
-                        Contiguous.RemoveAt(0);
+                        _contiguous.RemoveAt(0);
 
-                    } while (Contiguous.Count > 0);
-                    //var count = options.Where(o => !o.Contains('#')).Count();
+                    } while (_contiguous.Count > 0);
                     var count = Enumerable.Range(0, options.Count).Where(i => !options[i].Contains('#')).Select(i => counts[i]).Aggregate((x, y) => x + y);
                     if (_verbose) Console.WriteLine($"==> Result: {count}\r\n\r\n");
                     return count;
                 }
 
-                private void Combine(ref List<string> options, ref List<ulong> counts) {
+                private (List<string> decOptions, List<ulong> decCounts) Combine(List<string> options, List<ulong> counts) {
                     List<string> decOptions = options.Distinct().ToList();
-                    List<ulong> decCounts = new ulong[decOptions.Count].ToList();
-                    for (int i = 0; i < decOptions.Count; i++) {
-                        for (int ii = 0; ii < options.Count; ii++) {
-                            if (decOptions[i] == options[ii]) decCounts[i] += counts[ii];
-                        }
-                    }
-                    options = decOptions;
-                    counts = decCounts;
+                    List<ulong> decCounts = decOptions.Select(o => Enumerable.Range(0, options.Count).Where(i => options[i] == o).Select(i => counts[i]).Aggregate((x, y) => x + y)).ToList();
+                    return (decOptions, decCounts);
                 }
 
                 private string Trim(string input) {
-                    //if (input == "....##.") {
-                    //    Console.Write("");
-                    //}
-
-                    int length;
-                    do {
-                        length = input.Length;
-                        input = input.Replace("..", ".");
-                    } while (length > input.Length);
-                    if (input.StartsWith(".")) input = input.Substring(1);
-                    if (input.EndsWith(".")) input = input.Substring(0, input.Length - 1);
-                    return input;
+                    while (input.Contains("..")) input = input.Replace("..", ".");
+                    return input.Trim('.');
                 }
 
                 private (bool works, string result) TestPos(string option, int cont, int startPos) {
@@ -143,15 +109,8 @@ namespace Puzzles {
                     }
                     for (int i = 0; i < startPos; i++) {
                         if (opt[i] == '#') return (false, "");
-                        //if (opt[i] != '.') return (false, "");
                         else opt[i] = '.';
                     }
-
-
-                    //if (startPos > 0) {
-                    //    if (opt[startPos - 1] == '#') return (false, "");
-                    //    else opt[startPos - 1] = '.';
-                    //}
                     if (startPos + cont < option.Length) {
                         if (opt[startPos + cont] == '#') return (false, "");
                         else opt[startPos + cont] = '.';
@@ -159,51 +118,6 @@ namespace Puzzles {
                     return (true, string.Join("", opt));
                 }
             }
-
-
-            //public class Row {
-            //    public List<char> Damaged;
-            //    public List<char> Repaired;
-            //    public string Contiguous;
-
-            //    public Row(string input) {
-            //        var split = input.Split(' ');
-            //        Damaged = split[0].ToList();
-            //        Repaired = split[0].ToList();
-            //        Contiguous = split[1];
-            //    }
-
-            //    public int CountArrangements() {
-            //        var positions = Enumerable.Range(0, Damaged.Count).Where(i => Damaged[i] == '?').ToList();
-            //        int unknown = positions.Count;
-            //        int arrangements = 0;
-            //        //Console.WriteLine(string.Join("", Damaged) + "   " + Contiguous + "   " + unknown.ToString());
-            //        for (ulong i = 0; i < Math.Pow(2, unknown); i++) {
-            //            for (int ii = 0; ii < unknown; ii++) {
-            //                Repaired[positions[ii]] = ((i >> ii) & 1) == 1 ? '#' : '.';
-            //            }
-            //            if (DetermineContiguous() == Contiguous) arrangements++;
-            //        }
-            //        //Console.WriteLine("  " + arrangements.ToString());
-            //        return arrangements;
-            //    }
-
-            //    private string DetermineContiguous() {
-            //        List<int> conts = new();
-            //        int soFar = 0;
-            //        for (int i = 0; i < Repaired.Count; i++) {
-            //            if (Repaired[i] == '#') soFar++;
-            //            else {
-            //                if (soFar > 0) conts.Add(soFar);
-            //                soFar = 0;
-            //            }
-            //        }
-            //        if (soFar > 0) conts.Add(soFar);
-            //        //Console.WriteLine("    " + string.Join("", Repaired) + "   " + string.Join(",", conts));
-            //        return string.Join(",", conts);
-            //    }
-            //}
         }
     }
-
 }
