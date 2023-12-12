@@ -28,11 +28,11 @@
                     var split = input.Split(' ');
                     Damaged = split[0].ToList();
                     Repaired = split[0].ToList();
-                    Contiguous = split[1];// split[1].Split(',').Select(i => int.Parse(i)).ToList();
+                    Contiguous = split[1];
                 }
 
                 public int CountArrangements() {
-                    var positions = Enumerable.Range(0, Damaged.Count ).Where(i => Damaged[i] == '?').ToList();
+                    var positions = Enumerable.Range(0, Damaged.Count).Where(i => Damaged[i] == '?').ToList();
                     int unknown = positions.Count;
                     int arrangements = 0;
                     //Console.WriteLine(string.Join("", Damaged) + "   " + Contiguous + "   " + unknown.ToString());
@@ -48,28 +48,15 @@
 
                 private string DetermineContiguous() {
                     List<int> conts = new();
-                    //char last = '.';
                     int soFar = 0;
                     for (int i = 0; i < Repaired.Count; i++) {
-                        if (Repaired[i] == '#') {
-                            soFar++;
-                        }
-                            //if (soFar > 0) soFar++;
-                            else {
+                        if (Repaired[i] == '#') soFar++;
+                        else {
                             if (soFar > 0) conts.Add(soFar);
                             soFar = 0;
                         }
                     }
-
                     if (soFar > 0) conts.Add(soFar);
-                    //if (soFar > 0 && Repaired[i] == '#') soFar++;
-                    //else {
-
-                    //    soFar = 1;
-                    //    last = Repaired[i];
-                    //}
-
-                    //conts.Add(soFar);
                     //Console.WriteLine("    " + string.Join("", Repaired) + "   " + string.Join(",", conts));
                     return string.Join(",", conts);
                 }
