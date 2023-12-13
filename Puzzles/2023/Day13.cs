@@ -35,10 +35,8 @@
                         }
                         pos++;
                     } while (smudgeCount != smudges && pos < map[0].Length - 1);
-                    if (smudgeCount == smudges) {
-                        Result = pos;
-                        //return;
-                    } else {
+                    if (smudgeCount == smudges) Result = pos;
+                    else {
                         pos = 0;
                         do { // look for horizontal
                             smudgeCount = 0;
