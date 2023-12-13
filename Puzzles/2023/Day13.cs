@@ -14,8 +14,8 @@
             public override void Init(string inputFile) => InputAsText = ReadText(inputFile, true);
 
             public override string Solve() {
-                var pat2 = InputAsText.Split("\n\n", StringSplitOptions.RemoveEmptyEntries).Select(i => new Pattern(i, Part1 ? 0 : 1)).ToList();
-                return pat2.Select(p => p.Result).Sum().ToString();
+                var pattern = InputAsText.Split("\n\n", StringSplitOptions.RemoveEmptyEntries).Select(i => new Pattern(i, Part1 ? 0 : 1)).ToList();
+                return pattern.Select(p => p.Result).Sum().ToString();
             }
 
             private class Pattern {
