@@ -38,9 +38,8 @@ namespace Puzzles {
                 if (loads.Count < 100) return false;
                 int lastIndex = loads.Count - 1;
                 startsAt = loads.LastIndexOf(loads.Last(), loads.Count - 2);
-                if (startsAt == -1) return false;
                 repeatsEvery = lastIndex - startsAt;
-                if (startsAt - repeatsEvery < 0 || repeatsEvery < 2) return false; // filter out direct repetitions (they might occur randomly)
+                if (startsAt == -1 || startsAt - repeatsEvery < 0 || repeatsEvery < 2 || loads.Count < 100) return false; // filter out direct repetitions (they might occur randomly)
                 for (int i = 1; i < repeatsEvery; i++) if (loads[lastIndex - 1] != loads[startsAt - 1]) return false;
                 return true;
             }
