@@ -87,7 +87,7 @@ namespace Puzzles {
                     // count results
                     int load = CalcLoad(platform);
                     count++;
-                    Console.WriteLine($"{count} {load}");
+                    //Console.WriteLine($"{count} {load}");
                     loads.Add(load);
                 } while (!Correlate());
 
