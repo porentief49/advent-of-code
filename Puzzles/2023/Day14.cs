@@ -14,7 +14,7 @@ namespace Puzzles {
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
-            private enum Direction { N, W, S, E }
+            private enum Dir { N, W, S, E }
 
             private class Platform {
                 private char[][] _map;
@@ -29,14 +29,43 @@ namespace Puzzles {
                     return load;
                 }
 
-                public void TiltNorth() {
+                public void Tilt(Dir dir) {
                     bool stillRolling;
                     do {
                         stillRolling = false;
-                        for (int r = 1; r < _map.Length; r++) {
-                            for (int c = 0; c < _map[0].Length; c++) {
-                                if (_map[r][c] == 'O' && _map[r - 1][c] == '.') {
-                                    (_map[r][c], _map[r - 1][c]) = (_map[r - 1][c], _map[r][c]);
+                        int rStart = dir switch { Dir.N => 1, Dir.W => 0, Dir.S => 1, _ => 0 };
+                        int cStart = dir switch { Dir.N => 0, Dir.W => 1, Dir.S => 0, _ => 1 };
+
+                        for (int row = rStart; row < _map.Length; row++) {
+                            for (int col = cStart; col < _map[0].Length; col++) {
+                                int r = dir switch { Dir.N => row, Dir.W => row, Dir.S => _map.Length - row - 1, _ => row };
+                                int c = dir switch { Dir.N => col, Dir.W => col, Dir.S => col, _ => _map[0].Length - col - 1 };
+                                int rTo = dir switch { Dir.N => r - 1, Dir.W => r, Dir.S => r + 1, _ => r };
+                                int cTo = dir switch { Dir.N => c, Dir.W => c - 1, Dir.S => c, _ => c + 1 };
+                                if (_map[r][c] == 'O' && _map[rTo][cTo] == '.') {
+                                    (_map[r][c], _map[rTo][cTo]) = (_map[rTo][cTo], _map[r][c]);
+                                    stillRolling = true;
+                                }
+                            }
+                        }
+                    } while (stillRolling);
+                    //PrintGrid(_map);
+                }
+
+                public void TiltNorth() {
+                    bool stillRolling;
+                    do {
+                        int rStart = 1;
+                        int cStart = 0;
+                        stillRolling = false;
+                        for (int row = rStart; row < _map.Length; row++) {
+                            for (int col = cStart; col < _map[0].Length; col++) {
+                                int r = row;
+                                int rTo = r - 1;
+                                int c = col;
+                                int cTo = c;
+                                if (_map[r][c] == 'O' && _map[rTo][cTo] == '.') {
+                                    (_map[r][c], _map[rTo][cTo]) = (_map[rTo][cTo], _map[r][c]);
                                     stillRolling = true;
                                 }
                             }
@@ -49,10 +78,16 @@ namespace Puzzles {
                     bool stillRolling;
                     do {
                         stillRolling = false;
-                        for (int c = 1; c < _map[0].Length; c++) {
-                            for (int r = 0; r < _map.Length; r++) {
-                                if (_map[r][c] == 'O' && _map[r][c - 1] == '.') {
-                                    (_map[r][c], _map[r][c - 1]) = (_map[r][c - 1], _map[r][c]);
+                        int rStart = 0;
+                        int cStart = 1;
+                        for (int row = rStart; row < _map.Length; row++) {
+                            for (int col = cStart; col < _map[0].Length; col++) {
+                                int r = row;
+                                int rTo = r;
+                                int c = col;
+                                int cTo = c - 1;
+                                if (_map[r][c] == 'O' && _map[rTo][cTo] == '.') {
+                                    (_map[r][c], _map[rTo][cTo]) = (_map[rTo][cTo], _map[r][c]);
                                     stillRolling = true;
                                 }
                             }
@@ -65,10 +100,16 @@ namespace Puzzles {
                     bool stillRolling;
                     do {
                         stillRolling = false;
-                        for (int r = _map.Length - 2; r >= 0; r--) {
-                            for (int c = 0; c < _map[0].Length; c++) {
-                                if (_map[r][c] == 'O' && _map[r + 1][c] == '.') {
-                                    (_map[r][c], _map[r + 1][c]) = (_map[r + 1][c], _map[r][c]);
+                        int rStart = 1;
+                        int cStart = 0;
+                        for (int row = rStart; row < _map.Length; row++) {
+                            for (int col = cStart; col < _map[0].Length; col++) {
+                                int r = _map.Length - row - 1;
+                                int rTo = r + 1;
+                                int c = col;
+                                int cTo = c;
+                                if (_map[r][c] == 'O' && _map[rTo][cTo] == '.') {
+                                    (_map[r][c], _map[rTo][cTo]) = (_map[rTo][cTo], _map[r][c]);
                                     stillRolling = true;
                                 }
                             }
@@ -81,10 +122,16 @@ namespace Puzzles {
                     bool stillRolling;
                     do {
                         stillRolling = false;
-                        for (int c = _map[0].Length - 2; c >= 0; c--) {
-                            for (int r = 0; r < _map.Length; r++) {
-                                if (_map[r][c] == 'O' && _map[r][c + 1] == '.') {
-                                    (_map[r][c], _map[r][c + 1]) = (_map[r][c + 1], _map[r][c]);
+                        int rStart = 0;
+                        int cStart = 1;
+                        for (int row = rStart; row < _map.Length; row++) {
+                            for (int col = cStart; col < _map[0].Length; col++) {
+                                int r = row;
+                                int rTo = r;
+                                int c = _map[0].Length - col - 1;
+                                int cTo = c + 1;
+                                if (_map[r][c] == 'O' && _map[rTo][cTo] == '.') {
+                                    (_map[r][c], _map[rTo][cTo]) = (_map[rTo][cTo], _map[r][c]);
                                     stillRolling = true;
                                 }
                             }
@@ -112,83 +159,6 @@ namespace Puzzles {
                     } while (!Correlate(loads, ref startsAt, ref repeatsEvery));
                 }
                 return loads[startsAt + (1000000000 - startsAt) % repeatsEvery - 1].ToString();
-
-                ////if (Part2) return "";
-                //var platform = InputAsLines.Select(i => i.ToCharArray()).ToArray();
-                //bool stillRolling;
-                ////PrintGrid(platform);
-
-                //// tilt north
-                ////for (int i = 0; i < 1000; i++) {
-                //int count = 0;
-                //do {
-                //    //int load = 0;
-                //    do {
-                //        stillRolling = false;
-                //        for (int r = 1; r < platform.Length; r++) {
-                //            for (int c = 0; c < platform[0].Length; c++) {
-                //                if (platform[r][c] == 'O' && platform[r - 1][c] == '.') {
-                //                    (platform[r][c], platform[r - 1][c]) = (platform[r - 1][c], platform[r][c]);
-                //                    stillRolling = true;
-                //                }
-                //            }
-                //        }
-                //        //PrintGrid(platform);
-                //    } while (stillRolling);
-                //    if (Part1) return CalcLoad(platform).ToString();
-
-                //    // tilt west
-                //    do {
-                //        stillRolling = false;
-                //        for (int c = 1; c < platform[0].Length; c++) {
-                //            for (int r = 0; r < platform.Length; r++) {
-                //                if (platform[r][c] == 'O' && platform[r][c - 1] == '.') {
-                //                    (platform[r][c], platform[r][c - 1]) = (platform[r][c - 1], platform[r][c]);
-                //                    stillRolling = true;
-                //                }
-                //            }
-                //        }
-                //        //PrintGrid(platform);
-                //    } while (stillRolling);
-
-                //    // tilt south
-                //    do {
-                //        stillRolling = false;
-                //        for (int r = platform.Length - 2; r >= 0; r--) {
-                //            for (int c = 0; c < platform[0].Length; c++) {
-                //                if (platform[r][c] == 'O' && platform[r + 1][c] == '.') {
-                //                    (platform[r][c], platform[r + 1][c]) = (platform[r + 1][c], platform[r][c]);
-                //                    stillRolling = true;
-                //                }
-                //            }
-                //        }
-                //        //PrintGrid(platform);
-                //    } while (stillRolling);
-
-                //    // tilt east
-                //    do {
-                //        stillRolling = false;
-                //        for (int c = platform[0].Length - 2; c >= 0; c--) {
-                //            for (int r = 0; r < platform.Length; r++) {
-                //                if (platform[r][c] == 'O' && platform[r][c + 1] == '.') {
-                //                    (platform[r][c], platform[r][c + 1]) = (platform[r][c + 1], platform[r][c]);
-                //                    stillRolling = true;
-                //                }
-                //            }
-                //        }
-                //    } while (stillRolling);
-                //    //PrintGrid(platform);
-
-                //    // count results
-                //    int load = CalcLoad(platform);
-                //    count++;
-                //    //Console.WriteLine($"{count} {load}");
-                //    loads.Add(load);
-                //} while (!Correlate());
-
-                //// calc where we are at 1000000000
-
-                //return loads[startsAt + (1000000000 - startsAt) % repeatsEvery - 1].ToString();
             }
 
             bool Correlate(List<int> loads, ref int startsAt, ref int repeatsEvery) {
@@ -215,13 +185,13 @@ namespace Puzzles {
                 return corr;
             }
 
-            private static int CalcLoad(char[][] platform) {
-                int load = 0;
-                for (int r = 0; r < platform.Length; r++) {
-                    load += platform[r].Count(c => c == 'O') * (platform.Length - r);
-                }
-                return load;
-            }
+            //private static int CalcLoad(char[][] platform) {
+            //    int load = 0;
+            //    for (int r = 0; r < platform.Length; r++) {
+            //        load += platform[r].Count(c => c == 'O') * (platform.Length - r);
+            //    }
+            //    return load;
+            //}
         }
     }
 }
