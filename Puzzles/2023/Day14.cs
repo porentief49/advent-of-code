@@ -1,4 +1,5 @@
-﻿namespace Puzzles {
+﻿
+namespace Puzzles {
 
     public partial class Year2023 {
 
@@ -7,22 +8,26 @@
             protected override string Title { get; } = "Day 14: Parabolic Reflector Dish";
 
             public override void SetupAll() {
-                //AddInputFile(@"2023\14_Example.txt");
+                AddInputFile(@"2023\14_Example.txt");
                 AddInputFile(@"2023\14_rAiner.txt");
             }
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
             public override string Solve() {
-                if (Part2) return "";
+                //if (Part2) return "";
                 var platform = InputAsLines.Select(i => i.ToCharArray()).ToArray();
                 bool stillRolling;
+                int startsAt=0;
+                int repeatsEvery=0;
                 //PrintGrid(platform);
 
                 // tilt north
-                int load = 0;
-                for (int i = 0; i < 1000; i++) {
-
+                List<int> loads = new();
+                //for (int i = 0; i < 1000; i++) {
+                int count = 0;
+                do {
+                    //int load = 0;
                     do {
                         stillRolling = false;
                         for (int r = 1; r < platform.Length; r++) {
@@ -35,6 +40,7 @@
                         }
                         //PrintGrid(platform);
                     } while (stillRolling);
+                    if (Part1) return CalcLoad(platform).ToString();
 
                     // tilt west
                     do {
@@ -79,14 +85,46 @@
                     //PrintGrid(platform);
 
                     // count results
-                    load = 0;
-                    for (int r = 0; r < platform.Length; r++) {
-                        load += platform[r].Count(c => c == 'O') * (platform.Length - r);
-                    }
-                    Console.WriteLine($"{load}");
+                    int load = CalcLoad(platform);
+                    count++;
+                    Console.WriteLine($"{count} {load}");
+                    loads.Add(load);
+                } while (!Correlate());
 
+                // calc where we are at 1000000000
+
+                return loads[startsAt + (1000000000-startsAt) % repeatsEvery-1].ToString();
+
+                bool Correlate() {
+                    if (loads.Count < 100) return false;
+                    int last = loads.Last();
+                    int lastIndex = loads.Count - 1;
+                    int secondLastIndex = loads.LastIndexOf(last, loads.Count - 2);
+                    if (secondLastIndex == -1) return false;
+                    bool corr = true; // we might have a match - assume best
+                    int distance = lastIndex - secondLastIndex;
+                    if (secondLastIndex - distance < 0 || distance<2) return false; // filter out direct repetitions
+                    for (int i = 1; i < distance; i++) {
+                        if (loads[lastIndex - 1] != loads[secondLastIndex - 1]) {
+                            corr = false;
+                            break;
+                        }
+                    }
+                    if(corr) {
+                        startsAt = secondLastIndex;
+                        repeatsEvery = distance;
+                        Console.WriteLine($"starts at {secondLastIndex} and repeats evrey {distance}");
+                    }
+                    return corr;
                 }
-                return load.ToString();
+            }
+
+            private static int CalcLoad(char[][] platform) {
+                int load = 0;
+                for (int r = 0; r < platform.Length; r++) {
+                    load += platform[r].Count(c => c == 'O') * (platform.Length - r);
+                }
+                return load;
             }
         }
     }
