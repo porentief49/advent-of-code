@@ -17,68 +17,34 @@ namespace Puzzles {
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
             public override string Solve() {
-                //if (Part2) return "";
                 var instructions = InputAsLines[0].Split(',').ToList();
-                //var hashes = new List<int>();
-                var sum = 0;
-                foreach (var item in instructions) {
-                    int current = CalcHash(item);
-                    sum += current;
-                    //hashes.Add(current);
-                    //Console.WriteLine($"{current}");
-                }
-                if (Part1) return sum.ToString();
+                if (Part1) return instructions.Select(i => CalcHash(i)).Sum().ToString();
 
                 //part 2
-                Box[] boxes = Enumerable.Range(0,256).Select(i=>new Box()).ToArray();
+                Box[] boxes = Enumerable.Range(0, 256).Select(i => new Box()).ToArray();
                 for (int i = 0; i < instructions.Count; i++) {
-                    var label = instructions[i].Replace('=', '-').Split('-')[0];
-                    var hash = CalcHash(label);
-                    if (instructions[i].Contains('-')) { // '-' ... remove
-                        //var label = instructions[i].Replace("-","");
-                        if (boxes[hash].Lenses.RemoveAll(l => l.label == label) > 1) throw new Exception($"more than one with label {label}");
-                    } else { // '=' ... insert
-                        var split = instructions[i].Split('=');
-                        //var label = split[0];
-                        var focal = int.Parse(split[1]);
-                        //var lens = instructions[i].Replace('=', ' ');
-                        //foreach (var lens in boxes[hashes[i]].Lenses) {
-
-                        //}
-                        var index = boxes[hash].Lenses.FindIndex(l => l.label == label);
-                        if (index < 0) boxes[hash].Lenses.Add((label, focal));
-                        else boxes[hash].Lenses[index] = (label, focal);
-                    }
-                    //Console.WriteLine($"After '{instructions[i]}':");
-                    //for (int ii = 0; ii < 256; ii++) {
-                    //    if(boxes[ii].Lenses.Count>0) Console.WriteLine($"Box {ii}: {string.Join(" | ", boxes[ii].Lenses.Select(l=>l.label + " " + l.focal.ToString()) )}");
-                    //}
-                    //Console.WriteLine("");
+                    var instruction = instructions[i].Replace('=', '-').Split('-', StringSplitOptions.RemoveEmptyEntries);
+                    boxes[CalcHash(instruction[0])].Process(instruction);
+                    if (Verbose) Console.WriteLine($"After '{instructions[i]}':\r\n{string.Join("\r\n", boxes.Select((b, i) => new { box = b, idx = i }).Where(x => x.box.Lenses.Count() > 0).Select(x => $"Box {x.idx}: {string.Join(" ", x.box.Lenses.Select(l => $"[{l.label} {l.focal}]"))}"))}\r\n");
                 }
-
-                ulong total = 0;
-                for (int i = 0; i < 256; i++) {
-                    for (int ii = 0; ii < boxes[i].Lenses.Count; ii++) {
-                        total += (ulong)((i + 1) * (ii + 1) * boxes[i].Lenses[ii].focal);
-                    }
-                }
-
+                int total = 0;
+                for (int b = 0; b < 256; b++) for (int l = 0; l < boxes[b].Lenses.Count; l++) total += ((b + 1) * (l + 1) * int.Parse(boxes[b].Lenses[l].focal));
                 return total.ToString();
             }
 
-            private static int CalcHash(string? item) {
-                int current = 0;
-                foreach (var ch in item) {
-                    current += ch;
-                    current *= 17;
-                    current %= 256;
-                }
-
-                return current;
-            }
+            private static int CalcHash(string value) => value.Select(v => (int)v).Aggregate(0, (x, y) => ((x + y) * 17) % 256);
 
             private class Box {
-                public List<(string label, int focal)> Lenses = new();
+                public List<(string label, string focal)> Lenses = new();
+
+                public void Process(string[] instruction) {
+                    if (instruction.Length == 1) Lenses.RemoveAll(l => l.label == instruction[0]); // '-' ... remove
+                    else { // '=' ... insert
+                        var index = Lenses.FindIndex(l => l.label == instruction[0]);
+                        if (index < 0) Lenses.Add((instruction[0], instruction[1]));
+                        else Lenses[index] = (instruction[0], instruction[1]);
+                    }
+                }
             }
         }
     }
