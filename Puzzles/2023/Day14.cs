@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics.CodeAnalysis;
+
 namespace Puzzles {
 
     public partial class Year2023 {
@@ -58,10 +60,10 @@ namespace Puzzles {
                         stillRolling = false;
                         for (int row = (dir == Dir.N || dir == Dir.S) ? 1 : 0; row < _map.Length; row++) {
                             for (int col = (dir == Dir.W || dir == Dir.E) ? 1 : 0; col < _map[0].Length; col++) {
-                                int r = dir switch { Dir.N => row, Dir.W => row, Dir.S => _map.Length - row - 1, _ => row };
-                                int c = dir switch { Dir.N => col, Dir.W => col, Dir.S => col, _ => _map[0].Length - col - 1 };
-                                int rTo = dir switch { Dir.N => r - 1, Dir.W => r, Dir.S => r + 1, _ => r };
-                                int cTo = dir switch { Dir.N => c, Dir.W => c - 1, Dir.S => c, _ => c + 1 };
+                                int r = dir == Dir.S ? _map.Length - row - 1 : row;
+                                int c = dir == Dir.E ? _map[0].Length - col - 1 : col;
+                                int rTo = dir switch { Dir.N => r - 1, Dir.S => r + 1, _ => r };
+                                int cTo = dir switch { Dir.W => c - 1, Dir.E => c + 1, _ => c };
                                 if (_map[r][c] == 'O' && _map[rTo][cTo] == '.') {
                                     (_map[r][c], _map[rTo][cTo]) = (_map[rTo][cTo], _map[r][c]);
                                     stillRolling = true;
