@@ -1,5 +1,5 @@
 ﻿namespace AoC {
     internal class Program {
-        static void Main() => Console.WriteLine(new Puzzles.Year2023.Day16().RunAll());
+        static void Main() => Console.WriteLine(new Puzzles.Year2023.Day17().RunAll());
     }
 }
