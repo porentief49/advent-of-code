@@ -13,7 +13,7 @@ namespace Puzzles {
 
             public override void SetupAll() {
                 AddInputFile(@"2023\17_Example.txt");
-                //AddInputFile(@"2023\17_rAiner.txt");
+                AddInputFile(@"2023\17_rAiner.txt");
             }
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
