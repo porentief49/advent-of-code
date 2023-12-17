@@ -20,11 +20,11 @@ namespace Puzzles {
 
             public override string Solve() {
                 if (Part2) return "";
-                Verbose = true;
+                Verbose = false;
 
                 // initialize
                 char[][] grid = InputAsLines.Select(i => i.ToCharArray()).ToArray();
-                List<Node> open = new() { new Node(0, 0, Dir.None, 0, null) };
+                List<Node> open = new() { new Node(0, 0, Dir.None, 0, null, 1) };
                 List<Node> done = new();
                 int row;
                 int col;
@@ -35,7 +35,7 @@ namespace Puzzles {
 
                 // dijkstra
                 int count = 0;
-                Node bestSuccessPath = new Node(InputAsLines.Length - 1, InputAsLines[0].Length - 1, Dir.None, 99999, null);
+                Node bestSuccessPath = new Node(InputAsLines.Length - 1, InputAsLines[0].Length - 1, Dir.None, 99999, null, 1);
                 do {
 
                     Console.WriteLine($"Step: {++count} - {open.Count} nodes");
@@ -70,7 +70,6 @@ namespace Puzzles {
                     newDir = Dir.R;
                     if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
                     if (newCol < InputAsLines[0].Length) PerformStep(grid, open, done, current, newRow, newCol, newDir);
-
                     if (Verbose) Console.WriteLine($"done!");
 
                     // check down
@@ -118,18 +117,20 @@ namespace Puzzles {
                     if (Verbose) Console.Write($"only {current.SameDir}x{current.CameThroughDir} so far ...");
                     int newHeatLoss = current.HeatLossSoFar + grid[newRow][newCol] - '0';
                     if (Verbose) Console.Write($"loss {newHeatLoss} ...");
-                    int nodeIndex = open.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir);
+                    int newSameDir = (current.Pre != null && newDir == current.CameThroughDir) ? current.SameDir + 1 : 1;
+                    int nodeIndex = open.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir);
                     if (nodeIndex < 0) { // does not yet exist
-                        if (done.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir) == -1) {
-                            open.Add(new Node(newRow, newCol, newDir, newHeatLoss, current));
+                        if (done.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir) == -1) {
+                            open.Add(new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir));
                             if (Verbose) Console.Write($"found a new path ... ");
                         } else {
                             if (Verbose) Console.Write($"done already ... ");
                         }
                     } else {
                         if (open[nodeIndex].HeatLossSoFar > newHeatLoss) {
-                            open[nodeIndex].HeatLossSoFar = newHeatLoss;
-                            open[nodeIndex].Pre = current;
+                            //open[nodeIndex].HeatLossSoFar = newHeatLoss;
+                            //open[nodeIndex].Pre = current;
+                            open[nodeIndex] = new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir);
                             if (Verbose) Console.Write($"found a better path ... ");
                         }
                     }
@@ -147,15 +148,16 @@ namespace Puzzles {
                 public Node Pre;
                 public int SameDir;
 
-                public Node(int row, int col, Dir cameThroughDir, int heatLossSoFar, Node pre) {
+                public Node(int row, int col, Dir cameThroughDir, int heatLossSoFar, Node pre, int sameDir) {
                     Row = row;
                     Col = col;
                     CameThroughDir = cameThroughDir;
                     //HeatLoss = heatLoss;
                     HeatLossSoFar = heatLossSoFar;
                     Pre = pre;
-                    if (pre != null && cameThroughDir == pre.CameThroughDir) SameDir = pre.SameDir + 1;
-                    else SameDir = 1;
+                    //if (pre != null && cameThroughDir == pre.CameThroughDir) SameDir = pre.SameDir + 1;
+                    //else SameDir = 1;
+                    SameDir = sameDir;
                 }
             }
         }
