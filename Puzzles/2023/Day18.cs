@@ -17,33 +17,28 @@ namespace Puzzles {
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
             public override string Solve() {
-                if (Part2) return "";
-                var digPlan = InputAsLines.Select(x => new Dig(x)).ToList();
-                for (int i =1; i < digPlan.Count; i++) {
-                    digPlan[i].ToX = digPlan[i-1].ToX+ digPlan[i].Dir switch { 'R' => 1, 'L' => -1, _ => 0 } * digPlan[i].Length;
-                    digPlan[i].ToY = digPlan[i-1].ToY+digPlan[i].Dir switch { 'D' => 1, 'U' => -1, _ => 0 } * digPlan[i].Length;
+                var digPlan = InputAsLines.Select(x => new Dig(x, Part1)).ToList();
+                for (int i = 1; i < digPlan.Count; i++) {
+                    digPlan[i].ToX = digPlan[i - 1].ToX + digPlan[i].Dir switch { 'R' => 1, 'L' => -1, _ => 0 } * digPlan[i].Length;
+                    digPlan[i].ToY = digPlan[i - 1].ToY + digPlan[i].Dir switch { 'D' => 1, 'U' => -1, _ => 0 } * digPlan[i].Length;
                 }
-
-                // calculate volume (area integral)
-                int area = 0;
+                long area = 0;
                 for (int i = 1; i < digPlan.Count; i++) area += digPlan[i].ToY * (digPlan[i].ToX - digPlan[i - 1].ToX);
-                area += digPlan.Last().ToY * (digPlan[0].ToX - digPlan.Last().ToX);
-                int length = digPlan.Select(d => d.Length).Sum();
+                area += digPlan.Last().ToY * (digPlan[0].ToX - digPlan.Last().ToX);// area integratl -- again!
+                long length = digPlan.Select(d => d.Length).Aggregate((x, y) => x + y);
                 return (Math.Abs(area) + length / 2 + 1).ToString();
             }
 
             private class Dig {
                 public char Dir;
-                public int Length;
-                public string Color;
-                public int ToX = 0;
-                public int ToY = 0;
+                public long Length;
+                public long ToX = 0;
+                public long ToY = 0;
 
-                public Dig(string input) {
+                public Dig(string input, bool part1) {
                     var split = input.Split(' ');
-                    Dir = split[0][0];
-                    Length = int.Parse(split[1]);
-                    Color = split[2];
+                    Dir = part1? split[0][0]: split[2][7] switch { '0' => 'R', '1' => 'D', '2' => 'L', '3' => 'U', _ => throw new Exception($"invalid dir") };
+                    Length = part1? long.Parse(split[1]): Convert.ToInt64(split[2].Substring(2, 5), 16);
                 }
             }
         }
