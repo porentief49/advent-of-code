@@ -69,7 +69,7 @@ namespace Puzzles {
                     newCol = col + 1;
                     newDir = Dir.R;
                     if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
-                    if (newCol < InputAsLines[0].Length) PerformStep(grid, open, done, current, newRow, newCol, newDir);
+                    if (newCol < InputAsLines[0].Length) PerformStep(grid, open, done, current, newRow, newCol, newDir, Part1);
                     if (Verbose) Console.WriteLine($"done!");
 
                     // check down
@@ -77,7 +77,7 @@ namespace Puzzles {
                     newCol = col;
                     newDir = Dir.D;
                     if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
-                    if (newRow < InputAsLines.Length) PerformStep(grid, open, done, current, newRow, newCol, newDir);
+                    if (newRow < InputAsLines.Length) PerformStep(grid, open, done, current, newRow, newCol, newDir, Part1);
                     if (Verbose) Console.WriteLine($"done!");
 
 
@@ -86,7 +86,7 @@ namespace Puzzles {
                     newCol = col - 1;
                     newDir = Dir.L;
                     if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
-                    if (newCol >= 0) PerformStep(grid, open, done, current, newRow, newCol, newDir);
+                    if (newCol >= 0) PerformStep(grid, open, done, current, newRow, newCol, newDir, Part1);
                     if (Verbose) Console.WriteLine($"done!");
 
                     // check up
@@ -94,7 +94,7 @@ namespace Puzzles {
                     newCol = col;
                     newDir = Dir.U;
                     if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
-                    if (newRow >= 0) PerformStep(grid, open, done, current, newRow, newCol, newDir);
+                    if (newRow >= 0) PerformStep(grid, open, done, current, newRow, newCol, newDir, Part1);
                     if (Verbose) Console.WriteLine($"done!");
 
 
@@ -111,27 +111,30 @@ namespace Puzzles {
                 return bestSuccessPath.HeatLossSoFar.ToString();
             }
 
-            private void PerformStep(char[][] grid, List<Node> open, List<Node> done, Node current, int newRow, int newCol, Dir newDir) {
+            private void PerformStep(char[][] grid, List<Node> open, List<Node> done, Node current, int newRow, int newCol, Dir newDir, bool part1) {
                 if (Verbose) Console.Write($"within grid good ...");
-                if ((current.CameThroughDir != newDir || current.SameDir < 3) && current.CameThroughDir != OppositeDir(newDir)) {
-                    if (Verbose) Console.Write($"only {current.SameDir}x{current.CameThroughDir} so far ...");
-                    int newHeatLoss = current.HeatLossSoFar + grid[newRow][newCol] - '0';
-                    if (Verbose) Console.Write($"loss {newHeatLoss} ...");
-                    int newSameDir = (current.Pre != null && newDir == current.CameThroughDir) ? current.SameDir + 1 : 1;
-                    int nodeIndex = open.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir);
-                    if (nodeIndex < 0) { // does not yet exist
-                        if (done.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir) == -1) {
-                            open.Add(new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir));
-                            if (Verbose) Console.Write($"found a new path ... ");
+                if (current.CameThroughDir != OppositeDir(newDir)) {
+                    //if (current.CameThroughDir != newDir || current.SameDir < 3) {
+                    if (((current.CameThroughDir == newDir || current.CameThroughDir == Dir.None) && current.SameDir < 10) || ((current.CameThroughDir != newDir || current.CameThroughDir == Dir.None) && current.SameDir > 3)) {
+                        if (Verbose) Console.Write($"only {current.SameDir}x{current.CameThroughDir} so far ...");
+                        int newHeatLoss = current.HeatLossSoFar + grid[newRow][newCol] - '0';
+                        if (Verbose) Console.Write($"loss {newHeatLoss} ...");
+                        int newSameDir = (current.Pre != null && newDir == current.CameThroughDir) ? current.SameDir + 1 : 1;
+                        int nodeIndex = open.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir);
+                        if (nodeIndex < 0) { // does not yet exist
+                            if (done.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir) == -1) {
+                                open.Add(new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir));
+                                if (Verbose) Console.Write($"found a new path ... ");
+                            } else {
+                                if (Verbose) Console.Write($"done already ... ");
+                            }
                         } else {
-                            if (Verbose) Console.Write($"done already ... ");
-                        }
-                    } else {
-                        if (open[nodeIndex].HeatLossSoFar > newHeatLoss) {
-                            //open[nodeIndex].HeatLossSoFar = newHeatLoss;
-                            //open[nodeIndex].Pre = current;
-                            open[nodeIndex] = new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir);
-                            if (Verbose) Console.Write($"found a better path ... ");
+                            if (open[nodeIndex].HeatLossSoFar > newHeatLoss) {
+                                //open[nodeIndex].HeatLossSoFar = newHeatLoss;
+                                //open[nodeIndex].Pre = current;
+                                open[nodeIndex] = new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir);
+                                if (Verbose) Console.Write($"found a better path ... ");
+                            }
                         }
                     }
                 }
