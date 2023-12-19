@@ -14,32 +14,24 @@
             public override void Init(string inputFile) => InputAsText = ReadText(inputFile, true);
 
             private List<Workflow> _workflows;
-            private List<Part> _parts;
-            private List<Dictionary<char, int>> _parts2;
 
             public override string Solve() {
                 var split = InputAsText.Split("\n\n");
                 _workflows = split[0].Split("\n", StringSplitOptions.RemoveEmptyEntries).Select(w => new Workflow(w)).ToList();
-                _parts = split[1].Split("\n", StringSplitOptions.RemoveEmptyEntries).Select(p => new Part(p)).ToList();
-                //_parts2 = split[1].Split("\n", StringSplitOptions.RemoveEmptyEntries).Select(p=>p.ReplaceAnyChar("{}",""))
-                var p = split[1].Split("\n", StringSplitOptions.RemoveEmptyEntries).Select(ppp => ppp.ReplaceAnyChar("{}", "")).ToList();
-                //foreach (var pp in p) _parts2.Add(pp.Split(',').ToDictionary(x => x[0], y => int.Parse(y.Substring(2))));
-                _parts2 = p.Select(pp=>pp.Split(',').ToDictionary(x => x[0], y => int.Parse(y.Substring(2)))).ToList();
-                return (Part1 ? Solve1() : Solve2()).ToString();
+                return (Part1 ? Solve1(split[1]) : Solve2()).ToString();
             }
 
-            private ulong Solve1() {
+            private ulong Solve1(string partList) {
                 ulong totalRatings = 0;
-                //foreach (var part in _parts) {
-                foreach (var part in _parts2) {
-                    //if (Verbose) Console.Write($"Processing part (x={part.x},m={part.m},a={part.a},s={part.s}): in");
+                List<Dictionary<char, int>> parts = partList.Split("\n", StringSplitOptions.RemoveEmptyEntries).Select(p => p.ReplaceAnyChar("{}", "").Split(',').ToDictionary(x => x[0], y => int.Parse(y.Substring(2)))).ToList();
+                foreach (var part in parts) {
                     if (Verbose) Console.Write($"Processing part (x={part['x']},m={part['m']},a={part['a']},s={part['s']}): in");
                     string workflowName = "in";
                     do {
                         var nextWorkflow = _workflows.Single(w => w.Name == workflowName);
                         foreach (var instruction in nextWorkflow.Instructions) {
                             if (instruction.Condition) {
-                                if (CheckCategory(part, instruction)) {
+                                if ((instruction.Comparison == '<') ? part[instruction.Category] < instruction.Value : part[instruction.Category] > instruction.Value) {
                                     workflowName = instruction.Next;
                                     break;
                                 }
@@ -49,28 +41,11 @@
                             }
                         }
                         if (Verbose) Console.Write($" -> {workflowName}");
-                        //if (workflowName == "A") totalRatings += (ulong)(part['x'] + part['m'] + part['a'] + part['s']);
-                        //if (workflowName == "A") totalRatings += (ulong)(part['x'] + part['m'] + part['a'] + part['s']);
                         if (workflowName == "A") totalRatings += (ulong)part.Values.Sum();
                     } while (workflowName != "A" && workflowName != "R");
                     if (Verbose) Console.WriteLine("");
                 }
                 return totalRatings;
-            }
-
-            //private bool CheckCategory(Part part, Instruction instruction) {
-            //    int partValue = instruction.Category switch { 'x' => part.x, 'm' => part.m, 'a' => part.a, 's' => part.s, _ => throw new Exception("Category does not exist") };
-            //    if (instruction.Comparison == '<') return partValue < instruction.Value;
-            //    return partValue > instruction.Value;
-            //}
-
-            private bool CheckCategory(Dictionary<char, int> part, Instruction instruction) {
-                //int partValue = instruction.Category switch { 'x' => part.x, 'm' => part.m, 'a' => part.a, 's' => part.s, _ => throw new Exception("Category does not exist") };
-                //if (instruction.Comparison == '<') return partValue < instruction.Value;
-                //return partValue > instruction.Value;
-
-                if (instruction.Comparison == '<') return part[instruction.Category] < instruction.Value;
-                return part[instruction.Category] > instruction.Value;
             }
 
             private ulong Solve2() {
@@ -173,35 +148,6 @@
                 }
             }
 
-            private class Part {
-                public int x;
-                public int m;
-                public int a;
-                public int s;
-
-                public Part(string line) {
-                    foreach (var prop in line.Replace("{", "").Replace("}", "").Split(',')) {
-                        var split = prop.Split('=');
-                        switch (split[0]) {
-                            case "x":
-                                x = int.Parse(split[1]);
-                                break;
-                            case "m":
-                                m = int.Parse(split[1]);
-                                break;
-                            case "a":
-                                a = int.Parse(split[1]);
-                                break;
-                            case "s":
-                                s = int.Parse(split[1]);
-                                break;
-                            default:
-                                throw new Exception("Category does not exist");
-                        }
-                    }
-                }
-            }
-
             private class Workflow {
                 public string Name;
                 public List<Instruction> Instructions;
@@ -211,26 +157,26 @@
                     Name = split1[0];
                     Instructions = split1[1].Split(',').Select(i => new Instruction(i)).ToList();
                 }
-            }
 
-            private class Instruction {
-                public char Category;
-                public char Comparison;
-                public int Value;
-                public string Next;
-                public bool Condition;
+                public class Instruction {
+                    public char Category;
+                    public char Comparison;
+                    public int Value;
+                    public string Next;
+                    public bool Condition;
 
-                public Instruction(string input) {
-                    if (input.Contains(':')) {
-                        Category = input[0];
-                        Comparison = input[1];
-                        var split = input.Split(":");
-                        Value = int.Parse(split[0].Substring(2));
-                        Next = split[1];
-                        Condition = true;
-                    } else {
-                        Next = input;
-                        Condition = false;
+                    public Instruction(string input) {
+                        if (input.Contains(':')) {
+                            Category = input[0];
+                            Comparison = input[1];
+                            var split = input.Split(":");
+                            Value = int.Parse(split[0].Substring(2));
+                            Next = split[1];
+                            Condition = true;
+                        } else {
+                            Next = input;
+                            Condition = false;
+                        }
                     }
                 }
             }
