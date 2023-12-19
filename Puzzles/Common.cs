@@ -153,6 +153,11 @@ namespace Puzzles {
             return lOut.ToString();
         }
 
+        public static string ReplaceAnyChar(this string input, string searchChars, string replaceWith) {
+            foreach (var ch in searchChars) input = input.Replace(ch.ToString(), replaceWith);
+            return input;
+        }
+
         public static void AddIfNew<T>(this List<T> list, T add) {
             if (!list.Contains(add)) list.Add(add);
         }
