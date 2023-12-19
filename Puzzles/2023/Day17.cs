@@ -18,122 +18,63 @@ namespace Puzzles {
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
+            private char[][] _grid;
+            List<Node> _open;
+            List<Node> _done;
+
             public override string Solve() {
-                if (Part2) return "";
                 Verbose = false;
+                Node current;
 
                 // initialize
-                char[][] grid = InputAsLines.Select(i => i.ToCharArray()).ToArray();
-                List<Node> open = new() { new Node(0, 0, Dir.None, 0, null, 1) };
-                List<Node> done = new();
-                int row;
-                int col;
-                Node current;
-                int newRow;
-                int newCol;
-                Dir newDir;
+                _grid = InputAsLines.Select(i => i.ToCharArray()).ToArray();
+                _open = new() { new Node(0, 0, Dir.None, 0, null, 1) };
+                _done = new();
 
-                // dijkstra
+                // dijkstra ... takes LONG!!! But A* didn't improve anything :-(
                 int count = 0;
                 Node bestSuccessPath = new Node(InputAsLines.Length - 1, InputAsLines[0].Length - 1, Dir.None, 99999, null, 1);
                 do {
-
-                    Console.WriteLine($"Step: {++count} - {open.Count} nodes");
+                    if (Verbose) Console.WriteLine($"Step: {++count} - {_open.Count} nodes");
 
                     // find node with lowest heat loss so far
-                    int bestLoss = open[0].HeatLossSoFar;
+                    int bestLoss = _open[0].HeatLossSoFar;
                     int bestindex = 0;
-                    for (int i = 0; i < open.Count; i++) {
-                        if (open[i].HeatLossSoFar < bestLoss) {
-                            bestLoss = open[i].HeatLossSoFar;
-                            bestindex = i;
-                        }
-                    }
-                    if (Verbose) Console.WriteLine($"  best node is #{bestindex} [{open[bestindex].Row}|{open[bestindex].Col}] with HeatLossSoFar {bestLoss}");
+                    for (int i = 0; i < _open.Count; i++) if (_open[i].HeatLossSoFar < bestLoss) (bestLoss, bestindex) = (_open[i].HeatLossSoFar, i);
 
                     // pick best node
-                    current = open[bestindex];
-                    done.Add(current);
-                    open.RemoveAt(bestindex);
-                    if (current.Row == (InputAsLines.Length - 1) && current.Col == (InputAsLines[0].Length - 1)) {
-                        if (current.HeatLossSoFar < bestSuccessPath.HeatLossSoFar) bestSuccessPath = current;
-                    }
-                    if (Verbose) Console.WriteLine($"  now left {open.Count} nodes");
+                    current = _open[bestindex];
+                    _done.Add(current);
+                    _open.RemoveAt(bestindex);
+                    if (current.Row == (InputAsLines.Length - 1) && current.Col == (InputAsLines[0].Length - 1)) if (current.HeatLossSoFar < bestSuccessPath.HeatLossSoFar) bestSuccessPath = current;
 
                     // find all potential next steps
-                    row = current.Row;
-                    col = current.Col;
-
-                    // check right
-                    newRow = row;
-                    newCol = col + 1;
-                    newDir = Dir.R;
-                    if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
-                    if (newCol < InputAsLines[0].Length) PerformStep(grid, open, done, current, newRow, newCol, newDir, Part1);
-                    if (Verbose) Console.WriteLine($"done!");
-
-                    // check down
-                    newRow = row + 1;
-                    newCol = col;
-                    newDir = Dir.D;
-                    if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
-                    if (newRow < InputAsLines.Length) PerformStep(grid, open, done, current, newRow, newCol, newDir, Part1);
-                    if (Verbose) Console.WriteLine($"done!");
-
-
-                    // check left
-                    newRow = row;
-                    newCol = col - 1;
-                    newDir = Dir.L;
-                    if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
-                    if (newCol >= 0) PerformStep(grid, open, done, current, newRow, newCol, newDir, Part1);
-                    if (Verbose) Console.WriteLine($"done!");
-
-                    // check up
-                    newRow = row - 1;
-                    newCol = col;
-                    newDir = Dir.U;
-                    if (Verbose) Console.Write($"  from [{row}|{col}] checking {newDir} to [{newRow}|{newCol}] ... ");
-                    if (newRow >= 0) PerformStep(grid, open, done, current, newRow, newCol, newDir, Part1);
-                    if (Verbose) Console.WriteLine($"done!");
-
-
-                } while (open.Any());
-
-                current = bestSuccessPath;
-                do {
-                    grid[current.Row][current.Col] = '.';
-                    current = current.Pre;
-                } while (current.Row != 0 || current.Col != 0);
-
-                PrintGrid(grid);
-
+                    CheckDir(current, Dir.R, Part1);
+                    CheckDir(current, Dir.D, Part1);
+                    CheckDir(current, Dir.L, Part1);
+                    CheckDir(current, Dir.U, Part1);
+                } while (_open.Any());
                 return bestSuccessPath.HeatLossSoFar.ToString();
             }
 
-            private void PerformStep(char[][] grid, List<Node> open, List<Node> done, Node current, int newRow, int newCol, Dir newDir, bool part1) {
-                if (Verbose) Console.Write($"within grid good ...");
-                if (current.CameThroughDir != OppositeDir(newDir)) {
-                    //if (current.CameThroughDir != newDir || current.SameDir < 3) {
-                    if (((current.CameThroughDir == newDir || current.CameThroughDir == Dir.None) && current.SameDir < 10) || ((current.CameThroughDir != newDir || current.CameThroughDir == Dir.None) && current.SameDir > 3)) {
-                        if (Verbose) Console.Write($"only {current.SameDir}x{current.CameThroughDir} so far ...");
-                        int newHeatLoss = current.HeatLossSoFar + grid[newRow][newCol] - '0';
-                        if (Verbose) Console.Write($"loss {newHeatLoss} ...");
-                        int newSameDir = (current.Pre != null && newDir == current.CameThroughDir) ? current.SameDir + 1 : 1;
-                        int nodeIndex = open.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir);
-                        if (nodeIndex < 0) { // does not yet exist
-                            if (done.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir) == -1) {
-                                open.Add(new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir));
-                                if (Verbose) Console.Write($"found a new path ... ");
-                            } else {
-                                if (Verbose) Console.Write($"done already ... ");
-                            }
-                        } else {
-                            if (open[nodeIndex].HeatLossSoFar > newHeatLoss) {
-                                //open[nodeIndex].HeatLossSoFar = newHeatLoss;
-                                //open[nodeIndex].Pre = current;
-                                open[nodeIndex] = new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir);
-                                if (Verbose) Console.Write($"found a better path ... ");
+            private void CheckDir(Node current, Dir newDir, bool part1) {
+                int newRow = current.Row + newDir switch { Dir.D => 1, Dir.U => -1, _ => 0 };
+                if (newRow >= 0 && newRow < InputAsLines.Length) {
+                    int newCol = current.Col + newDir switch { Dir.R => 1, Dir.L => -1, _ => 0 };
+                    if (newCol >= 0 && newCol < InputAsLines[0].Length) {
+                        if (current.CameThroughDir != OppositeDir(newDir)) {
+                            bool criteria;
+                            if (part1) criteria = current.CameThroughDir != newDir || current.SameDir < 3;
+                            else criteria = ((current.CameThroughDir == newDir || current.CameThroughDir == Dir.None) && current.SameDir < 10) || ((current.CameThroughDir != newDir || current.CameThroughDir == Dir.None) && current.SameDir > 3);
+                            if (criteria) {
+                                int newHeatLoss = current.HeatLossSoFar + _grid[newRow][newCol] - '0';
+                                int newSameDir = (current.Pre != null && newDir == current.CameThroughDir) ? current.SameDir + 1 : 1;
+                                int nodeIndex = _open.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir);
+                                if (nodeIndex < 0) { // does not yet exist
+                                    if (_done.FindIndex(n => n.Row == newRow && n.Col == newCol && n.CameThroughDir == newDir && n.SameDir == newSameDir) == -1) _open.Add(new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir));
+                                } else {
+                                    if (_open[nodeIndex].HeatLossSoFar > newHeatLoss) _open[nodeIndex] = new Node(newRow, newCol, newDir, newHeatLoss, current, newSameDir);
+                                }
                             }
                         }
                     }
@@ -146,7 +87,6 @@ namespace Puzzles {
                 public int Row;
                 public int Col;
                 public Dir CameThroughDir;
-                //public int HeatLoss;
                 public int HeatLossSoFar;
                 public Node Pre;
                 public int SameDir;
@@ -155,11 +95,8 @@ namespace Puzzles {
                     Row = row;
                     Col = col;
                     CameThroughDir = cameThroughDir;
-                    //HeatLoss = heatLoss;
                     HeatLossSoFar = heatLossSoFar;
                     Pre = pre;
-                    //if (pre != null && cameThroughDir == pre.CameThroughDir) SameDir = pre.SameDir + 1;
-                    //else SameDir = 1;
                     SameDir = sameDir;
                 }
             }
