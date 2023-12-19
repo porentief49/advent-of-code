@@ -451,7 +451,7 @@ namespace _Year2023 {
         public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "352052");
 
         [TestMethod]
-        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "");
+        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "116606738659695");
     }
 
     [TestClass]
