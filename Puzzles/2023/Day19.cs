@@ -52,119 +52,55 @@ namespace Puzzles {
 
             private ulong Solve2() {
                 ulong totalCount = 0; ;
-                //List<PartRange> ranges = new List<PartRange>() { new PartRange() { xFrom = 1, xTo = 4000, mFrom = 1, mTo = 4000, aFrom = 1, aTo = 4000, sFrom = 1, sTo = 4000, Next = "in" } };
-                //List<Dictionary<char, (int from, int to)>> ranges2 = new() { new Dictionary<char, (int, int)> { { 'x', (1, 4000) }, { 'm', (1, 4000) }, { 'a', (1, 4000) }, { 's', (1, 4000) } } };
-                List<PartRange> ranges2 = new List<PartRange>() { new PartRange() { Ranges = new Dictionary<char, (int from, int to)> { { 'x', (1, 4000) }, { 'm', (1, 4000) }, { 'a', (1, 4000) }, { 's', (1, 4000) } }, Next = "in" } };
+                List<Range> ranges = new List<Range>() { new Range() { From = new Dictionary<char, int> { { 'x', 1 }, { 'm', 1 }, { 'a', 1 }, { 's', 1 } }, To = new Dictionary<char, int> { { 'x', 4000 }, { 'm', 4000 }, { 'a', 4000 }, { 's', 4000 } }, Next = "in" } };
                 do {
-                    List<PartRange> newRranges = new();
-                    foreach (var range in ranges2) {
+                    List<Range> newRanges = new();
+                    foreach (var range in ranges) {
                         var nextWorkflow = _workflows.Single(w => w.Name == range.Next);
                         foreach (var instruction in nextWorkflow.Instructions) {
                             if (instruction.Condition) {
-                                //int partFrom = instruction.Category switch { 'x' => range.Ranges['x'].From, 'm' => range.mFrom, 'a' => range.aFrom, 's' => range.sFrom, _ => throw new Exception("Category does not exist") };
-                                int partFrom = range.Ranges[instruction.Category].From;// instruction.Category switch { 'x' => range.Ranges['x'].From, 'm' => range.mFrom, 'a' => range.aFrom, 's' => range.sFrom, _ => throw new Exception("Category does not exist") };
-                                //int partTo = instruction.Category switch { 'x' => range.xTo, 'm' => range.mTo, 'a' => range.aTo, 's' => range.sTo, _ => throw new Exception("Category does not exist") };
-                                int partTo = range.Ranges[instruction.Category].To;// switch { 'x' => range.xTo, 'm' => range.mTo, 'a' => range.aTo, 's' => range.sTo, _ => throw new Exception("Category does not exist") }; ; ; ;  ; ; ; ;// ;// ;
-                                if (instruction.Value > partFrom && instruction.Value < partTo) { // split off a part of the range
-                                    var splitOff = new PartRange(range);
+                                if (instruction.Value > range.From[instruction.Category] && instruction.Value < range.To[instruction.Category]) {
+                                    var splitOff = new Range(range);
                                     if (instruction.Comparison == '<') {
-                                        //switch (instruction.Category) {
-                                        //    case 'x':
-                                        //        splitOff.xTo = instruction.Value - 1;
-                                        //        range.xFrom = instruction.Value;
-                                        //        break;
-                                        //    case 'm':
-                                        //        splitOff.mTo = instruction.Value - 1;
-                                        //        range.mFrom = instruction.Value;
-                                        //        break;
-                                        //    case 'a':
-                                        //        splitOff.aTo = instruction.Value - 1;
-                                        //        range.aFrom = instruction.Value;
-                                        //        break;
-                                        //    case 's':
-                                        //        splitOff.sTo = instruction.Value - 1;
-                                        //        range.sFrom = instruction.Value;
-                                        //        break;
-                                        //    default:
-                                        //        throw new Exception("Category does not exist");
-                                        //}
-
-                                        splitOff.Ranges[instruction.Category] = (splitOff.Ranges[instruction.Category].From, instruction.Value - 1);
-                                        range.Ranges[instruction.Category] = (instruction.Value, range.Ranges[instruction.Category].To);
-
-
+                                        splitOff.To[instruction.Category] = instruction.Value - 1;
+                                        range.From[instruction.Category] = instruction.Value;
                                     } else {
-                                        //switch (instruction.Category) {
-                                        //    case 'x':
-                                        //        splitOff.xFrom = instruction.Value + 1;
-                                        //        range.xTo = instruction.Value;
-                                        //        break;
-                                        //    case 'm':
-                                        //        splitOff.mFrom = instruction.Value + 1;
-                                        //        range.mTo = instruction.Value;
-                                        //        break;
-                                        //    case 'a':
-                                        //        splitOff.aFrom = instruction.Value + 1;
-                                        //        range.aTo = instruction.Value;
-                                        //        break;
-                                        //    case 's':
-                                        //        splitOff.sFrom = instruction.Value + 1;
-                                        //        range.sTo = instruction.Value;
-                                        //        break;
-                                        //    default:
-                                        //        throw new Exception("Category does not exist");
-                                        //}
-
-                                        splitOff.Ranges[instruction.Category] = (instruction.Value + 1, splitOff.Ranges[instruction.Category].To);
-                                        range.Ranges[instruction.Category] = (range.Ranges[instruction.Category].From, instruction.Value);
-
+                                        splitOff.From[instruction.Category] = instruction.Value + 1;
+                                        range.To[instruction.Category] = instruction.Value;
                                     }
-                                    if (instruction.Next == "A") totalCount += (ulong)(splitOff.Ranges['x'].To - splitOff.Ranges['x'].From + 1) * (ulong)(splitOff.Ranges['m'].To - splitOff.Ranges['m'].From + 1) * (ulong)(splitOff.Ranges['a'].To - splitOff.Ranges['a'].From + 1) * (ulong)(splitOff.Ranges['s'].To - splitOff.Ranges['s'].From + 1);
+                                    if (instruction.Next == "A") totalCount += splitOff.To.Values.Zip(splitOff.From.Values, (x, y) => x - y + 1).Select(s=>(ulong)s).Aggregate((x, y) => x * y);
                                     else if (instruction.Next != "R") {
                                         splitOff.Next = instruction.Next;
-                                        newRranges.Add(splitOff);
+                                        newRanges.Add(splitOff);
                                     }
                                 }
-                                //} else if (instruction.Next == "A") totalCount += (ulong)(range.xTo - range.xFrom + 1) * (ulong)(range.mTo - range.mFrom + 1) * (ulong)(range.aTo - range.aFrom + 1) * (ulong)(range.sTo - range.sFrom + 1);
-                            } else if (instruction.Next == "A") totalCount += (ulong)(range.Ranges['x'].To - range.Ranges['x'].From + 1) * (ulong)(range.Ranges['m'].To - range.Ranges['m'].From + 1) * (ulong)(range.Ranges['a'].To - range.Ranges['a'].From + 1) * (ulong)(range.Ranges['s'].To - range.Ranges['s'].From + 1);
+                            } else if (instruction.Next == "A") totalCount += range.To.Values.Zip(range.From.Values, (x, y) => x - y + 1).Select(s => (ulong)s).Aggregate((x, y) => x * y);
                             else if (instruction.Next != "R") {
                                 range.Next = instruction.Next;
-                                newRranges.Add(range);
+                                newRanges.Add(range);
                             }
                         }
                     }
-                    ranges2 = newRranges;
-                } while (ranges2.Any());
+                    ranges = newRanges;
+                } while (ranges.Any());
                 return totalCount;
             }
 
-            private class PartRange {
-                //public int xFrom;
-                //public int xTo;
-                //public int mFrom;
-                //public int mTo;
-                //public int aFrom;
-                //public int aTo;
-                //public int sFrom;
-                //public int sTo;
-                public Dictionary<char, (int From, int To)> Ranges;
+            private class Range {
+                public Dictionary<char, int> From;
+                public Dictionary<char, int> To;
                 public string Next;
 
+                public Range() { }
 
-                public PartRange() { }
-
-                public PartRange(PartRange copyFrom) {
-                    //xFrom = copyFrom.xFrom;
-                    //xTo = copyFrom.xTo;
-                    //mFrom = copyFrom.mFrom;
-                    //mTo = copyFrom.mTo;
-                    //aFrom = copyFrom.aFrom;
-                    //aTo = copyFrom.aTo;
-                    //sFrom = copyFrom.sFrom;
-                    //sTo = copyFrom.sTo;
+                public Range(Range copyFrom) {
                     Next = copyFrom.Next;
-                    Ranges = new();
-                    foreach (var value in copyFrom.Ranges.Keys) Ranges.Add(value, copyFrom.Ranges[value]);
+                    From = new();
+                    To = new();
+                    foreach (var value in copyFrom.From.Keys) {
+                        From.Add(value, copyFrom.From[value]);
+                        To.Add(value, copyFrom.To[value]);
+                    }
                 }
             }
 
