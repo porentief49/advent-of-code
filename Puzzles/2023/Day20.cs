@@ -16,23 +16,19 @@
 
 
             public override string Solve() {
-                //if (Part2) return "";
                 var modules = InputAsLines.Select(i => new Module(i)).ToList();
                 for (int i = 0; i < modules.Count; i++) modules[i].UpdateRefs(modules); // will not cover the unknown ones added within this loop, but that's ok
                 modules.Insert(0, new Module("button -> broadcaster"));
-                Dictionary<string, ulong> xmInputs = new();
+                Dictionary<string, ulong> part2inputs = new();
                 if (Part2) {
-                    //Module rx = modules.Single(m => m.Name == "rx");
-                    Module xm = modules.Single(m => m.OutputNames.Contains("rx"));
-                    xmInputs = modules.FindAll(m => m.Outputs.Contains(xm)).ToDictionary(x => x.Name, x => 0UL);
-                    //foreach (var mod in modules.FindAll(m => m.Outputs.Contains(xm))) {
-                    //    var thisModule = mod;
-                    //    do {
-                    //        thisModule
-                    //    } while (thisModule.Name!="button");
-                    //    Console.WriteLine(mod.Name);
-                    //}
-                    //return "";
+                    // ok I hate this. Fiddling some patterns out of the input data is lame!
+                    // Turns out four gates feed into the Conjunction before rx. Since all of
+                    // these must be high at the same time, we need to look for repetition
+                    // patterns. Turns out, they become low every ~3300 pushes. And of course
+                    // they are primes, so we loop until each has fired once and then multiply
+                    // the counts. Lame! (And I had to look online for help ...)
+                    Module theOneFeedingIntoRx = modules.Single(m => m.OutputNames.Contains("rx"));
+                    part2inputs = modules.FindAll(m => m.Outputs.Contains(theOneFeedingIntoRx)).ToDictionary(x => x.Name, x => 0UL);
                 }
                 Queue<(Module from, Module to, bool pulse)> pulses = new();
                 ulong lows = 0;
@@ -41,33 +37,31 @@
                 bool done = false;
                 do {
                     count++;
-                    //if (count % 1000000 == 0) Console.WriteLine(count);
                     pulses.Enqueue((modules.Single(m => m.Name == "button"), modules.Single(m => m.Name == "broadcaster"), false)); // push button
                     lows++;
                     do {
                         (Module from, Module to, bool inPulse) = pulses.Dequeue();
                         bool? outPulse = to.ProcessPulse(inPulse, from);
                         if (outPulse != null) {
+                            bool pulse = (bool)outPulse;
                             foreach (var output in to.Outputs) {
-                                pulses.Enqueue((to, output, (bool)outPulse));
-                                if ((bool)outPulse) highs++;
+                                pulses.Enqueue((to, output, pulse));
+                                if (pulse) highs++;
                                 else lows++;
-                                if (Verbose) Console.WriteLine($"{to.Name} -{((bool)outPulse ? "high" : "low")}-> {output.Name}");
-                                if (Part2 && (bool)outPulse == false && output.Name == "rx") done = true;
-                                if (Part2 && (bool)outPulse == false && xmInputs.Keys.Contains(output.Name)) {
-                                    Console.WriteLine($"Gate {output.Name} after {count} pushes");
-                                    xmInputs[output.Name] = count;
+                                if (Verbose) Console.WriteLine($"{to.Name} -{(pulse ? "high" : "low")}-> {output.Name}");
+                                if (Part2 && !pulse && part2inputs.Keys.Contains(output.Name)) {
+                                    if (Verbose) Console.WriteLine($"Gate {output.Name} after {count} pushes");
+                                    part2inputs[output.Name] = count;
                                 }
                             }
                         }
                     } while (pulses.Any());
                     if (Verbose) Console.WriteLine();
                     if (Part1) done = count == 1000;
-                    else done = !xmInputs.Values.Any(x => x == 0);
+                    else done = !part2inputs.Values.Any(x => x == 0);
                 } while (!done);
                 if (Verbose) Console.WriteLine($"========> {lows} lows, {highs} highs");
-                //if (Part2) Console.WriteLine(xmInputs.Values.Aggregate((x, y) => x * y));
-                return (Part1 ? (lows * highs) : xmInputs.Values.Aggregate((x, y) => x * y)).ToString();
+                return (Part1 ? (lows * highs) : part2inputs.Values.Aggregate((x, y) => x * y)).ToString();
             }
 
             private enum ModType { FlipFlop, Conjunction, Other }
@@ -86,10 +80,6 @@
                     Name = split[0].ReplaceAnyChar("&%", string.Empty);
                     Type = split[0][0] switch { '%' => ModType.FlipFlop, '&' => ModType.Conjunction, _ => ModType.Other };
                     if (split.Length > 1) OutputNames = split[1].Split(',', StringSplitOptions.TrimEntries).ToList();
-                    //else {
-                    //    OutputNames = new();
-                    //    Outputs = new();
-                    //}
                 }
 
                 public void UpdateRefs(List<Module> modules) {
