@@ -24,9 +24,9 @@
                     // ok I hate this. Fiddling some patterns out of the input data is lame!
                     // Turns out four gates feed into the Conjunction before rx. Since all of
                     // these must be high at the same time, we need to look for repetition
-                    // patterns. Turns out, they become low every ~3300 pushes. And of course
+                    // patterns. Turns out, that's the case every ~3-4000 pushes. And of course
                     // they are primes, so we loop until each has fired once and then multiply
-                    // the counts. Lame! (And I had to look online for help ...)
+                    // the counts. And I had to look online to get a tip into the right direction ...
                     Module theOneFeedingIntoRx = modules.Single(m => m.OutputNames.Contains("rx"));
                     part2inputs = modules.FindAll(m => m.Outputs.Contains(theOneFeedingIntoRx)).ToDictionary(x => x.Name, x => 0UL);
                 }
