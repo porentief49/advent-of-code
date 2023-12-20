@@ -7,8 +7,8 @@
             protected override string Title { get; } = "Day 20: Pulse Propagation";
 
             public override void SetupAll() {
-                AddInputFile(@"2023\20_Example1.txt");
-                AddInputFile(@"2023\20_Example2.txt");
+                //AddInputFile(@"2023\20_Example1.txt");
+                //AddInputFile(@"2023\20_Example2.txt");
                 AddInputFile(@"2023\20_rAiner.txt");
             }
 
@@ -16,14 +16,32 @@
 
 
             public override string Solve() {
-                if (Part2) return "";
+                //if (Part2) return "";
                 var modules = InputAsLines.Select(i => new Module(i)).ToList();
                 for (int i = 0; i < modules.Count; i++) modules[i].UpdateRefs(modules); // will not cover the unknown ones added within this loop, but that's ok
                 modules.Insert(0, new Module("button -> broadcaster"));
+                Dictionary<string, ulong> xmInputs = new();
+                if (Part2) {
+                    //Module rx = modules.Single(m => m.Name == "rx");
+                    Module xm = modules.Single(m => m.OutputNames.Contains("rx"));
+                    xmInputs = modules.FindAll(m => m.Outputs.Contains(xm)).ToDictionary(x => x.Name, x => 0UL);
+                    //foreach (var mod in modules.FindAll(m => m.Outputs.Contains(xm))) {
+                    //    var thisModule = mod;
+                    //    do {
+                    //        thisModule
+                    //    } while (thisModule.Name!="button");
+                    //    Console.WriteLine(mod.Name);
+                    //}
+                    //return "";
+                }
                 Queue<(Module from, Module to, bool pulse)> pulses = new();
                 ulong lows = 0;
                 ulong highs = 0;
-                for (int i = 0; i < 1000; i++) {
+                ulong count = 0;
+                bool done = false;
+                do {
+                    count++;
+                    //if (count % 1000000 == 0) Console.WriteLine(count);
                     pulses.Enqueue((modules.Single(m => m.Name == "button"), modules.Single(m => m.Name == "broadcaster"), false)); // push button
                     lows++;
                     do {
@@ -35,13 +53,21 @@
                                 if ((bool)outPulse) highs++;
                                 else lows++;
                                 if (Verbose) Console.WriteLine($"{to.Name} -{((bool)outPulse ? "high" : "low")}-> {output.Name}");
+                                if (Part2 && (bool)outPulse == false && output.Name == "rx") done = true;
+                                if (Part2 && (bool)outPulse == false && xmInputs.Keys.Contains(output.Name)) {
+                                    Console.WriteLine($"Gate {output.Name} after {count} pushes");
+                                    xmInputs[output.Name] = count;
+                                }
                             }
                         }
                     } while (pulses.Any());
                     if (Verbose) Console.WriteLine();
-                }
+                    if (Part1) done = count == 1000;
+                    else done = !xmInputs.Values.Any(x => x == 0);
+                } while (!done);
                 if (Verbose) Console.WriteLine($"========> {lows} lows, {highs} highs");
-                return (lows * highs).ToString();
+                //if (Part2) Console.WriteLine(xmInputs.Values.Aggregate((x, y) => x * y));
+                return (Part1 ? (lows * highs) : xmInputs.Values.Aggregate((x, y) => x * y)).ToString();
             }
 
             private enum ModType { FlipFlop, Conjunction, Other }
@@ -51,8 +77,8 @@
                 public string Name;
                 public ModType Type;
                 public bool State = false;
-                public List<string> OutputNames;
-                public List<Module> Outputs;
+                public List<string> OutputNames = new();
+                public List<Module> Outputs = new();
                 public Dictionary<string, bool> InputStates;
 
                 public Module(string definition) {
@@ -60,7 +86,10 @@
                     Name = split[0].ReplaceAnyChar("&%", string.Empty);
                     Type = split[0][0] switch { '%' => ModType.FlipFlop, '&' => ModType.Conjunction, _ => ModType.Other };
                     if (split.Length > 1) OutputNames = split[1].Split(',', StringSplitOptions.TrimEntries).ToList();
-                    else OutputNames = new List<string>();
+                    //else {
+                    //    OutputNames = new();
+                    //    Outputs = new();
+                    //}
                 }
 
                 public void UpdateRefs(List<Module> modules) {

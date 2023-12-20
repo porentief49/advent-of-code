@@ -465,20 +465,20 @@ namespace _Year2023 {
         [TestMethod]
         public void _Part1_Example1() => Helpers.RunTest("Example1", true, "32000000");
 
-        [TestMethod]
-        public void _Part2_Example1() => Helpers.RunTest("Example1", false, "");
+        //[TestMethod]
+        //public void _Part2_Example1() => Helpers.RunTest("Example1", false, "");
 
         [TestMethod]
         public void _Part1_Example2() => Helpers.RunTest("Example2", true, "11687500");
 
-        [TestMethod]
-        public void _Part2_Example2() => Helpers.RunTest("Example2", false, "");
+        //[TestMethod]
+        //public void _Part2_Example2() => Helpers.RunTest("Example2", false, "");
 
         [TestMethod]
         public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "788081152");
 
         [TestMethod]
-        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "");
+        public void _Part2_rAiner() => Helpers.RunTest("rAiner", false, "224602011344203");
     }
 
     [TestClass]
