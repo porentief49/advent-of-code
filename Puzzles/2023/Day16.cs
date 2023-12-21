@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Data;
+using Beam = (int Row, int Col, Puzzles.Year2023.Day16.Dir Dir);
 
 namespace Puzzles {
 
@@ -17,7 +18,7 @@ namespace Puzzles {
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
             [Flags]
-            private enum Dir { None = 0, U = 1, R = 2, D = 4, L = 8 }
+            public enum Dir { None = 0, U = 1, R = 2, D = 4, L = 8 }
 
             public override string Solve() {
                 if (Part1) return CalcEnergyLevel(0, -1, Dir.R).ToString();
@@ -29,98 +30,98 @@ namespace Puzzles {
             private int CalcEnergyLevel(int startRow, int startCol, Dir startDir) {
                 Dir[][] energized = new Dir[InputAsLines.Length][];
                 for (int i = 0; i < InputAsLines.Length; i++) energized[i] = new Dir[InputAsLines[0].Length];
-                Queue<(int, int, Dir)> beams = new();
+                Queue<Beam> beams = new();
                 beams.Enqueue((startRow, startCol, startDir));
                 do {
                     if (Verbose) Console.Write($"Queue has {beams.Count} entries, ");
-                    (int row, int col, Dir dir) = beams.Dequeue();
-                    if (Verbose) Console.WriteLine($"dequeuing [{row}|{col}] going {dir}");
-                    switch (dir) {
+                    Beam beam = beams.Dequeue();
+                    if (Verbose) Console.WriteLine($"dequeuing [{beam.Row}|{beam.Col}] going {beam.Dir}");
+                    switch (beam.Dir) {
                         case Dir.U:
-                            row--;
-                            if (row < 0) break; // leave grid
-                            if (Verbose) Console.WriteLine($"   to [{row}|{col}], finding character '{InputAsLines[row][col]}', energized with: {energized[row][col]}");
-                            if ((energized[row][col] & dir) != Dir.None) break;
-                            energized[row][col] |= dir;
-                            switch (InputAsLines[row][col]) {
+                            beam.Row--;
+                            if (beam.Row < 0) break; // leave grid
+                            if (Verbose) Console.WriteLine($"   to [{beam.Row}|{beam.Col}], finding character '{InputAsLines[beam.Row][beam.Col]}', energized with: {energized[beam.Row][beam.Col]}");
+                            if ((energized[beam.Row][beam.Col] & beam.Dir) != Dir.None) break;
+                            energized[beam.Row][beam.Col] |= beam.Dir;
+                            switch (InputAsLines[beam.Row][beam.Col]) {
                                 case '/':
-                                    beams.Enqueue((row, col, Dir.R));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.R));
                                     break;
                                 case '\\':
-                                    beams.Enqueue((row, col, Dir.L));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.L));
                                     break;
                                 case '-':
-                                    beams.Enqueue((row, col, Dir.R));
-                                    beams.Enqueue((row, col, Dir.L));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.R));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.L));
                                     break;
                                 default:
-                                    beams.Enqueue((row, col, dir));
+                                    beams.Enqueue((beam.Row, beam.Col, beam.Dir));
                                     break;
                             }
                             break;
                         case Dir.R:
-                            col++;
-                            if (col == InputAsLines[0].Length) break; // leave grid
-                            if (Verbose) Console.WriteLine($"   to [{row}|{col}], finding character '{InputAsLines[row][col]}', energized with: {energized[row][col]}");
-                            if ((energized[row][col] & dir) != Dir.None) break;
-                            energized[row][col] |= dir;
-                            switch (InputAsLines[row][col]) {
+                            beam.Col++;
+                            if (beam.Col == InputAsLines[0].Length) break; // leave grid
+                            if (Verbose) Console.WriteLine($"   to [{beam.Row}|{beam.Col}], finding character '{InputAsLines[beam.Row][beam.Col]}', energized with: {energized[beam.Row][beam.Col]}");
+                            if ((energized[beam.Row][beam.Col] & beam.Dir) != Dir.None) break;
+                            energized[beam.Row][beam.Col] |= beam.Dir;
+                            switch (InputAsLines[beam.Row][beam.Col]) {
                                 case '/':
-                                    beams.Enqueue((row, col, Dir.U));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.U));
                                     break;
                                 case '\\':
-                                    beams.Enqueue((row, col, Dir.D));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.D));
                                     break;
                                 case '|':
-                                    beams.Enqueue((row, col, Dir.U));
-                                    beams.Enqueue((row, col, Dir.D));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.U));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.D));
                                     break;
                                 default:
-                                    beams.Enqueue((row, col, dir));
+                                    beams.Enqueue((beam.Row, beam.Col, beam.Dir));
                                     break;
                             }
                             break;
                         case Dir.D:
-                            row++;
-                            if (row == InputAsLines.Length) break; // leave grid
-                            if (Verbose) Console.WriteLine($"   to [{row}|{col}], finding character '{InputAsLines[row][col]}', energized with: {energized[row][col]}");
-                            if ((energized[row][col] & dir) != Dir.None) break;
-                            energized[row][col] |= dir;
-                            switch (InputAsLines[row][col]) {
+                            beam.Row++;
+                            if (beam.Row == InputAsLines.Length) break; // leave grid
+                            if (Verbose) Console.WriteLine($"   to [{beam.Row}|{beam.Col}], finding character '{InputAsLines[beam.Row][beam.Col]}', energized with: {energized[beam.Row][beam.Col]}");
+                            if ((energized[beam.Row][beam.Col] & beam.Dir) != Dir.None) break;
+                            energized[beam.Row][beam.Col] |= beam.Dir;
+                            switch (InputAsLines[beam.Row][beam.Col]) {
                                 case '/':
-                                    beams.Enqueue((row, col, Dir.L));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.L));
                                     break;
                                 case '\\':
-                                    beams.Enqueue((row, col, Dir.R));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.R));
                                     break;
                                 case '-':
-                                    beams.Enqueue((row, col, Dir.L));
-                                    beams.Enqueue((row, col, Dir.R));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.L));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.R));
                                     break;
                                 default:
-                                    beams.Enqueue((row, col, dir));
+                                    beams.Enqueue((beam.Row, beam.Col, beam.Dir));
                                     break;
                             }
                             break;
                         case Dir.L:
-                            col--;
-                            if (col < 0) break; // leave grid
-                            if (Verbose) Console.WriteLine($"   to [{row}|{col}], finding character '{InputAsLines[row][col]}', energized with: {energized[row][col]}");
-                            if ((energized[row][col] & dir) != Dir.None) break;
-                            energized[row][col] |= dir;
-                            switch (InputAsLines[row][col]) {
+                            beam.Col--;
+                            if (beam.Col < 0) break; // leave grid
+                            if (Verbose) Console.WriteLine($"   to [{beam.Row}|{beam.Col}], finding character '{InputAsLines[beam.Row][beam.Col]}', energized with: {energized[beam.Row][beam.Col]}");
+                            if ((energized[beam.Row][beam.Col] & beam.Dir) != Dir.None) break;
+                            energized[beam.Row][beam.Col] |= beam.Dir;
+                            switch (InputAsLines[beam.Row][beam.Col]) {
                                 case '/':
-                                    beams.Enqueue((row, col, Dir.D));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.D));
                                     break;
                                 case '\\':
-                                    beams.Enqueue((row, col, Dir.U));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.U));
                                     break;
                                 case '|':
-                                    beams.Enqueue((row, col, Dir.D));
-                                    beams.Enqueue((row, col, Dir.U));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.D));
+                                    beams.Enqueue((beam.Row, beam.Col, Dir.U));
                                     break;
                                 default:
-                                    beams.Enqueue((row, col, dir));
+                                    beams.Enqueue((beam.Row, beam.Col, beam.Dir));
                                     break;
                             }
                             break;

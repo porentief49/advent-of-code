@@ -87,7 +87,7 @@ namespace Puzzles {
 
         protected static void PrintGrid(List<string> grid) => Console.WriteLine(string.Join("\r\n", grid) + "\r\n");
 
-        protected static void PrintGrid(int[][] grid, int digits) => Console.WriteLine(string.Join("\r\n", grid.Select(y => string.Join(' ', y.Select(x => x.ToString() + " ".Repeat(digits).Substring(0, digits)).ToArray()))) + "\r\n");
+        protected static void PrintGrid(int[][] grid, int digits) => Console.WriteLine(string.Join("\r\n", grid.Select(y => string.Join(' ', y.Select(x => (x.ToString() + " ".Repeat(digits)).Substring(0, digits)).ToArray()))) + "\r\n");
     }
 
     public abstract class DayBase_OLD {
