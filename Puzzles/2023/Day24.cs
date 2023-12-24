@@ -40,21 +40,22 @@ namespace Puzzles {
                     return count.ToString();
                 }
 
-                // Part2 - not sure (and not enough patience) to solve this with code
-                // We have equations describing the positions of the hailstones and our rock.
-
+                // Part2 - not sure how (and not enough patience) to solve this with code
+                // We have equations describing the positions of the hailstones and our rock:
+                //
                 // Xrock + VXrock * t1 == Xhailstone1 + VXhailstone1 * t1
                 // Yrock + VYrock * t1 == Yhailstone1 + VYhailstone1 * t1
                 // Zrock + VZrock * t1 == Zhailstone1 + VZhailstone1 * t1
                 // Xrock + VXrock * t2 == Xhailstone2 + VXhailstone2 * t2
                 // Yrock + VYrock * t2 == Yhailstone2 + VYhailstone2 * t2
                 // Zrock + VZrock * t2 == Zhailstone2 + VZhailstone2 * t2
-
-                // ... and so on for every hailstone. If we consider  N hailstines we have these unknowns:
-                // 1 hailstones => 3 coords, 3 velocities, 1 t => 7 variables @ 3 equations => insufficient
+                //...and so on for every hailstone.
+                //
+                //If we consider N hailstones we have these unknowns:
+                // 1 hailstone => 3 coords, 3 velocities, 1 t => 7 variables @ 3 equations => insufficient
                 // 2 hailstones => 3 coords, 3 velocities + 2 t => 8 variables @ 6 equations => insufficient
                 // 3 hailstones => 3 coords, 3 velocities + 3 t => 9 variables @ 9 equations => hurray!!!
-
+                //
                 // That is solvable, and throwing the equations into an online solver gave me these results:
                 return (InputFile.Contains("Example") ? 47UL : 618534564836937UL).ToString();
             }
