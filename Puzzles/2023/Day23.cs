@@ -11,14 +11,14 @@ namespace Puzzles {
             protected override string Title { get; } = "Day 23: A Long Walk";
 
             public override void SetupAll() {
-                //AddInputFile(@"2023\23_Example.txt");
-                AddInputFile(@"2023\23_rAiner.txt");
+                AddInputFile(@"2023\23_Example.txt");
+                //AddInputFile(@"2023\23_rAiner.txt");
             }
 
             public override void Init(string inputFile) => InputAsLines = ReadLines(inputFile, true);
 
             public override string Solve() {
-                if (Part2) return "";
+                //if (Part2) return "";
                 char[][] maze = InputAsLines.Select(i => i.ToArray()).ToArray();
                 //List<pos> current = [(0, 1), (1, 1)];
                 List<List<pos>> successPaths = new();
