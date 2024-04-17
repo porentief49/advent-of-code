@@ -574,10 +574,10 @@ namespace _Year2023 {
         }
 
         [TestMethod]
-        public void _Part1_Example() => Helpers.RunTest("Example", true, "");
+        public void _Part1_Example() => Helpers.RunTest("Example", true, "54");
 
         [TestMethod]
-        public void _Part2_Example() => Helpers.RunTest("Example", false, "");
+        public void _Part2_Example() => Helpers.RunTest("Example", false, "562912");
 
         [TestMethod]
         public void _Part1_rAiner() => Helpers.RunTest("rAiner", true, "");

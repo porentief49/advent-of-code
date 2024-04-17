@@ -26,38 +26,46 @@ namespace Puzzles {
                 List<List<pos>> successPaths = new();
                 Queue<List<pos>> paths = new Queue<List<pos>>();
                 paths.Enqueue([(0, 1), (1, 1)]);
-                //bool done = false;
                 int count = 0;
                 int path = 0;
+                int maxPathLength = 0;
                 do {
                     var current = paths.Dequeue();
                     if (Verbose) Console.WriteLine($"starting with {paths.Count()} paths, picking the first with {current.Count} elements");
                     path++;
-                    bool foundOne = false;
+                    int foundOne = 0;
                     do {
-                        foundOne = false;
+                        //foundOne = false;
+                        foundOne = 0;
                         var r = current.Last().row;
                         var c = current.Last().col;
                         print[r][c] = path.ToString()[0];
-                        if (r == maze.Length - 1) successPaths.Add(current);
-                        else {
+                        if (r == maze.Length - 1) {
+                            successPaths.Add(current);
+                            maxPathLength = Math.Max(maxPathLength, current.Count-1);
+                        } else {
                             if (Verbose) Console.WriteLine($"  {current.Count} elements in this path");
+
+                            List<pos> candidates = new();
+
                             // test left
                             pos nextOnPath = (-1, -1);
                             if (Verbose) Console.Write($"    at pos [{r},{c}] testing left ...");
                             if (maze[r][c - 1] != '#' && (Part2 || (maze[r][c] == '.' || maze[r][c] == '<'))) {
                                 if (!current.Contains((r, c - 1))) {
-                                    if (!foundOne) {
-                                        nextOnPath = (r, c - 1);
-                                        //current.Add((r, c - 1));
-                                        foundOne = true;
-                                        if (Verbose) Console.Write($"keep going");
-                                    } else {
-                                        var newPath = new List<pos>(current);
-                                        newPath.Add((r, c - 1));
-                                        paths.Enqueue(newPath);
-                                        if (Verbose) Console.Write($"new path added with last element {r}|{c - 1} and {newPath.Count} elements");
-                                    }
+                                    candidates.Add((r, c - 1));
+                                    if (Verbose) Console.Write($"cool");
+                                    //if (!foundOne) {
+                                    //    nextOnPath = (r, c - 1);
+                                    //    //current.Add((r, c - 1));
+                                    //    foundOne = true;
+                                    //    if (Verbose) Console.Write($"keep going");
+                                    //} else {
+                                    //    var newPath = new List<pos>(current);
+                                    //    newPath.Add((r, c - 1));
+                                    //    paths.Enqueue(newPath);
+                                    //    if (Verbose) Console.Write($"new path added with last element {r}|{c - 1} and {newPath.Count} elements");
+                                    //}
                                 }
                             }
                             if (Verbose) Console.WriteLine($"");
@@ -66,17 +74,19 @@ namespace Puzzles {
                             if (Verbose) Console.Write($"    at pos [{r},{c}] testing right ...");
                             if (maze[r][c + 1] != '#' && (Part2 || (maze[r][c] == '.' || maze[r][c] == '>'))) {
                                 if (!current.Contains((r, c + 1))) {
-                                    if (!foundOne) {
-                                        nextOnPath = (r, c + 1);
-                                        //current.Add((r, c + 1));
-                                        foundOne = true;
-                                        if (Verbose) Console.Write($"keep going");
-                                    } else {
-                                        var newPath = new List<pos>(current);
-                                        newPath.Add((r, c + 1));
-                                        paths.Enqueue(newPath);
-                                        if (Verbose) Console.Write($"new path added with last element {r}|{c + 1} and {newPath.Count} elements");
-                                    }
+                                    candidates.Add((r, c + 1));
+                                    if (Verbose) Console.Write($"cool");
+                                    //if (!foundOne) {
+                                    //    nextOnPath = (r, c + 1);
+                                    //    //current.Add((r, c + 1));
+                                    //    foundOne = true;
+                                    //    if (Verbose) Console.Write($"keep going");
+                                    //} else {
+                                    //    var newPath = new List<pos>(current);
+                                    //    newPath.Add((r, c + 1));
+                                    //    paths.Enqueue(newPath);
+                                    //    if (Verbose) Console.Write($"new path added with last element {r}|{c + 1} and {newPath.Count} elements");
+                                    //}
                                 }
                             }
                             if (Verbose) Console.WriteLine($"");
@@ -85,17 +95,19 @@ namespace Puzzles {
                             if (Verbose) Console.Write($"    at pos [{r},{c}] testing up ...");
                             if (maze[r - 1][c] != '#' && (Part2 || (maze[r][c] == '.' || maze[r][c] == '^'))) {
                                 if (!current.Contains((r - 1, c))) {
-                                    if (!foundOne) {
-                                        nextOnPath = (r - 1, c);
-                                        //current.Add((r - 1, c));
-                                        foundOne = true;
-                                        if (Verbose) Console.Write($"keep going");
-                                    } else {
-                                        var newPath = new List<pos>(current);
-                                        newPath.Add((r - 1, c));
-                                        paths.Enqueue(newPath);
-                                        if (Verbose) Console.Write($"new path added with last element {r - 1}|{c} and {newPath.Count} elements");
-                                    }
+                                    candidates.Add((r - 1, c));
+                                    if (Verbose) Console.Write($"cool");
+                                    //if (!foundOne) {
+                                    //    nextOnPath = (r - 1, c);
+                                    //    //current.Add((r - 1, c));
+                                    //    foundOne = true;
+                                    //    if (Verbose) Console.Write($"keep going");
+                                    //} else {
+                                    //    var newPath = new List<pos>(current);
+                                    //    newPath.Add((r - 1, c));
+                                    //    paths.Enqueue(newPath);
+                                    //    if (Verbose) Console.Write($"new path added with last element {r - 1}|{c} and {newPath.Count} elements");
+                                    //}
                                 }
                             }
                             if (Verbose) Console.WriteLine($"");
@@ -104,26 +116,35 @@ namespace Puzzles {
                             if (Verbose) Console.Write($"    at pos [{r},{c}] testing down ...");
                             if (maze[r + 1][c] != '#' && (Part2 || (maze[r][c] == '.' || maze[r][c] == 'v'))) {
                                 if (!current.Contains((r + 1, c))) {
-                                    if (!foundOne) {
-                                        nextOnPath = (r + 1, c);
-                                        //current.Add((r + 1, c));
-                                        foundOne = true;
-                                        if (Verbose) Console.Write($"keep going");
-                                    } else {
-                                        var newPath = new List<pos>(current);
-                                        newPath.Add((r + 1, c));
-                                        paths.Enqueue(newPath);
-                                        if (Verbose) Console.Write($"new path added with last element {r + 1}|{c} and {newPath.Count} elements");
-                                    }
+                                    candidates.Add((r + 1, c));
+                                    if (Verbose) Console.Write($"cool");
+                                    //if (!foundOne) {
+                                    //    nextOnPath = (r + 1, c);
+                                    //    //current.Add((r + 1, c));
+                                    //    foundOne = true;
+                                    //    if (Verbose) Console.Write($"keep going");
+                                    //} else {
+                                    //    var newPath = new List<pos>(current);
+                                    //    newPath.Add((r + 1, c));
+                                    //    paths.Enqueue(newPath);
+                                    //    if (Verbose) Console.Write($"new path added with last element {r + 1}|{c} and {newPath.Count} elements");
+                                    //}
                                 }
                             }
-                            if (foundOne) current.Add(nextOnPath);
+                            //if (foundOne) current.Add(nextOnPath);
+                            foundOne = candidates.Count;
+                            for (int i = 1; i < foundOne; i++) {
+                                var newPath = new List<pos>(current);
+                                newPath.Add(candidates[i]);
+                                paths.Enqueue(newPath);
+                            }
+                            if (foundOne > 0) current.Add(candidates[0]);
                             if (Verbose) Console.WriteLine($"");
-                            if (Verbose) Console.WriteLine($"  now we have {paths.Count()} paths");
+                            if (Verbose) Console.WriteLine($"  now we have {paths.Count()} paths on the backlog");
                         }
-                    } while (foundOne);
+                    } while (foundOne>0);
                     count++;
-                    if (count % 100 == 0) Console.WriteLine($"After {count} loops, we have {paths.Count()} candidates and {successPaths.Count} success paths, longest: {successPaths.Max(s => s.Count() - 1)}");
+                    if (count % 1000 == 0) Console.WriteLine($"After {count} loops, we have {paths.Count()} candidates and {successPaths.Count} success paths, longest: {maxPathLength}");
                 } while (paths.Any());
                 if (Verbose) foreach (var success in successPaths) Console.WriteLine(success.Count() - 1);
 
@@ -138,7 +159,8 @@ namespace Puzzles {
 
                 //PrintGrid(print);
 
-                return successPaths.Max(s => s.Count() - 1).ToString();
+                //return successPaths.Max(s => s.Count() - 1).ToString();
+                return maxPathLength.ToString();
             }
             //public string SolveX() {
             //    if (Part1) return "";
